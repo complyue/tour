@@ -1,0 +1,9 @@
+{##
+ # Welcome to A Tour of Đ (Edh)
+ #}
+
+# %%
+console.print( 'Hello, Đ (Edh) world!' )
+
+# %%
+dir
