@@ -4,7 +4,7 @@ USER gitpod
 # or git will keep prompting
 RUN git config --global pull.ff only
 # ~/.stack will be lost across Gitpod workspace restarts,
-# use /workspace/ for artifacts meant to be persisted
+# use /workspace/ so it is persisted as part of prebuilt workspace
 ENV STACK_ROOT=/workspace/.stack
 
 USER root

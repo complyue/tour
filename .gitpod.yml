@@ -18,7 +18,7 @@ tasks:
       stack update
       stack install --fast implicit-hie
     command: |
-      stack update
+      # stack update
       cd /workspace/edh-universe
       epm up
       epm x gen-hie > hie.yaml
