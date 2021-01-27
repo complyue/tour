@@ -7,3 +7,6 @@ console.print( 'Hello, Đ (Edh) world!' )
 
 # %%
 dir
+
+# %%
+dir$ batteries
