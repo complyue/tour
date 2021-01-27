@@ -1,0 +1,19 @@
+image:
+  file: .gitpod.Dockerfile
+
+ports:
+  - port: 1024-6000
+    onOpen: ignore
+
+tasks:
+  - before: cd /workspace
+    init: >-
+      epm init
+       -B https://github.com/e-wrks
+        edh
+       -B http://github.com/complyue
+        nedh els sedh hasdim haskit
+    command: >-
+      cd /workspace/edh-universe
+       && epm up
+       && stack install --fast
