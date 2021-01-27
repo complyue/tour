@@ -7,20 +7,20 @@ ports:
 
 tasks:
   - name: Build Đ Tooling
-    init: >-
+    init: |
       cd /workspace
-      && epm init \
+      epm init \
        -B https://github.com/e-wrks \
         edh \
        -B http://github.com/complyue \
         nedh els sedh hasdim haskit
-      && cd /workspace/edh-universe
-      && stack update
-      && stack install --fast implicit-hie
-    command: >-
+      cd /workspace/edh-universe
       stack update
-      && cd /workspace/edh-universe
-      && epm up
-      && epm x gen-hie > hie.yaml
-      && stack install --fast
-      && gp open '/workspace/tour/welcome.edh'
+      stack install --fast implicit-hie
+    command: |
+      stack update
+      cd /workspace/edh-universe
+      epm up
+      epm x gen-hie > hie.yaml
+      stack install --fast
+      gp open '/workspace/tour/welcome.edh'
