@@ -6,7 +6,8 @@ RUN mkdir -p /home/gitpod/.local/bin
 ENV PATH=/home/gitpod/.local/bin:$PATH
 
 USER root
-RUN curl -sSL https://get.haskellstack.org/ | sh
+RUN curl -sSL https://get.haskellstack.org/ | sh &&
+  stack update
 
 USER gitpod
 
