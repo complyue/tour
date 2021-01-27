@@ -16,9 +16,9 @@ tasks:
         nedh els sedh hasdim haskit
       cd /workspace/edh-universe
       stack update
-      stack install --fast
+      stack install
       # do HLS a favor
-      stack install --fast implicit-hie
+      stack install implicit-hie
       epm x gen-hie > hie.yaml
     command: |
       # stack update
