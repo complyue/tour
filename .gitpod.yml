@@ -16,11 +16,13 @@ tasks:
         nedh els sedh hasdim haskit
       cd /workspace/edh-universe
       stack update
-      stack install --fast implicit-hie
-    command: |
-      # stack update
-      cd /workspace/edh-universe
-      epm up
-      epm x gen-hie > hie.yaml
       stack install --fast
+      # do HLS a favor
+      stack install --fast implicit-hie
+      epm x gen-hie > hie.yaml
+    command: |
+      cd /workspace/
+      epm up
+      # stack update
+      stack install
       gp open '/workspace/tour/welcome.edh'
