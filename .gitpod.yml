@@ -8,12 +8,12 @@ ports:
 tasks:
   - before: cd /workspace
     init: >-
-      epm init
-       -B https://github.com/e-wrks
-        edh
-       -B http://github.com/complyue
+      epm init \
+       -B https://github.com/e-wrks \
+        edh \
+       -B http://github.com/complyue \
         nedh els sedh hasdim haskit
     command: >-
-      cd /workspace/edh-universe
-       && epm up
+      cd /workspace/edh-universe \
+       && epm up \
        && stack install --fast
