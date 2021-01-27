@@ -21,8 +21,8 @@ tasks:
       stack install --fast implicit-hie
       epm x gen-hie > hie.yaml
     command: |
-      cd /workspace/
-      epm up
       # stack update
-      stack install
+      # cd /workspace/edh-universe
+      # epm up
+      # stack install
       gp open '/workspace/tour/welcome.edh'
