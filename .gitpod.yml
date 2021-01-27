@@ -6,7 +6,8 @@ ports:
     onOpen: ignore
 
 tasks:
-  - before: cd /workspace
+  - name: Build Đ Tooling
+    before: cd /workspace
     init: >-
       epm init \
        -B https://github.com/e-wrks \
@@ -14,8 +15,8 @@ tasks:
        -B http://github.com/complyue \
         nedh els sedh hasdim haskit
     command: >-
-      stack update
+      stack update \
       && cd /workspace/edh-universe \
       && epm up \
-      && stack install --fast
+      && stack install --fast \
       && gp open '/workspace/tour/welcome.edh'
