@@ -29,10 +29,10 @@ tasks:
 
 vscode:
   extensions:
-    - justusadam.language-haskell@3.3.0:uqgpHstOoamig+7LyFNNVw==
-    - haskell.haskell@1.2.0:ZPrUKYpwCCFQf9Q0phszuQ==
-    - complyue.edh-vscode-syntax@2.5.3:Y4jCvhkehfu5I7+OU7K0aA==
-    - complyue.edh-vscode-formatter@1.6.4:3lWuNSbxPLv55VMhkmgqmw==
-    - complyue.edh-vscode-pack@1.0.1:+y6mVWf3H8LSVOu6f7Ud0A==
-    - complyue.edh-vscode-lsc@1.0.11:xD4pDUjEsfvH9IyLiXKTqw==
-    - complyue.haskit-vscode@0.8.0:3j4qovWtSzNAD+wj9CC8Yw==
+    - justusadam.language-haskell
+    - haskell.haskell
+    - complyue.edh-vscode-syntax
+    - complyue.edh-vscode-formatter
+    - complyue.edh-vscode-pack
+    - complyue.edh-vscode-lsc
+    - complyue.haskit-vscode
