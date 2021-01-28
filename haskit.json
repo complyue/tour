@@ -1,6 +1,6 @@
 {
   "edh.terminal.cmdl": [
-    "edh +RTS -N2",
-    "hski +RTS -N2"
+    "edh",
+    "hski"
   ]
 }
