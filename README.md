@@ -7,18 +7,18 @@ Greetings! TL;DR - Just click:
 - [What's Đ (Edh)](#whats-đ-edh)
 - [Taking the Tour](#taking-the-tour)
   - [Fast and Easy Way - Gitpod workspace](#fast-and-easy-way---gitpod-workspace)
-  - [Seasoned and UX Rich Way - local VSCode](#seasoned-and-ux-rich-way---local-vscode)
+  - [Seasoned and UX Rich Way - local IDE](#seasoned-and-ux-rich-way---local-ide)
     - [Prerequisites](#prerequisites)
       - [Operation System](#operation-system)
       - [UNIX Toolchain](#unix-toolchain)
       - [Haskell Toolchain](#haskell-toolchain)
-      - [a Modern IDE](#a-modern-ide)
+    - [Choose a Modern IDE](#choose-a-modern-ide)
+      - [Install Language Extensions](#install-language-extensions)
+      - [Optional: Use a more Edh/Haskell friendly Color Theme](#optional-use-a-more-edhhaskell-friendly-color-theme)
     - [Install EPM](#install-epm)
     - [Initialize a Workspace](#initialize-a-workspace)
     - [Clone and Open the Tour Repository](#clone-and-open-the-tour-repository)
     - [Optional: Open the Tour and All Library Packages](#optional-open-the-tour-and-all-library-packages)
-    - [Install Language Extensions](#install-language-extensions)
-    - [Optional: Use a more Edh/Haskell friendly Color Theme](#optional-use-a-more-edhhaskell-friendly-color-theme)
     - [Begin the Tour](#begin-the-tour)
 - [Contributing](#contributing)
 
@@ -85,7 +85,7 @@ Note:
 > [Gitpod's push of VSCode support](https://www.gitpod.io/blog/root-docker-and-vscode) in response, esp.
 > [Gitpod's big vision](https://www.gitpod.io/blog/moving-software-development-to-the-cloud).
 
-### Seasoned and UX Rich Way - local [VSCode](https://code.visualstudio.com)
+### Seasoned and UX Rich Way - local IDE
 
 #### Prerequisites
 
@@ -158,7 +158,7 @@ That is, GHC plus X
 
 </details>
 
-##### a Modern IDE
+#### Choose a Modern IDE
 
 Choose [VSCode](https://code.visualstudio.com)
 or [VSCodium](https://vscodium.com), install it.
@@ -168,6 +168,32 @@ Note:
 > **SublimeText**, **Emacs**, **Vim** and etc. should work equaly well after a
 > [LSP](https://microsoft.github.io/language-server-protocol/overviews/lsp/overview)
 > client component is created, contribution anticipated.
+
+##### Install Language Extensions
+
+See:
+
+- [Managing Extensions in Visual Studio Code](https://code.visualstudio.com/docs/editor/extension-gallery)
+- [Eclipse Open VSX project](https://open-vsx.org)
+- [VSCodium - Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace)
+
+Within the IDE's marketplace, search for _Edh_ and _Haskell_,
+install relevant ones you'd like. Recommended extensions:
+
+- [complyue.edh-vscode-syntax](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-syntax)
+- [complyue.edh-vscode-formatter](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-formatter)
+- [complyue.edh-vscode-pack](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-pack)
+- [complyue.edh-vscode-lsc](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-lsc)
+- [complyue.haskit-vscode](https://marketplace.visualstudio.com/items?itemName=complyue.haskit-vscode)
+
+- [justusadam.language-haskell](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
+- [haskell.haskell](https://marketplace.visualstudio.com/items?itemName=haskell.haskell)
+
+##### Optional: Use a more Edh/Haskell friendly Color Theme
+
+Press **F1** to bring out **Command Palette**, keyin _theme_ and choose
+**Preferences: Color Theme**, then select `Đ (Edh) - Calm Warm` or any other
+you'd like.
 
 #### Install EPM
 
@@ -252,26 +278,6 @@ cd ~/workspace
 code tour edh-universe/e-wrks/* edh-universe/complyue/*
 
 ```
-
-#### Install Language Extensions
-
-Search for _Edh_ and _Haskell_ from the marketplace, install relevant
-, extensions recommends:
-
-- [complyue.edh-vscode-syntax](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-syntax)
-- [complyue.edh-vscode-formatter](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-formatter)
-- [complyue.edh-vscode-pack](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-pack)
-- [complyue.edh-vscode-lsc](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-lsc)
-- [complyue.haskit-vscode](https://marketplace.visualstudio.com/items?itemName=complyue.haskit-vscode)
-
-- [justusadam.language-haskell](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
-- [haskell.haskell](https://marketplace.visualstudio.com/items?itemName=haskell.haskell)
-
-#### Optional: Use a more Edh/Haskell friendly Color Theme
-
-Press **F1** to bring out **Command Palette**, keyin _theme_ and choose
-**Preferences: Color Theme**, then select `Đ (Edh) - Calm Warm` or any other
-you'd like.
 
 #### Begin the Tour
 
