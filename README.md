@@ -12,9 +12,9 @@ Greetings! TL;DR - Just click:
       - [Operation System](#operation-system)
       - [UNIX Toolchain](#unix-toolchain)
       - [Haskell Toolchain](#haskell-toolchain)
+      - [a Modern IDE](#a-modern-ide)
     - [Install EPM](#install-epm)
     - [Initialize a Workspace](#initialize-a-workspace)
-    - [Install a Modern IDE](#install-a-modern-ide)
     - [Clone and Open the Tour Repository](#clone-and-open-the-tour-repository)
     - [Optional: Open the Tour and All Library Packages](#optional-open-the-tour-and-all-library-packages)
     - [Install Language Extensions](#install-language-extensions)
@@ -153,6 +153,17 @@ That is, GHC plus X
 
 </details>
 
+##### a Modern IDE
+
+Choose [VSCode](https://code.visualstudio.com)
+or [VSCodium](https://vscodium.com), install it.
+
+Note:
+
+> **SublimeText**, **Emacs**, **Vim** and etc. should work equaly well after a
+> [LSP](https://microsoft.github.io/language-server-protocol/overviews/lsp/overview)
+> client component is created, contribution anticipated.
+
 #### Install EPM
 
 ```bash
@@ -215,17 +226,6 @@ stack install implicit-hie
 epm x gen-hie > hie.yaml
 
 ```
-
-#### Install a Modern IDE
-
-Choose [VSCode](https://code.visualstudio.com)
-or [VSCodium](https://vscodium.com), install it.
-
-Note:
-
-> **SublimeText**, **Emacs**, **Vim** and etc. should work equaly well after a
-> [LSP](https://microsoft.github.io/language-server-protocol/overviews/lsp/overview)
-> client component is created, contribution anticipated.
 
 #### Clone and Open the Tour Repository
 
