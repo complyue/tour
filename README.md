@@ -20,23 +20,29 @@ Greetings! TL;DR - Just click:
     - [Install Language Extensions](#install-language-extensions)
     - [Optional: Use a more Edh/Haskell friendly Color Theme](#optional-use-a-more-edhhaskell-friendly-color-theme)
     - [Begin the Tour](#begin-the-tour)
-- [Contributions](#contributions)
+- [Contributing](#contributing)
 
 ## What's Đ (Edh)
 
-**Đ (Edh)** stands for _Event Distributing & Hosting_,
+**Đ (Edh)** stands for **Event Distributing & Hosting**,
 it is an _Object-Oriented_, _Scripting_ (_Dynamic_) programming language,
 serving as the surface langauge for interoperation between distributed
-processes as well as computations within a local process.
+processes as well as computations within a local process. Where massive
+**Concurrency** and auto mapping to **Parallelism** are very expected.
 
-Code in **Đ (Edh)** (the _guest language_) run _interpreted_ atop certain
-runtime environment programmed in another, more versatile programming language
-(i.e. the _host langauge_),
+Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop
+certain runtime environment programmed in another, more versatile
+programming language, i.e. the _host langauge_,
 currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org),
 with [Julia](https://julialang.org), [Go](https://golang.org),
 [Python](https://python.org), and
 [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 to be hopefully supported in the future.
+
+**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language
+design, raw machine performance as well as a prosperous ecosystem and etc.
+are less a goal, they are offloaded to efforts by the _host language_ and/or
+_runtime_ .
 
 You are expected to write the core logic (e.g. service methods) of your program
 in the _host language_, leveraging its mature ecosystem, then expose various
@@ -44,9 +50,8 @@ artifacts to **Đ (Edh)** for interopertions both locally and remotely. So the
 **Đ (Edh)** parser, interpreter, runtime, as well as its default batteries and
 a handful of optional packages, are distributed as libraries in the
 _host language_ in source form, together with complementary **Đ (Edh)**
-modules, so you can build executable **Đ (Edh)** interpreters with your own
-batteries baked in, as well as run them with all necessary **Đ (Edh)** source
-code.
+modules, you can build executable **Đ (Edh)** interpreters with your own
+batteries baked in, then run them with all necessary **Đ (Edh)** source code.
 
 ## Taking the Tour
 
@@ -272,7 +277,7 @@ you'd like.
 
 Open `tour/welcome.edh` and start from there.
 
-## Contributions
+## Contributing
 
 There are rough edges both within this Tour and the _Intellisense_ provided by
 the [Edh Language Server](https://github.com/e-wrks/els), contributions from
