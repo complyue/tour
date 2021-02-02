@@ -248,7 +248,8 @@ epm init \
 
 cd ~/workspace/edh-universe
 
-# build & install all Đ (Edh) interpreters from those packages
+# build & install all Đ (Edh) interpreters from those packages, including the
+# essential *Edh Language Server* (els) for IntelliSense
 stack update
 stack install
 
@@ -285,6 +286,6 @@ Open `tour/welcome.edh` and start from there.
 
 ## Contributing
 
-There are rough edges both within this Tour and the _Intellisense_ provided by
+There are rough edges both within this Tour and the _IntelliSense_ provided by
 the [Edh Language Server](https://github.com/e-wrks/els), contributions from
 major improvements to minor typo fixes are all welcome and appreciated.
