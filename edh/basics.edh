@@ -1,0 +1,104 @@
+{##
+ # Language Basics
+ #}
+
+{## Source Syntax Compatible to Pervasive Systems
+ # - with some Haskell stylish blended in
+ #
+ # Đ maintains ~80% source level compatibility with Python and JavaScript etc.,
+ # that's mainly for source level scripting based IPC across processes of
+ # heterogeneous runtime implementations.
+ #
+ # But constructs from Haskell, like custom infix operators with arbitrary
+ # associativity and precedence are introduced.
+ #
+ #} {
+
+  {## Custom Operator
+   # - Haskell stylish
+   #} {
+
+    # %%
+    console.print( 'Đ code can be usual looking of Python, JavaScript etc.' )
+
+    # %%
+    console.print$ 'While the low-precedence, procedure-call operator `($)` '
+    ++ 'can be used for a little stranger syntax.'
+
+    # %% May be even more strange
+    show$ ($)
+    # Run above cell, you should see:
+    #  intrinsic: infixr -5 ($)
+    # You'd feel familiar if you know about Haskell, `$` is a right-associative,
+    # infix operator, of precedence -5 (which is rather low) in Đ (not the core
+    # language, but a custom operator from the default batteries technically).
+    # The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as
+    # the function-application operator in Haskell.
+
+    # To address an operator, you quote it with a pair of parenthesis just like
+    # in Haskell, so `show$ ($)` should be interpreted as calling procedure
+    # `show` with the value of ($) operator procedure (which is first class
+    # value in Đ) as the only argument.
+
+    # %% Written in more usual syntax
+    op = ($)
+    show( op )
+
+    # %%
+    console.print$ 'Though the (+) operator works to concatenate strings for'
+    + ' Python interoperability, the (++) operator is more idiomatic in Đ'
+    ++ ' for string concatenation, resembling Haskell.'
+
+    # %#
+  }
+
+  {## Curly Braces & Semicolons
+   # - where identation is insignificant, but enforced by the formatter
+   #} {
+    ;
+  }
+
+}
+
+
+{## Utilities
+ # -
+ #} {
+
+  # %%
+  # `desc()` `show()` as well as the `repr()` familiar from Python, and etc.
+  # are utility procedures from the default batteries, hover on refs to them
+  # below, to see their doc as tooltip, or go to / peek their respective
+  # (meta) definition as you like:
+  desc show repr str
+  # Note they are implemented as host procedures, the `batteries/meta` module
+  # set just presents meta documentation for them.
+
+  # %% Run this cell
+  show( console )
+  # %% And the equivalent
+  show$ console
+  # Make yourself comfortable with the Haskell style syntax,
+  # that should be considered more idiomatic in Đ codebases.
+
+  # %#
+}
+
+
+{## Commands
+ # -
+ #} {
+  # %% to see what's directly in-scope
+  dir
+
+  # %%
+  desc$ dir
+
+  # %% it shows attributes in current scope, which is equivalent to this
+  dir$ scope()
+
+  # %% to see what's more available from outer scopes
+  dir$ scope() .outer
+
+  # %#
+}

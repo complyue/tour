@@ -2,11 +2,113 @@
  # Welcome to A Tour of Đ (Edh)
  #}
 
-# %%
-console.print( 'Hello, Đ (Edh) world!' )
+{## Troubleshooting
+ # - Please use the issue tracker
+ #} {
+  # If you ever met any incident when walking through this Tour, please consult
+  #   http://github.com/e-wrks/tour/issues?q=is%3Aissue
+  # to see whether it is a known issue and has solutions or workarounds.
+  #
+  # In case no existing one solves your problem, please file a new issue,
+  # that'll help later comers from meeting the same trouble.
 
-# %%
-dir
+  ; # note this semicolon disambiguate the enclosing pair of curly-braces to
+  # be an empty code block, instead of an empty literal dict
+}
 
-# %%
-dir$ batteries
+{## Verify your IDE Setup
+ # - To top your speed at productivity
+ #
+ # Note Frictionless Developer Experience is a goal of Đ tooling
+ #
+ #} {
+
+  {## Outline View, Breadcrumbs, Folding & etc.
+   # - Navigability and browsability matters a lot
+   #
+   # Note if you've setup your own local IDE (not on e.g. the Gitpod workspace),
+   # make sure this extension has been installed:
+   # https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-lsc
+   # And `stack install` has been called to build a functioning `els` program.
+   #
+   #} {
+    # Checkout:
+    #  https://code.visualstudio.com/docs/editor/editingevolved
+
+    # Make sure the *Outline* view is open, it is the live Table-of-Contents
+    # per opened module file.
+    #
+    # Note by default, the outline view is located inside the left sidebar for
+    # VSCode, but is an expandable icon in the right bar for Gitpod/Theia.
+
+    # Also checkout the dropdowns from the breadcrumbs on top of the editor.
+
+    # Now try fold all regions of this file, press *F1* to bring out the
+    # command palette, keyin `fold` to filter the options, see keyboard
+    # shortcuts shown for interesting commands, and select: `Fold All`
+    # Then only level 1 titles should be visible, isn't it much neater to read?
+    #
+    # Note there'll be icons to expand the regions on the vertical bar slightly
+    # right to the line numbers bar of the editor.
+    ;
+  }
+
+  {## Đ Terminal Sessions of REPL
+   # - Good REPLs working nicely with Code Lens
+   #
+   # Note if you've setup your own local IDE (not on e.g. the Gitpod workspace),
+   # make sure this extension has been installed:
+   # https://marketplace.visualstudio.com/items?itemName=complyue.haskit-vscode
+   #
+   #} {
+    # You should see clickable labels in the following line:
+    # %% Note this line is a cell marker (prefixed with `# %%`)
+    # Try click `Run Cell` above, then select `edh Run: epm x edh` from the
+    # popup list
+    console.print( 'Hello, Đ world!' )
+    # A new Đ terminal session should be starated, with above line of code
+    # executed, see result printed out in the REPL?
+    #
+    # Note that Gitpod/Theia's *Integrated Terminal* is less frictionless than
+    # VSCode's atm, it may not work well the first time you click `Run Cell`,
+    # don't worry, it's fairly safe to click the link more times, repeat as you
+    # would like.
+    #
+    # %# Note this line is an end-of-cell marker (prefixed with `# %#`)
+
+    # Also note you are free to interact with the REPL in the terminal, just
+    # like a traditional one you started on command line.
+
+    # Also also note, you can start multiple Đ terminal sessions within an IDE,
+    # running same or different command lines, to do so, press *F1* to bring
+    # out the command palette, keyin `edh` then select the option:
+    #  `Edh: New Đ Terminal`
+    # Checkout:
+    #  https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-multiple-terminals
+  }
+
+}
+
+{## Guide Yourself
+ # - Code Navigation can be more useful
+ #
+ # Recall:
+ # https://code.visualstudio.com/docs/editor/editingevolved#_go-to-definition
+ # And an addendum:
+ # https://code.visualstudio.com/docs/getstarted/tips-and-tricks#_go-to-definition
+ # For your need to navigate back.
+ #
+ # Note in Đ, the import source specification can be Cmd/Ctrl + Clicked to go
+ # to its definition - i.e. to open its corresponding module file, you can take
+ # advantage of that, so the rest contents in this section contain many links
+ # porting you to various places.
+ #
+ #} {
+
+  {##
+   # Language Basics
+   #} {
+    import * './edh/basics'
+  }
+
+}
