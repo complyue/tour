@@ -112,7 +112,17 @@
  #} {
 
   {## Language Basics
-   # - Syntax, ..., etc.
-   #} { import * './edh/basics' }
+   # - Syntax, Utilities, Commands, ...
+   #} { import * './edh/basics'
+
+    {## Syntax
+     # - Đ Syntax
+     #} { edh'syntax }
+
+    {## Utilities
+     # - Đ Utilities
+     #} { edh'utilities }
+
+  }
 
 }

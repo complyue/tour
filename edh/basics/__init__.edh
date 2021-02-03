@@ -16,6 +16,7 @@ export {
    #  - magic object methods
    #
    #} { import * './syntax'
+    export edh'syntax = bookmark
 
     {## Usual, Common Part
      # - It's familiar from Python/JavaScript etc.
@@ -29,7 +30,10 @@ export {
 
   {## Utilities
    # -
-   #} { import * './utils' }
+   #} { import * './utils'
+    export edh'utilities = bookmark
+
+  }
 
   {## Commands
    # -
