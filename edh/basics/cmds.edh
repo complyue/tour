@@ -1,0 +1,12 @@
+
+# %% to see what's directly in-scope
+dir
+
+# %%
+desc$ dir
+
+# %% it shows attributes in current scope, which is equivalent to this
+dir$ scope()
+
+# %% to see what's more available from outer scopes
+dir$ scope() .outer

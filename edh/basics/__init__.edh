@@ -1,0 +1,38 @@
+{## Đ Language Basics #}
+
+export {
+
+  {## Syntax
+   # - Stylish Haskell/Go, blended into Python/JavaScript etc.
+   #
+   # The Đ syntax is designed with a major goal of interoperation by scripting,
+   # for IPC across processes of heterogeneous runtime implementations.
+   #
+   # While some constructs from Haskell, Go, Python and others, are introduced
+   # for purpose of ergonomics. E.g.
+   #  - custom infix operators, with arbitrary associativity and precedence
+   #  - pattern matching & branching
+   #  - goroutine
+   #  - magic object methods
+   #
+   #} { import * './syntax'
+
+    {## Usual, Common Part
+     # - It's familiar from Python/JavaScript etc.
+     #} { edh'common'syntax }
+
+    {## Fancy Operators
+     # - Let's go some Haskell stylish
+     #} { edh'operators }
+
+  }
+
+  {## Utilities
+   # -
+   #} { import * './utils' }
+
+  {## Commands
+   # -
+   #} { import * './cmds' }
+
+}

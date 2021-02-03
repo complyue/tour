@@ -1,0 +1,16 @@
+
+# %%
+# `desc()` `show()` as well as the `repr()` familiar from Python, and etc.
+# are utility procedures from the default batteries, hover on refs to them
+# below, to see their doc as tooltip, or go to / peek their respective
+# (meta) definition as you like:
+desc show repr str
+# Note they are implemented as host procedures, the `batteries/meta` module
+# set just presents meta documentation for them.
+
+# %% Run this cell
+show( console )
+# %% And the equivalent
+show$ console
+# Make yourself comfortable with the Haskell style syntax,
+# that should be considered more idiomatic in Đ codebases.

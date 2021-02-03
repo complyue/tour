@@ -41,15 +41,18 @@
     # Note by default, the outline view is located inside the left sidebar for
     # VSCode, but is an expandable icon in the right bar for Gitpod/Theia.
 
-    # Also checkout the dropdowns from the breadcrumbs on top of the editor.
+    # Also checkout the dropdowns from the breadcrumbs on top of the editor,
+    # and be aware that's an expandable tree, not just fixed items.
 
     # Now try fold all regions of this file, press *F1* to bring out the
-    # command palette, keyin `fold` to filter the options, see keyboard
-    # shortcuts shown for interesting commands, and select: `Fold All`
+    # command palette, keyin `fold` to filter the options, (better see keyboard
+    # shortcuts shown for each interesting commands as well, and select:
+    #   `Fold All`
     # Then only level 1 titles should be visible, isn't it much neater to read?
     #
-    # Note there'll be icons to expand the regions on the vertical bar slightly
-    # right to the line numbers bar of the editor.
+    # Note there'll be icons clickable to expand the regions, on the vertical
+    # bar slightly right to the vertical bar showing line numbers (both on left
+    # to the editor).
     ;
   }
 
@@ -103,12 +106,13 @@
  # advantage of that, so the rest contents in this section contain many links
  # porting you to various places.
  #
+ # E.g. hover your mouse cursor over './edh/basics' below, hold down
+ # Cmd (on macOS) or Ctrl (on Linux), you should see it is underlined,
+ # then click left-mouse-button, there you go!
  #} {
 
-  {##
-   # Language Basics
-   #} {
-    import * './edh/basics'
-  }
+  {## Language Basics
+   # - Syntax, ..., etc.
+   #} { import * './edh/basics' }
 
 }
