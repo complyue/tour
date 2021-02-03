@@ -1,0 +1,108 @@
+{## Applicability Semantics #}
+
+{## Applicability Lacks a Proper Comprehension
+ # - Most if not all programming languages lack it
+ #
+ # There are some *Missing Value Handling* at library/framework/application
+ # level, e.g.
+ #
+ #  https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html
+ #
+ #} { export edh'na'semantics = bookmark }
+
+
+{## NA
+ # - The lack of applicability
+ #
+ # An operator procedure shall return NA to indicate that its operation is not
+ # applicable to the operand(s) passed in.
+ #
+ # A magic object method overriding an operator shall obey the same rule.
+ #
+ #} {
+
+  # NA semantics is actually a special case of *Defaulting Semantics*, see:
+  import * './dflt' # <- navigate to elaboration of Đ Defaulting Semantics
+
+  # %% # NA stands for Not/Applicable, it's a literal constant in Đ
+  NA
+
+  # %% # How is it technically working?
+  show( NA )
+
+  # %% # The actually `NA` value is a defined constant term, with the
+  # value in turn being a *default* expression of literal `nil`, so it
+  # is technically a shorthand of `NA := default nil`
+  default nil
+  # %#
+
+  edh'defaulting # <- follow this bookmark to learn more details
+}
+
+{## nan, None, Nothing, nil
+ # - Other constructs in Đ Dealing with *Missing Semantics*
+ #} {
+
+  {## nan
+   # - Not-a-Number for numeric values
+   #} {
+    # %%
+    type$ nan
+    # %%
+    nan == nan
+    # %%
+    nan is nan
+    # %#
+  }
+
+  {## None / Nothing
+   # - For rest of the value types
+   #} {
+
+    # %%
+    None
+
+    # %%
+    Nothing
+
+    # %%
+    None == Nothing
+
+    # %%
+    None is Nothing
+
+    # %#
+  }
+
+  {## nil
+   #  - It is also for deletion semantics
+   #} {
+    # %%
+    x = 5
+    dir
+
+    # %%
+    x = nil
+    dir
+
+    # %%
+    x
+
+    # %%
+    dir
+
+    # %%
+    type$ cmdExc
+    # %%
+    constructor$ cmdExc
+    # %%
+    desc$ cmdExc
+
+    # %%
+    cmdExc = nil
+    dir
+
+    # %#
+  }
+
+}

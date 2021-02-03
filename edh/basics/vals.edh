@@ -1,0 +1,189 @@
+{## Đ Value System #}
+
+{## Everything is a Value
+ # - Some immutable scalars / containers, and some mutable containers
+ #
+ # Everything is a Value in Đ, and every Value is of some Type,
+ # although there are a handful of special cases
+ #} {
+
+  {## Special Values
+   # - Some constructs and constants of special semantics
+   #} {
+
+    {## Named Values / Term Definitions
+     # -
+     # details
+     #} { export edh'term'def = bookmark
+
+      # %% # make sure to run this cell before the ones following it
+      π := 3.14
+
+      # %% # this prints its name, not value
+      repr( π )
+
+      # %% # after arithmetics, it is no more a term,
+      repr( π * 1 ) # just an immutable numeric value
+
+      # %% # while type of a term comes from its value
+      type( π )
+
+      # %% # and Đ knows it being a term, and can show that accordingly
+      show( π )
+
+      # %% # otherwise it's can be used just like an attribute
+      r = 1.58
+      C = 2 * π * r
+
+      # %#
+    }
+
+    {## Nullability
+     # - And a strange vocabulary to express it
+     #
+     # Đ attributes are nullable,
+     #} { export edh'nullability = bookmark
+
+      # %% # `nil` will not be printed by REPL
+      nil
+
+      # %%
+      type( nil ) is nil
+
+      # %% `null()` is the null-test procedure, relatable to the `null`
+      # function as in Haskell, but semantically more like:
+      #  - Negated *Truth Value Testing* as in Python
+      #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
+      # And
+      #  - *Falsy Testing* as in JavaScript
+      #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+      # For a dynamic language
+      null( nil )
+      # %%
+      null( 0 )
+      # %%
+      null( 1 )
+
+      # %% # Note a procedure value will always be *truthy*
+      null( null ) # recognize the result please
+
+      # With the mechanism to define named values (i.e. terms), some named
+      # *nil* values can be defined for special purpose:
+
+      # %%
+      None
+      # %%
+      Nothing
+
+      # %%
+      show( None )
+      # %%
+      show( Nothing )
+
+      # %%
+      None == Nothing
+      # %%
+      None is Nothing
+
+      # %%
+      None == nil
+      # %%
+      None is nil
+
+      # %%
+      Nothing == nil
+      # %%
+      Nothing is nil
+
+      # %#
+    }
+
+    {## Applicability
+     # - We talk about the lack thereof, actually
+     #} { import * './appl' # <- navigate to elaboration of Đ Applicability Semantics
+
+      edh'na'semantics # <- follow this bookmark to learn more details
+
+      # NA semantics is actually a special case of *Defaulting Semantics*, see:
+      import * './dflt' # <- navigate to elaboration of Đ Defaulting Semantics
+
+      # %% # NA stands for Not/Applicable, it's a literal constant in Đ
+      NA
+
+      # %% # How is it technically working?
+      show( NA )
+
+      # %% # The actually `NA` value is a defined constant term, with the
+      # value in turn being a *default* expression of literal `nil`, so it
+      # is technically a shorthand of `NA := default nil`
+      default nil
+      # %#
+
+      edh'defaulting # <- follow this bookmark to learn more details
+    }
+
+  }
+
+  {## Immutable Scalars
+   # - Just common place
+   #} {
+    # %% Numbers are of `DecimalType`
+    type( 3 )
+    # %% Strings are of `StringType`
+    type( 'Hello' )
+    # %% And Types are ... of `TypeType`
+    type( StringType )
+    # %% Unsurprisingly, `TypeType` is a Type Value too, as well as
+    # `DecimalType` and `StringType`
+    type( TypeType )
+    # %#
+  }
+
+  {## Immutable Containers
+   # - Pair and ArgsPack
+   #} {
+
+    {## Pair
+     # - Technically a non-empty, appending-cons list type mandating arity >= 2
+     #} {
+      # %% A vanilla pair
+      3:5
+
+      # %#
+      ; # Note this semicolon disambiguates the enclosing doc-block
+      # from a dict literal
+
+      # %% A chained pair
+      1:2:1:5:9
+      # %#
+
+    }
+
+  }
+
+  {## Mutable Containers
+   # - List, Dict, and Objects
+   #} {
+
+    # %% A list value is a mutable container
+    l = [ 1, 2, 3, ]
+    type( l )
+    # %%
+    l.push( 5, 6, )
+    # %%
+    l.pop()
+    # %%
+    l
+    # %%
+
+    # %% A dict value is also a mutable container
+    d = { 'name' : 'Compl Yue', '#children' : 2, }
+    type( d )
+    # %%
+    d.push( 'city', 'Chongqing' )
+    d
+
+    # %#
+  }
+
+}

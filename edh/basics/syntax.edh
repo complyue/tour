@@ -26,8 +26,8 @@
   1 + ( 2 - 3 ) * 7
   # %#
 
-  {## Minor but Surprising Differences
-   # - But you might be surprised by sth here
+  {## Minor but Subtle/Surprising Differences
+   # - You might be surprised by a few things in Đ
    #} {
 
     {## Fractional Numbers
@@ -37,7 +37,6 @@
      # programming languages today, see:
      #  * What Every Programmer Should Know About Floating-Point Arithmetic
      #    https://floating-point-gui.de/
-     #
      #} {
       # %% Check it in Đ then:
       0.1 + 0.2
@@ -47,21 +46,23 @@
       x = 7 / 3
       # %% And this:
       x * 9
-      # You got it? Numbers can be lossless-fractional in Đ
+      # You get it? Numbers can be lossless-fractional in Đ
 
       # %% And in case you need integral division, use (//) as in Python
       7 // 3
       # %#
 
       # Takeaway is:
-      #   Numbers in Đ are lossless.
+      #   Numbers in Đ are lossless (within extent of rational numbers).
       #
-      # But keep in mind, it comes at a rather high cost, both spacial and time
-      # complexity are much higher for numbers in Đ than other languages.
+      # Well please keep in mind that comes at a rather high cost, both spacial
+      # and time complexity are much higher to work with numbers in Đ, than in
+      # other languages.
       #
-      # It's justified for ergonomics concerns where human errors can be
-      # disastrous, and raw machine performance should be pursued by meaning
-      # means such as the approach of `hasdim` you'll see at:
+      # The overhead is justified for ergonomics concerns where human errors
+      # can be disastrous, and raw machine performance should be pursued by
+      # perfessionals and by meaning means, such as the approach of `hasdim`
+      # you'll see at:
       import * '../../hasdim' into Nothing
     }
 
@@ -107,41 +108,152 @@ Prefixing the name of the variable with character(s) to indicate the use make of
         # identifier, maybe a whole new naming convention, but dunno its name:
         number'of'people :: non'negative!int!DecimalType
         number'of'people = 5
-        # Note about (::) and (!)
-        #   they are annotation operators in Đ, will be explained later
         # %#
+        # Note about (::) and (!), they are annotation operators in Đ, will be
+        # explained later
       }
 
     }
 
-    {## Object-Oriented, but Not that Fully
-     # - Everything is an Object in Python, not so in Đ
-     # details
-     #} {
+    {## Object-Oriented, but Not Entirely
+     # - Everything is a Value (instead of Object) in Đ
+     #
+     # Everything is an Object in Python / Smalltalk, but although Đ is as
+     # *Object-Oriented* as Python, *NOT* everything is an object here, such
+     # as numbers, strings, and procedures. And there are a handful of
+     # special values.
+     #} { import * './vals' # <- navigate to elaboration of Đ Value System
 
-      {## Everything is a Value
-       # - Embracing Immutability
-       # details
+      {## Special Attention
+       # - You especially need to know this before other things
        #} {
-        ; # nested code block(s)
-      }
 
-      {## Identity Test Corrected
-       # - summary
-       # details
-       #} {
-        ; # nested code block(s)
+        {## Named Values / Term Definitions
+         # - The familiar := Syntax
+         #} { edh'term'def # <- follow this bookmark to learn more details
+          # or just run following cells to get some feel
+
+          # %% # make sure to run this cell before the ones following it
+          π := 3.14
+
+          # %% # this prints its name, not value
+          repr( π )
+
+          # %% # after arithmetics, it is no more a term,
+          repr( π * 1 ) # just an immutable numeric value
+
+          # %% # while type of a term comes from its value
+          type( π )
+
+          # %% # and Đ knows it being a term, and can show that accordingly
+          show( π )
+
+          # %% # otherwise it's can be used just like an attribute
+          r = 1.58
+          C = 2 * π * r
+
+          # %#
+        }
+
+        {## Đ Vocabulary for Nullability
+         # - nil, null, None, Nothing and friends
+         #} { edh'nullability # <- follow this bookmark to learn more details
+          # or just run following cells to get some feel
+
+          # %% # `nil` will not be printed by REPL
+          nil
+
+          # %%
+          type( nil ) is nil
+
+          # %% `null()` is the null-test procedure, relatable to the `null`
+          # function as in Haskell, but semantically more like:
+          #  - Negated *Truth Value Testing* as in Python
+          #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
+          # And
+          #  - *Falsy Testing* as in JavaScript
+          #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+          # For a dynamic language
+          null( nil )
+          # %%
+          null( 0 )
+          # %%
+          null( 1 )
+
+          # %% # Note a procedure value will always be *truthy*
+          null( null ) # recognize the result please
+
+          # With the mechanism to define named values (i.e. terms), some named
+          # *nil* values can be defined for special purpose:
+
+          # %%
+          None
+          # %%
+          Nothing
+
+          # %%
+          show( None )
+          # %%
+          show( Nothing )
+
+          # %%
+          None == Nothing
+          # %%
+          None is Nothing
+
+          # %%
+          None == nil
+          # %%
+          None is nil
+
+          # %%
+          Nothing == nil
+          # %%
+          Nothing is nil
+
+          # %#
+        }
+
+        {## Applicability Semantics
+         # - We talk about the lack thereof, actually
+         #} { import * './appl' # <- navigate to elaboration of Đ Applicability Semantics
+
+          edh'na'semantics # <- follow this bookmark to learn more details
+
+          # %% # NA stands for Not/Applicable, it's a literal constant in Đ
+          NA
+
+          # %% # How is it technically working?
+          show( NA )
+
+          # %% # The actually `NA` value is a defined constant term, with the
+          # value in turn being a *default* expression of literal `nil`, so it
+          # is technically a shorthand of `NA := default nil`
+          default nil
+          # %#
+
+          # More about *default* expressions later, but you just see its repr
+          # now for some intuition
+        }
+
       }
 
     }
 
-    {## More or Less Functional than You'd Expect
-     # - Roots in Haskell, Go, Python, and JavaScript
+    {## Identity Test Corrected
+     # - summary
      # details
      #} {
       ; # nested code block(s)
     }
 
+  }
+
+  {## More or Less Functional than You'd Expect
+   # - Roots in Haskell, Go, Python, and JavaScript
+   # details
+   #} {
+    ; # nested code block(s)
   }
 
 }
@@ -156,6 +268,8 @@ Prefixing the name of the variable with character(s) to indicate the use make of
 
   # %% May be even more strange
   show$ ($)
+  # %#
+
   # Run above cell, you should see:
   #  intrinsic: infixr -5 ($)
   # You'd feel familiar if you know about Haskell, `$` is a right-associative,
@@ -177,6 +291,26 @@ Prefixing the name of the variable with character(s) to indicate the use make of
   console.print$ 'Though the (+) operator works to concatenate strings for'
   + ' Python interoperability, the (++) operator is more idiomatic in Đ'
   ++ ' for string concatenation, resembling Haskell.'
+
+  # %% #
+  ; # a semicolon is usually necessary before a starting parenthesis,
+  # to disambiguate from procedure-calling, which binds the tightest
+  ($) |show
+  # %% # which is equivalent to the previous
+  show$ ($)
+
+  # %% # Checkout what the (|) operator is
+  show$ (|)
+
+  # Note the (|) operator resembles UNIX pipe, while its semantics is more
+  # close to the (&) operator in Haskell, which is flipped ($) operator.
+
+  # Some other operators of interest:
+
+  # %%
+  show$ (::)
+  # %%
+  show$ (!)
 
   # %#
 }
