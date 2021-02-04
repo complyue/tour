@@ -2,6 +2,7 @@
  # Welcome to A Tour of Đ (Edh)
  #}
 
+
 {## Troubleshooting
  # - Please use the issue tracker
  #} {
@@ -15,6 +16,7 @@
   ; # note this semicolon disambiguate the enclosing pair of curly-braces to
   # be an empty code block, instead of an empty literal dict
 }
+
 
 {## Verify your IDE Setup
  # - To top your speed at productivity
@@ -92,7 +94,8 @@
 
 }
 
-{## Guide Yourself
+
+{## Ready! Here You Start
  # - Code Navigation can be more useful
  #
  # Recall:
@@ -103,13 +106,18 @@
  #
  # Note in Đ, the import source specification can be Cmd/Ctrl + Clicked to go
  # to its definition - i.e. to open its corresponding module file, you can take
- # advantage of that, so the rest contents in this section contain many links
+ # advantage of that, so the rest contents in this module contain many links
  # porting you to various places.
  #
  # E.g. hover your mouse cursor over './edh/basics' below, hold down
  # Cmd (on macOS) or Ctrl (on Linux), you should see it is underlined,
  # then click left-mouse-button, there you go!
- #} {
+ #} {; }
+
+
+{## Đ The Language
+ # - The bare interpreter with default batteries
+ #} { import * 'tour'
 
   {## Language Basics
    # - Syntax, Utilities, Commands, ...
@@ -124,5 +132,45 @@
      #} { edh'utilities }
 
   }
+
+}
+
+
+{## Networked Đ
+ # - Yet another abstraction of networking for IPC and RPC
+ #} { import * 'swarm/tour'
+
+}
+
+
+{## HasDim
+ # - Do Object-Oriented *Dimensional-Modeling*
+ #
+ # *Vectorized High Performance Numeric Computing* with NVM (e.g. disk) backed
+ # SIMD ready arrays are the norm.
+ #} { import * 'dim/tour'
+
+}
+
+
+{## HaskIt
+ # - Interactive workbench with easy yet powerful visualizations (powered by
+  BokehJS, for Data / Idea · Exploration / Exposition.
+ #} { import * 'haskit/tour'
+
+}
+
+
+{## Swarming Đ
+ # - Run jobs with parallel computing power
+ #
+ # Put up your own swarms of servers on premise, with possibily
+ # high-dimensional data efficiently shared as ND arrays.
+ #
+ # It is capable of scheduling Pandas / Numpy / C/C++ based Python works,
+ # as well as HasDim / Haskell based Đ works, forming heterogeneous pipelines,
+ # where  the same copies of NVM (e.g. disk) backed ND arrays are shared and
+ # pipelined amongst arbitrary components.
+ #} { import * 'swarm/tour'
 
 }
