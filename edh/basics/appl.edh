@@ -8,7 +8,8 @@
  #
  #  https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html
  #
- #} { export edh'na'semantics = bookmark }
+ #} {;
+}
 
 
 {## NA
@@ -19,7 +20,9 @@
  #
  # A magic object method overriding an operator shall obey the same rule.
  #
- #} {
+ #} {;
+  {## Semantics for Not/Applicable #}
+  export edh'na'semantics = bookmark
 
   # NA semantics is actually a special case of *Defaulting Semantics*, see:
   import * './dflt' # <- navigate to elaboration of Đ Defaulting Semantics
@@ -41,11 +44,11 @@
 
 {## nan, None, Nothing, nil
  # - Other constructs in Đ Dealing with *Missing Semantics*
- #} {
+ #} {;
 
   {## nan
    # - Not-a-Number for numeric values
-   #} {
+   #} {;
     # %%
     type$ nan
     # %%
@@ -57,7 +60,7 @@
 
   {## None / Nothing
    # - For rest of the value types
-   #} {
+   #} {;
 
     # %%
     None
@@ -76,7 +79,7 @@
 
   {## nil
    #  - It is also for deletion semantics
-   #} {
+   #} {;
     # %%
     x = 5
     dir

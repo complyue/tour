@@ -9,7 +9,9 @@
  # with precedences and associativities, and parenthesis again used to override
  # precedence.
  #
- #} { export edh'common'syntax = bookmark
+ #} {;
+  {## Đ Syntax Common To Other Languages #}
+  export edh'common'syntax = bookmark
 
   # %%
   # `console` hooks to the interpreter program's stdio
@@ -28,7 +30,7 @@
 
   {## Minor but Subtle/Surprising Differences
    # - You might be surprised by a few things in Đ
-   #} {
+   #} {;
 
     {## Fractional Numbers
      # - Don't take floating point numbers for granted
@@ -37,7 +39,7 @@
      # programming languages today, see:
      #  * What Every Programmer Should Know About Floating-Point Arithmetic
      #    https://floating-point-gui.de/
-     #} {
+     #} {;
       # %% Check it in Đ then:
       0.1 + 0.2
       # Oops! Not the case you'd encounter with Python or JavaScript
@@ -71,7 +73,7 @@
      #
      # The single quote character (') can appear in an identifier, only if
      # it's not the first character.
-     #} {
+     #} {;
 
       # %%
       # In Haskell and Math, a suffix ' is used to denote something slightly
@@ -102,7 +104,7 @@ In hungarian notation, you preceed the variable name with an additional characte
 
 Hungarian (Apps) notation: cntNumberOfPeople
 Prefixing the name of the variable with character(s) to indicate the use make of a variable within the application - in my example, I have used cnt to incicate it's a counter ... and in my old Fortran programs you'll find "JPxxxxx" all over th eplace to indicate an integer pointer.
-       #} {
+       #} {;
         # %%
         # In Đ more usages of ' can be seen, such as word delimiters in a long
         # identifier, maybe a whole new naming convention, but dunno its name:
@@ -122,11 +124,11 @@ Prefixing the name of the variable with character(s) to indicate the use make of
      # *Object-Oriented* as Python, *NOT* everything is an object here, such
      # as numbers, strings, and procedures. And there are a handful of
      # special values.
-     #} { import * './vals' # <- navigate to elaboration of Đ Value System
+     #} {; import * './vals' # <- navigate to elaboration of Đ Value System
 
       {## Special Attention
        # - You especially need to know this before other things
-       #} {
+       #} {;
 
         {## Named Values / Term Definitions
          # - The familiar := Syntax
@@ -243,8 +245,7 @@ Prefixing the name of the variable with character(s) to indicate the use make of
     {## Identity Test Corrected
      # - summary
      # details
-     #} {
-      ; # nested code block(s)
+     #} {;
     }
 
   }
@@ -252,15 +253,16 @@ Prefixing the name of the variable with character(s) to indicate the use make of
   {## More or Less Functional than You'd Expect
    # - Roots in Haskell, Go, Python, and JavaScript
    # details
-   #} {
-    ; # nested code block(s)
+   #} {;
   }
 
 }
 
 {## Fancy Operators
  # - Let's go some Haskell stylish
- #} { export edh'operators = bookmark
+ #} {;
+  {## Đ Operators #}
+  export edh'operators = bookmark
 
   # %%
   console.print$ 'While the low-precedence, procedure-call operator `($)` '
@@ -317,6 +319,5 @@ Prefixing the name of the variable with character(s) to indicate the use make of
 
 {## Auto Indentation, Braces & Semicolons
  # - Whitespaces insignificant, indentation enforced by formatter
- #} {
-  ;
+ #} {;
 }

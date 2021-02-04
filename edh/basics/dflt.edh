@@ -6,30 +6,30 @@
  # There is no true overloading in Đ, but with defaulting semantics added to
  # the overriding mechanism, overloading is simulated.
  #
- #} {
+ #} {;
 
   {## Operator Procedures
    # - Declaration, Definition and Overriding
-   #} {
-    ; # nested code block(s)
+   #} {;
+
   }
 
   {## Magic Object Methods
    # - summary
    # details
-   #} {
+   #} {;
 
     {## Left-Hand-Side and Right-Hand-Side
      # - summary
      # details
-     #} {
-      ; # nested code block(s)
+     #} {;
+
     }
 
     {## Method Resolution Order
      # - The mro mechanism is the same as in Python
-     #} {
-      ; # nested code block(s)
+     #} {;
+
     }
 
   }
@@ -42,7 +42,9 @@
    # expression to indicate more specific operations are preferable, but in
    # lieu of unfound such operations, the expression for default could be
    # evaluated for the final result.
-   #} { export edh'defaulting = bookmark
+   #} {;
+    {## Defaulting #}
+    export edh'defaulting = bookmark
 
   }
 

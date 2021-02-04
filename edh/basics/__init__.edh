@@ -2,7 +2,7 @@
 
 export {
 
-  {## Syntax
+  {## Syntax & Semantics
    # - Stylish Haskell/Go, blended into Python/JavaScript etc.
    #
    # The Đ syntax is designed with a major goal of interoperation by scripting,
@@ -10,13 +10,35 @@ export {
    #
    # While some constructs from Haskell, Go, Python and others, are introduced
    # for purpose of ergonomics. E.g.
+   #
    #  - custom infix operators, with arbitrary associativity and precedence
+   #     * from Haskell, C++ etc.
+   #
    #  - pattern matching & branching
+   #     * from typical FP languages
+   #
    #  - goroutine
+   #     * from Go
+   #
+   #  - class based inheritance
+   #     * from Python, Smalltalk etc.
+   #
+   #  - C3 linearized multiple inheritance
+   #     * from Python, which is in turn from Dylan
+   #
    #  - magic object methods
+   #     * from Python
+   #
+   #  - prototype based inheritance
+   #     * from JavaScript
+   #
+   #  - fat-arrow procedure (lambda)
+   #     * from JavaScript, while the lambda aspect from all multi-paradigm
+   #       languages with FP in mind, including JavaScript and Python
    #
    #} { import * './syntax'
-    export edh'syntax = bookmark
+    {## Đ Syntax #}
+    edh'syntax = bookmark
 
     {## Usual, Common Part
      # - It's familiar from Python/JavaScript etc.
@@ -31,12 +53,17 @@ export {
   {## Utilities
    # -
    #} { import * './utils'
-    export edh'utilities = bookmark
+    {## Đ Utilities #}
+    edh'utilities = bookmark
 
   }
 
   {## Commands
    # -
-   #} { import * './cmds' }
+   #} { import * './cmds'
+    {## Đ Commands #}
+    edh'commands = bookmark
+
+  }
 
 }

@@ -5,16 +5,18 @@
  #
  # Everything is a Value in Đ, and every Value is of some Type,
  # although there are a handful of special cases
- #} {
+ #} {;
 
   {## Special Values
    # - Some constructs and constants of special semantics
-   #} {
+   #} {;
 
     {## Named Values / Term Definitions
      # -
      # details
-     #} { export edh'term'def = bookmark
+     #} {;
+      {## Named Values / Term Definitions #}
+      export edh'term'def = bookmark
 
       # %% # make sure to run this cell before the ones following it
       π := 3.14
@@ -42,7 +44,9 @@
      # - And a strange vocabulary to express it
      #
      # Đ attributes are nullable,
-     #} { export edh'nullability = bookmark
+     #} {;
+      {## Nullability #}
+      export edh'nullability = bookmark
 
       # %% # `nil` will not be printed by REPL
       nil
@@ -126,7 +130,7 @@
 
   {## Immutable Scalars
    # - Just common place
-   #} {
+   #} {;
     # %% Numbers are of `DecimalType`
     type( 3 )
     # %% Strings are of `StringType`
@@ -141,11 +145,11 @@
 
   {## Immutable Containers
    # - Pair and ArgsPack
-   #} {
+   #} {;
 
     {## Pair
      # - Technically a non-empty, appending-cons list type mandating arity >= 2
-     #} {
+     #} {;
       # %% A vanilla pair
       3:5
 
@@ -163,7 +167,7 @@
 
   {## Mutable Containers
    # - List, Dict, and Objects
-   #} {
+   #} {;
 
     # %% A list value is a mutable container
     l = [ 1, 2, 3, ]
