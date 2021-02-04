@@ -1,12 +1,242 @@
 {## Đ Syntax #}
 
+{## Styling Đ Code
+ # - Try think about semantics, not stylish when writting Đ
+ #} {;
+  {## Styling Đ Code #}
+  export edh'code'styling = bookmark
+
+  {## The Official Đ Code Formatter
+   # - Any style you like, so long as it is formatted such
+
+Đ encourages (turns-on-by-default) format-on-save, by the official no-config, uncompromised formatter:
+
+  https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-formatter
+
+The motivation of such a formatter is quite inspired by Black:
+
+  https://black.readthedocs.io
+
+That's to save you time and mental energy for more important matters.
+
+FYI, the original idea comes from Henry Ford's famous quotes about the Model T:
+
+> Any customer can have a car painted any colour that he wants,
+> so long as it is black.
+
+   #} {;
+    {## The Official Đ Code Formatter #}
+    export edh'code'formatter = bookmark
+
+    # Home page of the formatter should have described the rules and your
+    # rights (freedom) well, you can modify code anywhere, then save or
+    # right-click to select "Format Document" and see what the formatter
+    # thinks.
+
+    # %%
+    1+ ( 2 - 3 ) *5 /9
+    # %#
+
+    # TODO any gotcha to be showcased here?
+  }
+
+  {## Indentation and Brackets
+   # - Đ is whitespace insensitive, indentations are infered from brackets
+   #
+   # The programmer is responsible for the brackets (scoping), while the
+   # formatter is in charge of proper indentation.
+   #} {;
+
+    {## Whitespace Sensitivity is Outdated
+     # - Indentation can be inferred, no reason to DIY today
+
+>> Why Python’s whitespace rule is right <<
+   https://unspecified.wordpress.com/2011/10/18/why-pythons-whitespace-rule-is-right
+
+>> There is not a single situation in any country, in any programming language, or at any skill level, in which is it acceptable to not indent your code the way Python requires it.
+
+This is much agreeable even at today.
+
+>> When you really analyse it, Python’s whitespace sensitivity is actually the only logical choice for a programming language, ...
+
+Well, this conclusion holds tight in its time, when auto code formatters are still some luxury to have. But today, besides the compiler(s), we are affording way more expensive analyzing tools like linters, test runners, coverage, profilers, and usually comprehensive langauge servers, amongst which code formatters become rather commonplace.
+
+Scopes (either lexical or conceptual) have to be decided and expressed by the programmer, but even excluding extreme cases, a code block can consist of up to hundreds of lines, it's ridiculous to manually maintain proper indentation for every line, when the formatter can painlessly do it for you.
+
+Whitespace sensitivity has become outdated now, brackets (curly, square or round) come handy-dandy to express various scopes in your mind, just leave indentation for the formatters to care about.
+
+     #
+     #} {;
+      {## Đ is Whitespace Insensitive #}
+      export edh'sps'insensitivity = bookmark
+
+      # TODO showcases here?
+    }
+  }
+
+  {## Semicolons and Commas
+   # - They are optional everywhere in Đ, unless for disambiguation
+   #
+   # For the record, what's considered idiomatic in Đ:
+   #
+   #  * Avoid semicolons unless absolutely necessary
+   #  * Put trailing commas where possible
+   #
+   # Note semicolons can be really technically omitted in Đ, not the case like
+   # in JavaScript that it does:
+      > Automatic Semicolon Insertion <
+      https://tc39.es/ecma262/#sec-automatic-semicolon-insertion
+   #
+   #} {;
+    {## Semicolons and Commas #}
+    export edh'semicolons'and'commas = bookmark
+
+    # Optional means, leading ones, trailing ones, as well as middle ones, all
+    # can be omitted.
+
+    # The following 5 cells have identical semantics and result value
+    # %%
+    { a=5; b=3; c=9; }
+    # %%
+    {; a=5 b=3 c=9 } # <- idiomatic one
+    # %%
+    { a=5 b=3; c=9 }
+    # %%
+    { a=5 b=3 c=9; }
+    # %%
+    { a=5 b=3 c=9 }
+    # %#
+
+    # The following 5 cells too, have identical semantics and result value
+    # %%
+    { 'a' : 5, 'b' : 3, 'c' : 9, } # <- idiomatic one
+    # %%
+    {, 'a' : 5 'b' : 3 'c' : 9 }
+    # %%
+    { 'a' : 5 'b' : 3, 'c' : 9 }
+    # %%
+    { 'a' : 5 'b' : 3 'c' : 9, }
+    # %%
+    { 'a' : 5 'b' : 3 'c' : 9 }
+    # %#
+
+    # The following 5 cells too, have identical semantics and result value
+    # %%
+    [ 5, 3, 9, ] # <- idiomatic one
+    # %%
+    [, 5 3 9 ]
+    # %%
+    [ 5 3, 9 ]
+    # %%
+    [ 5 3 9, ]
+    # %%
+    [ 5 3 9 ]
+    # %#
+
+    # The following 5 cells too, have identical semantics and result value
+    # %%
+    ; ( 5, 3, 9, ) # <- idiomatic one
+    # %%
+    ; (, 5 3 9 )
+    # %%
+    ; ( 5 3, 9 )
+    # %%
+    ; ( 5 3 9, )
+    # %%
+    ; ( 5 3 9 )
+    # %#
+    # Notice the semicolons before each parentheses? Try remove one and you'll
+    # see the diagnostics in the Problems view, as well as marked in-place.
+
+    # You may have noticed the semicolons everywhere in places like `#} {;`,
+    # why are they there?
+
+    # %% # Well, check out this:
+    type( {; } )
+    # %% # Then this:
+    type( {} )
+    # %% # Even this:
+    type( {
+        ;
+    } )
+    # %% # Be hinted to see what this evals to:
+    type( nil )
+    # %% # And the result of this (maybe stunning?):
+    {; } is nil
+    # %#
+
+    {## Disambiguate Block from Dict #}
+    export edh'disambig'blk'dict = bookmark
+
+    # The answer is: The semicolon inside `{;}` disambiguates it being a block
+    # (though empty) instead of an empty dict expressed as `{}`
+
+    # FYI, in Đ, block is a type of expression (instead of statement as in C
+    # family languages). A block encloses arbitrary number of statements, and
+    # evaluates to the value of the last statement when executed (with the
+    # exceptin of branches' early break, though, about that later)
+
+    # Though you don't need a semicolon when there is at least 1 statement in a
+    # block:
+    # %% # This is a block with a single assignment expression statement
+    { a=1 }
+    # %% # But this is the idiomatic form, which is preferable for foolproof
+    # modifications in order of later code maintenance:
+    {; a=1 }
+    # %#
+
+    # You've already seen the cases with multiple statements earlier, maybe a
+    # corner case but you need at least 1 semicolon inside a block, when all
+    # statements look like a dict entry, in case you really mean a block there.
+
+    # The idiomatic style is to put a semicolon right after the opening curly
+    # brace/bracket, when there are risks for it to be mis-interpreted/parsed
+    # as a dict literal:
+    {;
+      # It can still parse as dict literal with comments inside
+    }
+  }
+
+  {## Recommended Line Length
+   # - It is under your control, well some advice
+   #
+   # For the record, Đ langauge support extension for VSCode sets the following
+   # config options per the language:
+   #
+   # * Show rulers at column positions: 80, 100, 120
+   # * Soft-wrap lines at 100, while adapting to narrower window width
+   #
+   # You are recommended to hard-wrap source lines around column 80, and that's
+   # not considering good old line printers set for Fortran punch cards, but to
+   # enable a human reader have 2~3 editor columns layed out on wide screens,
+   # to cross check code segments from multiple sites, without necessarity of
+   # tab switching, which is good for productivity.
+   #
+
+For long paragraphs in comments, of mere documentation purpose, especially those you'd copy from some where on the internet, and paste into some Đ module file, it's considered more natural to keep them as long lines per each paragraph, like this sentance, which will be soft-wrapped at 100 columns by default. Nevertheless you can change your IDE settings for something different.
+
+   #
+   #} {;
+    {## Recommended Line Length #}
+    export edh'line'len'adivce = bookmark
+
+    # %%
+    '''                                                             80 columns ▽
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                                                                       100 columns △
+'''
+    # %#
+  }
+}
+
 {## Common Part with Pervasive Languages
  # - Good interoperability with Python/JavaScript etc. at source level
  #
- # Đ shares the common syntax with most programming languages (e.g. Python,
- # JavaScript), where parenthesis pair is the call-making operator, and
+ # Đ shares some common syntax with most programming languages (e.g. Python,
+ # JavaScript), where parentheses pair is the call-making operator, and
  # expressions consist of named references plus prefix/infix/postfix operators
- # with precedences and associativities, and parenthesis again used to override
+ # with precedences and associativities, and parentheses again used to override
  # precedence.
  #
  #} {;
@@ -15,7 +245,7 @@
 
   # %%
   # `console` hooks to the interpreter program's stdio
-  # `console.print()` does exactly what you think it should to
+  # `console.print()` does exactly what you think it should
   console.print( 'Đ code can have usual looking of Python, JavaScript etc.' )
 
   # %%
@@ -24,13 +254,75 @@
   1 + 2 - 3 * 7
 
   # %%
-  # When precedence rule doesn't work outright, parenthesis comes to rescue
+  # When precedence rule doesn't work outright, parentheses comes to rescue
   1 + ( 2 - 3 ) * 7
   # %#
 
   {## Minor but Subtle/Surprising Differences
-   # - You might be surprised by a few things in Đ
+   # - You might be surprised by a few things though
    #} {;
+
+    {## String Literals
+     # - Almost all possible forms can be written
+     #
+     # In era without code syntax highlighting, multi-line strings can be
+     # adversely confusing, but nowadays no text editor can claim itself
+     # being a code editor without syntax highlighting ability. So Đ allows
+     # a string literal to span multi lines anyway, dunno if this can trip
+     # someone up, but be aware.
+     #} {;
+      {## String Literals #}
+      export edh'str'literals = bookmark
+
+      # %%
+      'single-quote, single-line string'
+      # %%
+      'single-quote,
+multi-line string'
+      # %%
+      "double-quote, single-line string"
+      # %%
+      "double-quote,
+multi-line string"
+      # %%
+      `tick-quote, single-line string`
+      # %%
+      `tick-quote,
+multi-line string`
+      # %%
+      '''triple-single-quote, single-line string'''
+      # %%
+      '''triple-single-quote,
+multi-line string'''
+      # %%
+      """triple-double-quote, single-line string"""
+      # %%
+      """triple-double-quote,
+multi-line string"""
+      # %%
+      ```triple-tick-quote, single-line string```
+      # %%
+      ```triple-tick-quote,
+multi-line string```
+
+      {## Trailing Spaces in Multi-line String Literal
+       # - It'll be removed by Đ code formatter
+       #
+       # One particar note for multi-line strings, though:
+       #   ALL TRAILING SPACES will be REMOVED by Đ code formatter
+       # That includes such spaces inside a multi-line string literal,
+       # you need a workaround just in case.
+       #} {;
+        {## Trailing Spaces in Multi-line String Literal #}
+        export edh'fmt'rm'trail'spc'in'str'lit = bookmark
+
+        # %%
+        """You'll need tricks like   """ +
+        """this to preserve space(s), which otherwise,
+will be at the end of a source line."""
+        # %#
+      }
+    }
 
     {## Fractional Numbers
      # - Don't take floating point numbers for granted
@@ -65,7 +357,7 @@
       # can be disastrous, and raw machine performance should be pursued by
       # perfessionals and by meaning means, such as the approach of `hasdim`
       # you'll see at:
-      import * '../../hasdim' into Nothing
+      import * 'dim/tour' into Nothing
     }
 
     {## Single Quote in Identifiers
@@ -114,210 +406,218 @@ Prefixing the name of the variable with character(s) to indicate the use make of
         # Note about (::) and (!), they are annotation operators in Đ, will be
         # explained later
       }
-
     }
+  }
 
-    {## Object-Oriented, but Not Entirely
-     # - Everything is a Value (instead of Object) in Đ
-     #
-     # Everything is an Object in Python / Smalltalk, but although Đ is as
-     # *Object-Oriented* as Python, *NOT* everything is an object here, such
-     # as numbers, strings, and procedures. And there are a handful of
-     # special values.
-     #} {; import * './vals' # <- navigate to elaboration of Đ Value System
 
-      {## Special Attention
-       # - You especially need to know this before other things
-       #} {;
+  {## Fancy Operators
+   # - Let's go some Haskell stylish
+   #} {;
+    {## Đ Operators #}
+    export edh'operators = bookmark
 
-        {## Named Values / Term Definitions
-         # - The familiar := Syntax
-         #} { edh'term'def # <- follow this bookmark to learn more details
-          # or just run following cells to get some feel
+    # %%
+    console.print$ 'While the low-precedence, procedure-call operator `($)` '
+    ++ 'can be used for a little stranger syntax.'
 
-          # %% # make sure to run this cell before the ones following it
-          π := 3.14
+    # %% May be even more strange
+    show$ ($)
+    # %#
 
-          # %% # this prints its name, not value
-          repr( π )
+    # Run above cell, you should see:
+    #  intrinsic: infixr -5 ($)
+    # You'd feel familiar if you know about Haskell, `$` is a right-associative,
+    # infix operator, of precedence -5 (which is rather low) in Đ (not the core
+    # language, but a custom operator from the default batteries technically).
+    # The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as
+    # the function-application operator in Haskell.
 
-          # %% # after arithmetics, it is no more a term,
-          repr( π * 1 ) # just an immutable numeric value
+    # To address an operator, you quote it with a pair of parentheses just like
+    # in Haskell, so `show$ ($)` should be interpreted as calling procedure
+    # `show` with the value of ($) operator procedure (which is first class
+    # value in Đ) as the only argument.
 
-          # %% # while type of a term comes from its value
-          type( π )
+    # %% Written in more usual syntax
+    op = ($)
+    show( op )
 
-          # %% # and Đ knows it being a term, and can show that accordingly
-          show( π )
+    # %%
+    console.print$ 'Though the (+) operator works to concatenate strings for'
+    + ' Python interoperability, the (++) operator is more idiomatic in Đ'
+    ++ ' for string concatenation, resembling Haskell.'
 
-          # %% # otherwise it's can be used just like an attribute
-          r = 1.58
-          C = 2 * π * r
+    # %% #
+    ; # a semicolon is usually necessary before a starting parentheses,
+    # to disambiguate from procedure-calling, which binds the tightest
+    ($) |show
+    # %% # which is equivalent to the previous
+    show$ ($)
 
-          # %#
-        }
+    # %% # Checkout what the (|) operator is
+    show$ (|)
 
-        {## Đ Vocabulary for Nullability
-         # - nil, null, None, Nothing and friends
-         #} { edh'nullability # <- follow this bookmark to learn more details
-          # or just run following cells to get some feel
+    # Note the (|) operator resembles UNIX pipe, while its semantics is more
+    # close to the (&) operator in Haskell, which is flipped ($) operator.
 
-          # %% # `nil` will not be printed by REPL
-          nil
+    # Some other operators of interest:
 
-          # %%
-          type( nil ) is nil
+    # %%
+    show$ (::)
+    # %%
+    show$ (!)
 
-          # %% `null()` is the null-test procedure, relatable to the `null`
-          # function as in Haskell, but semantically more like:
-          #  - Negated *Truth Value Testing* as in Python
-          #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
-          # And
-          #  - *Falsy Testing* as in JavaScript
-          #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
-          # For a dynamic language
-          null( nil )
-          # %%
-          null( 0 )
-          # %%
-          null( 1 )
+    # %#
+  }
 
-          # %% # Note a procedure value will always be *truthy*
-          null( null ) # recognize the result please
 
-          # With the mechanism to define named values (i.e. terms), some named
-          # *nil* values can be defined for special purpose:
+  {## Procedures & Lambdas
+   # - Đ is functional to such an extent
+   #
+   # Several type of procedures, the lambda forms (arrow procedures),
+   # and expression being 1st class as well
+   #} {;
+    {## Procedures & Lambdas #}
+    export edh'lambdas = bookmark
 
-          # %%
-          None
-          # %%
-          Nothing
 
-          # %%
-          show( None )
-          # %%
-          show( Nothing )
+  }
 
-          # %%
-          None == Nothing
-          # %%
-          None is Nothing
 
-          # %%
-          None == nil
-          # %%
-          None is nil
+  {## Object-Oriented, but Not Entirely
+   # - Everything is a Value (instead of Object) in Đ
+   #
+   # Everything is an Object in Python / Smalltalk, but although Đ is as
+   # *Object-Oriented* as Python, *NOT* everything is an object here, such
+   # as numbers, strings, and procedures. And there are a handful of
+   # special values.
+   #} {; import * './vals' # <- navigate to elaboration of Đ Value System
 
-          # %%
-          Nothing == nil
-          # %%
-          Nothing is nil
+    {## Special Attention
+     # - You especially need to know this before other things
+     #} {;
 
-          # %#
-        }
+      {## Named Values / Term Definitions
+       # - Got the familiar (:=) operator for definition
+       #} { edh'term'def # <- follow this bookmark to learn more details
+        # or just run following cells to get some feel
 
-        {## Applicability Semantics
-         # - We talk about the lack thereof, actually
-         #} { import * './appl' # <- navigate to elaboration of Đ Applicability Semantics
+        # %% # make sure to run this cell before the ones following it
+        π := 3.14
 
-          edh'na'semantics # <- follow this bookmark to learn more details
+        # %% # this prints its name, not value
+        repr( π )
 
-          # %% # NA stands for Not/Applicable, it's a literal constant in Đ
-          NA
+        # %% # after arithmetics, it is no more a term,
+        repr( π * 1 ) # just an immutable numeric value
 
-          # %% # How is it technically working?
-          show( NA )
+        # %% # while type of a term comes from its value
+        type( π )
 
-          # %% # The actually `NA` value is a defined constant term, with the
-          # value in turn being a *default* expression of literal `nil`, so it
-          # is technically a shorthand of `NA := default nil`
-          default nil
-          # %#
+        # %% # and Đ knows it being a term, and can show that accordingly
+        show( π )
 
-          # More about *default* expressions later, but you just see its repr
-          # now for some intuition
-        }
+        # %% # otherwise it's can be used just like an attribute
+        r = 1.58
+        C = 2 * π * r
 
+        # %#
+      }
+
+      {## Đ Vocabulary for Nullability
+       # - nil, null, None, Nothing and friends
+       #} { edh'nullability # <- follow this bookmark to learn more details
+        # or just run following cells to get some feel
+
+        # %% # `nil` will not be printed by REPL
+        nil
+
+        # %%
+        type( nil ) is nil
+
+        # %% `null()` is the null-test procedure, relatable to the `null`
+        # function as in Haskell, but semantically more like:
+        #  - Negated *Truth Value Testing* as in Python
+        #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
+        # And
+        #  - *Falsy Testing* as in JavaScript
+        #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+        # For a dynamic language
+        null( nil )
+        # %%
+        null( 0 )
+        # %%
+        null( 1 )
+
+        # %% # Note a procedure value will always be *truthy*
+        null( null ) # recognize the result please
+
+        # With the mechanism to define named values (i.e. terms), some named
+        # *nil* values can be defined for special purpose:
+
+        # %%
+        None
+        # %%
+        Nothing
+
+        # %%
+        show( None )
+        # %%
+        show( Nothing )
+
+        # %%
+        None == Nothing
+        # %%
+        None is Nothing
+
+        # %%
+        None == nil
+        # %%
+        None is nil
+
+        # %%
+        Nothing == nil
+        # %%
+        Nothing is nil
+
+        # %#
+      }
+
+      {## Applicability Semantics
+       # - We talk about the lack thereof, actually
+       #} { import * './appl' # <- navigate to elaboration of Đ Applicability Semantics
+
+        edh'na'semantics # <- follow this bookmark to learn more details
+
+        # %% # NA stands for Not/Applicable, it's a literal constant in Đ
+        NA
+
+        # %% # How is it technically working?
+        show( NA )
+
+        # %% # The actually `NA` value is a defined constant term, with the
+        # value in turn being a *default* expression of literal `nil`, so it
+        # is technically a shorthand of `NA := default nil`
+        default nil
+        # %#
+
+        # More about *default* expressions later, but you just see its repr
+        # now for some intuition
       }
 
     }
 
-    {## Identity Test Corrected
-     # - summary
-     # details
-     #} {;
-    }
-
   }
 
-  {## More or Less Functional than You'd Expect
-   # - Roots in Haskell, Go, Python, and JavaScript
+  {## Identity Test Corrected
+   # - summary
    # details
    #} {;
   }
 
 }
 
-{## Fancy Operators
- # - Let's go some Haskell stylish
- #} {;
-  {## Đ Operators #}
-  export edh'operators = bookmark
-
-  # %%
-  console.print$ 'While the low-precedence, procedure-call operator `($)` '
-  ++ 'can be used for a little stranger syntax.'
-
-  # %% May be even more strange
-  show$ ($)
-  # %#
-
-  # Run above cell, you should see:
-  #  intrinsic: infixr -5 ($)
-  # You'd feel familiar if you know about Haskell, `$` is a right-associative,
-  # infix operator, of precedence -5 (which is rather low) in Đ (not the core
-  # language, but a custom operator from the default batteries technically).
-  # The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as
-  # the function-application operator in Haskell.
-
-  # To address an operator, you quote it with a pair of parenthesis just like
-  # in Haskell, so `show$ ($)` should be interpreted as calling procedure
-  # `show` with the value of ($) operator procedure (which is first class
-  # value in Đ) as the only argument.
-
-  # %% Written in more usual syntax
-  op = ($)
-  show( op )
-
-  # %%
-  console.print$ 'Though the (+) operator works to concatenate strings for'
-  + ' Python interoperability, the (++) operator is more idiomatic in Đ'
-  ++ ' for string concatenation, resembling Haskell.'
-
-  # %% #
-  ; # a semicolon is usually necessary before a starting parenthesis,
-  # to disambiguate from procedure-calling, which binds the tightest
-  ($) |show
-  # %% # which is equivalent to the previous
-  show$ ($)
-
-  # %% # Checkout what the (|) operator is
-  show$ (|)
-
-  # Note the (|) operator resembles UNIX pipe, while its semantics is more
-  # close to the (&) operator in Haskell, which is flipped ($) operator.
-
-  # Some other operators of interest:
-
-  # %%
-  show$ (::)
-  # %%
-  show$ (!)
-
-  # %#
-}
-
-{## Auto Indentation, Braces & Semicolons
- # - Whitespaces insignificant, indentation enforced by formatter
+{## More or Less Functional than You'd Expect
+ # - Roots in Haskell, Go, Python, and JavaScript
+ # details
  #} {;
 }
