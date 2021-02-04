@@ -409,202 +409,215 @@ Prefixing the name of the variable with character(s) to indicate the use make of
     }
   }
 
+}
 
-  {## Fancy Operators
-   # - Let's go some Haskell stylish
+
+{## Fancy Operators
+ # - Let's go some Haskell stylish
+ #} {;
+  {## Đ Operators #}
+  export edh'operators = bookmark
+
+  # %%
+  console.print$ 'While the low-precedence, procedure-call operator `($)` '
+  ++ 'can be used for a little stranger syntax.'
+
+  # %% May be even more strange
+  show$ ($)
+  # %#
+
+  # Run above cell, you should see:
+  #  intrinsic: infixr -5 ($)
+  # You'd feel familiar if you know about Haskell, `$` is a right-associative,
+  # infix operator, of precedence -5 (which is rather low) in Đ (not the core
+  # language, but a custom operator from the default batteries technically).
+  # The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as
+  # the function-application operator in Haskell.
+
+  # To address an operator, you quote it with a pair of parentheses just like
+  # in Haskell, so `show$ ($)` should be interpreted as calling procedure
+  # `show` with the value of ($) operator procedure (which is first class
+  # value in Đ) as the only argument.
+
+  # %% Written in more usual syntax
+  op = ($)
+  show( op )
+
+  # %%
+  console.print$ 'Though the (+) operator works to concatenate strings for'
+  + ' Python interoperability, the (++) operator is more idiomatic in Đ'
+  ++ ' for string concatenation, resembling Haskell.'
+
+  # %% #
+  ; # a semicolon is usually necessary before a starting parentheses,
+  # to disambiguate from procedure-calling, which binds the tightest
+  ($) |show
+  # %% # which is equivalent to the previous
+  show$ ($)
+
+  # %% # Checkout what the (|) operator is
+  show$ (|)
+
+  # Note the (|) operator resembles UNIX pipe, while its semantics is more
+  # close to the (&) operator in Haskell, which is flipped ($) operator.
+
+  # Some other operators of interest:
+
+  # %%
+  show$ (::)
+  # %%
+  show$ (!)
+
+  # %#
+}
+
+
+{## Procedures & Lambdas
+ # - Đ is functional to such an extent
+ #
+ # Several type of procedures, the lambda forms (arrow procedures),
+ # and expression being 1st class as well
+ #} {;
+  {## Procedures & Lambdas #}
+  export edh'lambdas = bookmark
+
+
+}
+
+
+{## Object-Oriented, but Not Entirely
+ # - Everything is a Value (instead of Object) in Đ
+ #
+ # Everything is an Object in Python / Smalltalk, but although Đ is as
+ # *Object-Oriented* as Python, *NOT* everything is an object here, such
+ # as numbers, strings, and procedures. And there are a handful of
+ # special values.
+ #} {; import * './vals' # <- navigate to elaboration of Đ Value System
+
+  {## Special Attention
+   # - You especially need to know this before other things
    #} {;
-    {## Đ Operators #}
-    export edh'operators = bookmark
 
-    # %%
-    console.print$ 'While the low-precedence, procedure-call operator `($)` '
-    ++ 'can be used for a little stranger syntax.'
+    {## Named Values / Term Definitions
+     # - Got the familiar (:=) operator for definition
+     #} { edh'term'def # <- follow this bookmark to learn more details
+      # or just run following cells to get some feel
 
-    # %% May be even more strange
-    show$ ($)
-    # %#
+      # %% # make sure to run this cell before the ones following it
+      π := 3.14
 
-    # Run above cell, you should see:
-    #  intrinsic: infixr -5 ($)
-    # You'd feel familiar if you know about Haskell, `$` is a right-associative,
-    # infix operator, of precedence -5 (which is rather low) in Đ (not the core
-    # language, but a custom operator from the default batteries technically).
-    # The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as
-    # the function-application operator in Haskell.
+      # %% # this prints its name, not value
+      repr( π )
 
-    # To address an operator, you quote it with a pair of parentheses just like
-    # in Haskell, so `show$ ($)` should be interpreted as calling procedure
-    # `show` with the value of ($) operator procedure (which is first class
-    # value in Đ) as the only argument.
+      # %% # after arithmetics, it is no more a term,
+      repr( π * 1 ) # just an immutable numeric value
 
-    # %% Written in more usual syntax
-    op = ($)
-    show( op )
+      # %% # while type of a term comes from its value
+      type( π )
 
-    # %%
-    console.print$ 'Though the (+) operator works to concatenate strings for'
-    + ' Python interoperability, the (++) operator is more idiomatic in Đ'
-    ++ ' for string concatenation, resembling Haskell.'
+      # %% # and Đ knows it being a term, and can show that accordingly
+      show( π )
 
-    # %% #
-    ; # a semicolon is usually necessary before a starting parentheses,
-    # to disambiguate from procedure-calling, which binds the tightest
-    ($) |show
-    # %% # which is equivalent to the previous
-    show$ ($)
+      # %% # otherwise it's can be used just like an attribute
+      r = 1.58
+      C = 2 * π * r
 
-    # %% # Checkout what the (|) operator is
-    show$ (|)
-
-    # Note the (|) operator resembles UNIX pipe, while its semantics is more
-    # close to the (&) operator in Haskell, which is flipped ($) operator.
-
-    # Some other operators of interest:
-
-    # %%
-    show$ (::)
-    # %%
-    show$ (!)
-
-    # %#
-  }
-
-
-  {## Procedures & Lambdas
-   # - Đ is functional to such an extent
-   #
-   # Several type of procedures, the lambda forms (arrow procedures),
-   # and expression being 1st class as well
-   #} {;
-    {## Procedures & Lambdas #}
-    export edh'lambdas = bookmark
-
-
-  }
-
-
-  {## Object-Oriented, but Not Entirely
-   # - Everything is a Value (instead of Object) in Đ
-   #
-   # Everything is an Object in Python / Smalltalk, but although Đ is as
-   # *Object-Oriented* as Python, *NOT* everything is an object here, such
-   # as numbers, strings, and procedures. And there are a handful of
-   # special values.
-   #} {; import * './vals' # <- navigate to elaboration of Đ Value System
-
-    {## Special Attention
-     # - You especially need to know this before other things
-     #} {;
-
-      {## Named Values / Term Definitions
-       # - Got the familiar (:=) operator for definition
-       #} { edh'term'def # <- follow this bookmark to learn more details
-        # or just run following cells to get some feel
-
-        # %% # make sure to run this cell before the ones following it
-        π := 3.14
-
-        # %% # this prints its name, not value
-        repr( π )
-
-        # %% # after arithmetics, it is no more a term,
-        repr( π * 1 ) # just an immutable numeric value
-
-        # %% # while type of a term comes from its value
-        type( π )
-
-        # %% # and Đ knows it being a term, and can show that accordingly
-        show( π )
-
-        # %% # otherwise it's can be used just like an attribute
-        r = 1.58
-        C = 2 * π * r
-
-        # %#
-      }
-
-      {## Đ Vocabulary for Nullability
-       # - nil, null, None, Nothing and friends
-       #} { edh'nullability # <- follow this bookmark to learn more details
-        # or just run following cells to get some feel
-
-        # %% # `nil` will not be printed by REPL
-        nil
-
-        # %%
-        type( nil ) is nil
-
-        # %% `null()` is the null-test procedure, relatable to the `null`
-        # function as in Haskell, but semantically more like:
-        #  - Negated *Truth Value Testing* as in Python
-        #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
-        # And
-        #  - *Falsy Testing* as in JavaScript
-        #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
-        # For a dynamic language
-        null( nil )
-        # %%
-        null( 0 )
-        # %%
-        null( 1 )
-
-        # %% # Note a procedure value will always be *truthy*
-        null( null ) # recognize the result please
-
-        # With the mechanism to define named values (i.e. terms), some named
-        # *nil* values can be defined for special purpose:
-
-        # %%
-        None
-        # %%
-        Nothing
-
-        # %%
-        show( None )
-        # %%
-        show( Nothing )
-
-        # %%
-        None == Nothing
-        # %%
-        None is Nothing
-
-        # %%
-        None == nil
-        # %%
-        None is nil
-
-        # %%
-        Nothing == nil
-        # %%
-        Nothing is nil
-
-        # %#
-      }
-
-      {## Applicability Semantics
-       # - We talk about the lack thereof, actually
-       #} { import * './appl' # <- navigate to elaboration of Đ Applicability Semantics
-
-        edh'na'semantics # <- follow this bookmark to learn more details
-
-        # %% # NA stands for Not/Applicable, it's a literal constant in Đ
-        NA
-
-        # %% # How is it technically working?
-        show( NA )
-
-        # %% # The actually `NA` value is a defined constant term, with the
-        # value in turn being a *default* expression of literal `nil`, so it
-        # is technically a shorthand of `NA := default nil`
-        default nil
-        # %#
-
-        # More about *default* expressions later, but you just see its repr
-        # now for some intuition
-      }
-
+      # %#
     }
+
+    {## Đ Vocabulary for Nullability
+     # - nil, null, None, Nothing and friends
+     #} { edh'nullability # <- follow this bookmark to learn more details
+      # or just run following cells to get some feel
+
+      # %% # `nil` will not be printed by REPL
+      nil
+
+      # %%
+      type( nil ) is nil
+
+      # %% `null()` is the null-test procedure, relatable to the `null`
+      # function as in Haskell, but semantically more like:
+      #  - Negated *Truth Value Testing* as in Python
+      #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
+      # And
+      #  - *Falsy Testing* as in JavaScript
+      #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+      # For a dynamic language
+      null( nil )
+      # %%
+      null( 0 )
+      # %%
+      null( 1 )
+
+      # %% # Note a procedure value will always be *truthy*
+      null( null ) # recognize the result please
+
+      # With the mechanism to define named values (i.e. terms), some named
+      # *nil* values can be defined for special purpose:
+
+      # %%
+      None
+      # %%
+      Nothing
+
+      # %%
+      show( None )
+      # %%
+      show( Nothing )
+
+      # %%
+      None == Nothing
+      # %%
+      None is Nothing
+
+      # %%
+      None == nil
+      # %%
+      None is nil
+
+      # %%
+      Nothing == nil
+      # %%
+      Nothing is nil
+
+      # %#
+    }
+
+    {## Applicability Semantics
+     # - We talk about the lack thereof, actually
+     #} { import * './appl' # <- navigate to elaboration of Đ Applicability Semantics
+
+      edh'na'semantics # <- follow this bookmark to learn more details
+
+      # %% # NA stands for Not/Applicable, it's a literal constant in Đ
+      NA
+
+      # %% # How is it technically working?
+      show( NA )
+
+      # %% # The actually `NA` value is a defined constant term, with the
+      # value in turn being a *default* expression of literal `nil`, so it
+      # is technically a shorthand of `NA := default nil`
+      default nil
+      # %#
+
+      # More about *default* expressions later, but you just see its repr
+      # now for some intuition
+    }
+
+  }
+
+  {## Data Classes & Normal Class
+   # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
+   #
+   # Beyond PEP-557 features in a dedicated syntax, Đ data classes especially
+   # shines in pattern matching use cases, closely mimics ADT, predating
+   # PEP-634 (which is up-coming in Python 3.10).
+   #} {;
+    {## Data Classes & Normal Class #}
+    export edh'data'class'syntax = bookmark
+
 
   }
 
@@ -612,9 +625,11 @@ Prefixing the name of the variable with character(s) to indicate the use make of
    # - summary
    # details
    #} {;
+
   }
 
 }
+
 
 {## More or Less Functional than You'd Expect
  # - Roots in Haskell, Go, Python, and JavaScript
