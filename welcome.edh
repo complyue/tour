@@ -116,6 +116,7 @@
 
 
 {## Đ The Language
+
  # - The bare interpreter with default batteries
  #} { import * 'tour'
 
@@ -172,5 +173,12 @@
  # where  the same copies of NVM (e.g. disk) backed ND arrays are shared and
  # pipelined amongst arbitrary components.
  #} { import * 'swarm/tour'
+
+}
+
+
+{## How Đ Language Server Works
+ # - Wonder why you can take this tour like it is?
+ #} { import * 'els/tour'
 
 }
