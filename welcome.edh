@@ -109,16 +109,21 @@
  # advantage of that, so the rest contents in this module contain many links
  # porting you to various places.
  #
- # E.g. hover your mouse cursor over './edh/basics' below, hold down
- # Cmd (on macOS) or Ctrl (on Linux), you should see it is underlined,
+ # E.g. hover your mouse cursor over the string 'tour' after `import * ` below,
+ # hold down Cmd (on macOS) or Ctrl (on Linux), you should see it underlined,
  # then click left-mouse-button, there you go!
- #} {; }
+ #
+ # (You know how to come back, don't you?)
+ #
+ # Note that move your input cursor by keyboard (or mouse click), into 'tour'
+ # then press the shortcut key (usually F12) should work the same way.
+ #} { import * 'tour' }
 
 
 {## Đ The Language
 
  # - The bare interpreter with default batteries
- #} { import * 'tour'
+ #} {
 
   {## Language Basics
    # - Syntax, Utilities, Commands, ...
