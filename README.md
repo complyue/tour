@@ -171,13 +171,13 @@ Note:
 
 ##### Install Language Extensions
 
-See:
+For *HOWTO*s see:
 
 - [Managing Extensions in Visual Studio Code](https://code.visualstudio.com/docs/editor/extension-gallery)
 - [Eclipse Open VSX project](https://open-vsx.org)
 - [VSCodium - Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace)
 
-Within the IDE's Extensions view, search for `Edh` and `Haskell`, install relevant ones as you'd like. Recommendations:
+Easiest way is from the IDE's _Extensions_ view, search for `Edh` and `Haskell`, install relevant ones as you'd like. Recommendations:
 
 - For Đ language support, install the extension pack:
   - [Đ Language Pack](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-pack)
