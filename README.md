@@ -177,17 +177,23 @@ See:
 - [Eclipse Open VSX project](https://open-vsx.org)
 - [VSCodium - Extensions + Marketplace](https://github.com/VSCodium/vscodium/blob/master/DOCS.md#extensions-marketplace)
 
-Within the IDE's marketplace, search for _Edh_ and _Haskell_,
-install relevant ones you'd like. Recommended extensions:
+Within the IDE's Extensions view, search for `Edh` and `Haskell`, install relevant ones as you'd like. Recommendations:
 
-- [complyue.edh-vscode-syntax](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-syntax)
-- [complyue.edh-vscode-formatter](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-formatter)
-- [complyue.edh-vscode-pack](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-pack)
-- [complyue.edh-vscode-lsc](https://marketplace.visualstudio.com/items?itemName=complyue.edh-vscode-lsc)
-- [complyue.haskit-vscode](https://marketplace.visualstudio.com/items?itemName=complyue.haskit-vscode)
+- For Đ language support, install the extension pack:
+  - [Đ Language Pack](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-pack)
+- Or each extension individually (necessary for Eclipse Theia etc.):
 
-- [justusadam.language-haskell](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
-- [haskell.haskell](https://marketplace.visualstudio.com/items?itemName=haskell.haskell)
+  - [Đ Syntax & Snippets](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-syntax)
+  - [Đ Code Formatter](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-formatter)
+  - [Đ Language Server](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-lsc)
+
+- For interactive Đ Code Lens:
+
+  - [HaskIt Đ - Haskell Software, Fast Iterations](https://marketplace.visualstudio.com/items?itemName=ComplYue.haskit-vscode)
+
+- For Haskell language support:
+  - [Haskell](https://marketplace.visualstudio.com/items?itemName=haskell.haskell)
+  - [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
 
 ##### Optional: Use a more Edh/Haskell friendly Color Theme
 
