@@ -1,0 +1,13 @@
+{## Đ Effect System #}
+
+{## Dynamic Scoped Effects
+ # - Algebraic Effects come into an imperative, scripting world
+
+To contrast with *monad*, which is a closed, statically typed effect tracking system, Đ effects is an open, dynamically/duck typed effect tracking system.
+
+ #} {;
+  {## Dynamic Scoped Effects #}
+  export edh'effs = bookmark
+
+
+}

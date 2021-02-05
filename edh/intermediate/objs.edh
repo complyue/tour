@@ -1,0 +1,53 @@
+{## Đ Object System #}
+
+
+{## Compositional
+ # - Composition over Inheritance
+
+Coming from Go type embedding, and C++ object member layout ...
+
+ #} {;
+  {## Compositional #}
+  export edh'obj'composition = bookmark
+
+
+}
+
+
+{## Multiple Inheritance
+ # - The classic OO
+
+C3 Linearization ...
+
+ #} {;
+  {## Multiple Inheritance #}
+  export edh'multi'inheritance = bookmark
+
+
+}
+
+
+{## Prototype Based Inheritance
+ # - Classical OO popularized by JavaScript
+
+Super object chain, multiple of them ...
+
+ #} {;
+  {## Prototype Based Inheritance #}
+  export edh'proto'oo = bookmark
+
+
+}
+
+
+{## Magic Methods
+ # - How Python turns the gears spinning
+
+Advanced operator overriding/overloading ...
+
+ #} {;
+  {## Magic Methods #}
+  export edh'magic'mths = bookmark
+
+
+}

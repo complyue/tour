@@ -20,6 +20,9 @@ export {
    #  - goroutine
    #     * from Go
    #
+   #  - compositional object
+   #     * sorta from Go's type embedding
+   #
    #  - class based inheritance
    #     * from Python, Smalltalk etc.
    #
