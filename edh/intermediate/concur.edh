@@ -1,0 +1,83 @@
+{## Đ Concurrency & Parallelism #}
+
+
+{##
+ # Schedule many tasks to run concurrently, with concurrency limit specified by 'c'
+ #
+ # Note:
+ #  * Each task must be a nullary procedure (i.e. a niladic computation)
+ #  * Pass 'console.debug' or even 'console.info' as 'dbgLogger' to see verbose log of the finishing up
+ #}
+export method concur(* tasks, c= 6, dbgLogger= 0 ) void {
+  if c < 1 then error( "invalid concurrency: " ++ c )
+  if null( tasks ) then return nil
+
+  {## Event sink for decreased number of running tasks
+   #
+   # Note this will:
+   #  * Read zero after all done
+   #  * Only start to fire after all tasks have been put at running, and the running count drops below 'c', i.e. started overall finishing up
+   #}
+  doneSig = sink
+
+  namespace schd (
+    backlog= [] =< tasks, # convert to a mutable list
+    cntRunning= 0, # this somewhat emulates a WaitGroup in Go
+  ) {
+
+    method scheduleMore() void ai { # do one scheduling in a whole transaction
+      if this.cntRunning >= c then return nil # avoid exceeding the limit
+
+      # note contextual this/that are both the namespace object `schd` in here
+
+      case this.backlog.pop() of {
+        nil -> assert( false, 'impossible' )
+        None -> { # no more tasks in backlog
+          doneSig <- this.cntRunning # notify about overall finishing up
+          return nil
+        }
+        { task2do } -> {
+          pass # one task taken out of backlog
+        }
+      }
+
+      go { # start a new thread (goroutine) to run 'task2do'
+
+        # use `defer` to always run upon thread termination, this is necessary as code after `task2do()` may not get actually executed in case this thread is broken by an event perceiver registered during `task2do()`
+        defer {
+          ai this.cntRunning -= 1 # decrease it atomically
+
+          if this.cntRunning < c # seen run slot available
+          # to bring another pending task from backlog at running, or to post notification to 'doneSig' upon overall finishing up detected (i.e. backlog drained)
+          then this.scheduleMore()
+        }
+
+        # do the real work
+        #
+        # note it may throw, but we don't take care here, the caller of `concur()` has these choices:
+        # - make sure all exceptions are handled within each task
+        # - catch exceptions propagated out from `concur()`, asynchronously
+        # - leave an exception uncaught or rethrow it, it'll propagate to the main thread thus probably terminate the whole program, according to how that's handled there
+        task2do()
+
+      }
+
+      # similar to WaitGroup.Add() in Go
+      this.cntRunning += 1 # increase it, note the whole procedure is ai
+
+    }
+  }
+
+  while not null( schd.backlog ) && schd.cntRunning < c {
+    schd.scheduleMore()
+  }
+
+  for nTasksRunning from doneSig do
+  if nTasksRunning < 1 then {
+    dbgLogger <| '  🎉  all concur tasks done.'
+    return nil # don't forget to break out the 'doneSig' event loop
+  } else {
+    dbgLogger <| '  ⏲️  finishing up concur tasks, ' ++ nTasksRunning
+    ++ ' still running.'
+  }
+}
