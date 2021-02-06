@@ -211,23 +211,38 @@ Prefixing the name of the variable with character(s) to indicate the use make of
         }
       }
 
-
-      {## Đ Scoping
-       # - Closure is way more coarse grained
-
-Lexical scoping in Đ is
-
-       #} {;
-        {## Đ Scoping #}
-        export edh'scoping = bookmark
+    }
 
 
-      }
+    {## Đ Scopes & Attributes
+     # - No variable, only attributes of scopes
+
+Variable in most programming languages is a misconception, ...
+
+There is not such a thing named variable in Đ ...
+
+     #} {;
+      {## Đ Scopes & Attributes #}
+      export edh'scopes'attributes = bookmark
+
 
     }
 
 
-    {## Đ Value System is Some Different
+    {## Đ Closures
+     # - Closures are way more coarse grained in Đ
+
+Lexical scopes and closuress ...
+
+     #} {;
+      {## Đ Closures #}
+      export edh'closures = bookmark
+
+
+    }
+
+
+    {## Đ Value System has Rather Differences
      # - Everything is a value in Đ
      #} {; import * '../intermediate/vals'
 
