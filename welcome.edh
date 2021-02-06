@@ -175,20 +175,21 @@ Note you can also place your keyboard cursor into 'tour' below, by either arrow 
 
 Assuming the [Pre-Flight Checks] are all good for you, it is important not only in taking this tour, as well it'll give you great power in software development workflows, with or without Đ.
 
-The rest contents in this module contain many links that can tele-port you to various places of interest.
+The rest contents in this module contain many links that can teleport you to various places of interest.
 
  #} {; }
 
 
-{## Đ The Language
+{## Đ the Language
  # - A Business Integration language, as well as a User Interface language
 
 The birth of Đ has two main goals:
 
- * To integrate distributed, heterogeneous software components for business goals
-  > Đ fosters comprehensive support for _events_ to be exchanged and hosted, asynchronously, at multiple application / deployment sites. An _event_ is an atomic piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to *Algebraic Data Type* in mathematics and a functional programming language, but it's not practical to be a mechanical utility in an imperative/procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
+ * To integrate distributed, heterogeneous software components to achieve business goals
+  > Đ fosters comprehensive support for _event_s to be exchanged and hosted, asynchronously, at multiple application / deployment sites, as well as within a local process by the operating system.
+  > An _event_ is an atomic piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to *Algebraic Data Type* in mathematics as well as a functional programming language, but it's not practical to be a mechanical utility in an imperative / procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
 
- * To be usable directly by users of all roles in the organization, especially the business stake-holders
+ * To be usable directly by users of all roles in the organization, especially stake-holders of the business
   > Đ is even more _dynamic_, _interactive_ than Python, from standalone REPLs to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer.
 
  #} {; import * 'tour'
