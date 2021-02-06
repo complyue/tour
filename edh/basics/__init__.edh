@@ -2,10 +2,10 @@
 
 export {
 
-  {## Syntax & Semantics
+  {## Syntax, Semantics, and Pragmatics
    # - Stylish Haskell/Go, blended into Python/JavaScript etc.
    #
-   # The Đ syntax is designed with a major goal of interoperation by scripting,
+   # The Đ grammar is designed with a major goal of interoperation by scripting,
    # for IPC across processes of heterogeneous runtime implementations.
    #
    # While some constructs from Haskell, Go, Python and others, are introduced
@@ -39,9 +39,9 @@ export {
    #     * from JavaScript, while the lambda aspect from all multi-paradigm
    #       languages with FP in mind, including JavaScript and Python
    #
-   #} { import * './syntax'
-    {## Đ Syntax #}
-    edh'syntax = bookmark
+   #} {; import * './grammar'
+    {##  Đ Syntax, Semantics, and Pragmatics #}
+    edh'grammar = bookmark
 
     {## Usual, Common Part
      # - It's familiar from Python/JavaScript etc.
@@ -55,7 +55,7 @@ export {
 
   {## Utilities
    # -
-   #} { import * './utils'
+   #} {; import * './utils'
     {## Đ Utilities #}
     edh'utilities = bookmark
 
@@ -63,7 +63,7 @@ export {
 
   {## Commands
    # -
-   #} { import * './cmds'
+   #} {; import * './cmds'
     {## Đ Commands #}
     edh'commands = bookmark
 
