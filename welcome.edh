@@ -1,23 +1,23 @@
 {##
  # Welcome to A Tour of Đ (Edh)
 
-This tour is more like a self-guided walkthrough than a typical tutorial, you are not supposed to follow the text run in any particular order, materials are organized in cyclic hierarchies actually, with the principle that shallower contents should be more brief, while deeper contents to provide more elaborate explainations and showcases of greater verbosity.
+This tour is an entry point (with briefs) to various standalone tours provided by many Đ packages of respective purpose, here is more like an explorative playground, or a self-guided walkthrough, rather than a typical tutorial with a linear narrative. You are not supposed to follow the text run in any particular order. Materials are organized in cyclic hierarchies, with the principle that shallower (wrt discoverability) contents should be more brief, and deeper contents to provide more elaborate explainations and examples of greater verbosity.
 
-It is designed for reading efficiency & pleasure. We try not bore experienced readers with unnecessary details, while for readers unfamiliar with certain programming concepts, in elsewhere we craft elaborate explaination and more live examples of greater verbosity, then make those artifacts linked to briefs. The reader can use standard code navigation capability of the IDE to follow those links into greater details. Note that becomes hierarchies of materials with many interconnections.
+It is designed for reading efficiency & pleasure. We try not bore experienced readers with unnecessary details, while for readers unfamiliar with certain programming concepts, in elsewhere we craft elaborate explaination and more live examples of greater verbosity, then make those artifacts linked to briefs. The reader can use standard code navigation capability of the IDE to follow those links into greater details. Note ultimately all of these become hierarchies of materials with plenty interconnections.
 
 Clever readers, even noob to some concept, can merely run relevant Code Lens and try comprehend the output result, good intuition is already enough at times. After all, code navigation is your freedom, go back and forth, any time, any where, for whatever reason, just remember you can right-mouse-click most highlighted code elements in any Đ file (with `bookmark`s even dedicated for this purpose), then select [Go To Definition] to navigate to elaborate definition (explaination) of it. The tooltip shown up when you hover the mouse cursor over it may already give some useful information.
 
 Experiences in other programming languages, Python, JavaScript, Go, Haskell and etc. are good source of intuition to complete this tour faster, but never a necessarity.
 
-This tour is open, as a public Github repository welcoming contributions, and hopefully it will evolve to be a general learning resource for advanced computer application practices, enabling *Citizen Development* at all.
+And it is very expected for sophisticated developers to come back at times, in seeking inspirations from discussions regarding various topics reachable from here, we just have brief & links to many tours by various standalone packages maintained here, this is an open, public Github repository welcoming contributions. The big mission be it evolves to a general learning resource for advanced computer application practices, enabling massive open *Citizen Development* driven by communities.
 
   http://github.com/e-wrks/tour
 
  #}
 
 
-{## Troubleshooting
- # - Please use the issue tracker
+{## Troubleshooting & Contribution
+ # - Please use the issue tracker, and make PRs as you can
 
 If you ever met any incident when walking through this tour, please consult
   http://github.com/e-wrks/tour/issues?q=is%3Aissue
@@ -26,6 +26,10 @@ to see whether it is a known issue and has solutions or workarounds.
 In case no existing one solves your problem, please file a new issue, that'll help later comers from meeting the same trouble.
 
 Even difficulties in understanding count, let's figure out how to improve the experience for people from a similar background of you.
+
+Consider opening a PR if you can, to add more information or details, correct conceptions or backgrounds, adjust the wording / phrasing, link to your package's tour, or merely correct some typos, contributions are more than welcome!
+
+  https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request
 
  #} {; }
 
@@ -42,9 +46,9 @@ Or you've decided to setup your own local IDE for better experience, see:
   https://github.com/e-wrks/tour#seasoned-and-ux-rich-way---local-ide
 
 
-The Đ tooling struggles for ergonomics in software development, it achieves so on top of modern IDEs, with optimized workflows to build, test, demonstrate, and run relevant software components.
+The Đ tooling struggles for ergonomics in software development, it achieves so on the shoulders of modern IDEs, with optimized workflows to build, test, demonstrate, and run relevant software components.
 
-The most preferable IDE is VSCode/VSCodium, and 2nd best is Gitpod (which is Eclipse Theia per se). Other IDEs such as SublimeText, Emacs, Vim, are not supported by far, merely lacking a LSP client component to communicate with `els`, they are hopefully to be supported in the future.
+The most preferable/testified IDE is VSCode/VSCodium, and 2nd best is Gitpod (which is Eclipse Theia per se). Other IDEs such as SublimeText, Emacs, Vim, are not supported by far, merely lacking a LSP client component to communicate with `els`, they are hopefully to be supported in the future.
 
 EPM is always under the hood, used to initialize (possibly cascaded for localized dependencies) EPM homes, Đ packages from public or private Git repositories, are installed into each EPM home, and updated as a whole.
 
@@ -154,12 +158,9 @@ Note you can also place your keyboard cursor into 'tour' below, by either arrow 
 
    #} {; import * 'tour'
 
-    # `bookmark` is a special type of artifact (a `Command` per se) that
-    # dedicated to anchor a particular location in codebase, allowing links
-    # from anywhere by code navigation.
-    #
-    # Try hover on `what's'edh` below and see the tooltip,
-    # then "Go To Definition" of it
+    # `bookmark` is a special type of artifact (a `Command` per se) that dedicated to anchor a particular location in some codebase, linkable from anywhere by code navigation.
+
+    # Try hover on `what's'edh` below and see the tooltip, then "Go To Definition" of it
     what's'edh # <- this links to a location in the language tour
 
     # As well, we expose a bookmark linking to just here
@@ -183,14 +184,21 @@ The rest contents in this module contain many links that can teleport you to var
 {## Đ the Language
  # - A Business Integration language, as well as a User Interface language
 
-The birth of Đ has two main goals:
+Đ is given birth for two main goals:
 
- * To integrate distributed, heterogeneous software components to achieve business goals
-  > Đ fosters comprehensive support for _event_s to be exchanged and hosted, asynchronously, at multiple application / deployment sites, as well as within a local process by the operating system.
-  > An _event_ is an atomic piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to *Algebraic Data Type* in mathematics as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
+ * To upscale business-oriented integration of distributed, heterogeneous software components
+  > State of art architecture requires expensive modeling of the business, before design of various (restful as you've likely heard of) communication protocols, then deployments continuously refactored into distributed spaghetti code.
+  > An *event* is a consistent (not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. *Event* is conceptually coherent to *Algebraic Data Type* in mathematics as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So *event* stays conceptual in Đ the language.
 
  * To be directly usable by users of all roles in the organization, especially stake-holders of the business
-  > Đ is even more _dynamic_, _interactive_ than Python, from standalone REPLs to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer.
+  > Đ is even more *dynamic* and *interactive* than Python, also it facilitates effectful functionality composition in a novel way. From REPLs atop stdio, to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer.
+  > Most people have been accustomed to GUI (Graphical User Interface) for interaction with a computer system, while visual languages still lack sufficient expressiveness in many tasks for global efficiency. Text based communication, governed by grammar (syntax, semantics, pragmatics), can be way more productive and constructive in such cases, and fortunately modern IDEs have filled much of the gap between GUI and TUI (Terminal User Interface), especially when we put Code Lens into good use:
+    https://code.visualstudio.com/blogs/2017/02/12/code-lens-roundup
+  > Inspired by Jupyter code cells:
+    https://donjayamanne.github.io/pythonVSCodeDocs/docs/jupyter_getting-started/#Running-a-cell-in-a-kernel
+  Each Đ code cell (a piece of code) is individually executable by a single mouse click, on a *Code Lens* above it reads [Run Cell] (note the click/execution can be repeated).
+  > This is much closer to a GUI, yet with more flexible variance & context. The greatest advantage of this tactic is, a user can make slight changes to the code in a template cell, then execute it to achieve tasks in need of a complex phrasing of scription. Traditional TUI requires the user to type out a complete sentence for the job, which needs greatly internalized knowledge about what/how he/she is doing, as well as mental effort nevertheless; while traditional GUI might be just inable to provide the flexibility needed due to level of complexity of the task.
+  > So with Đ and its tooling, we can obtain more advantages at the same time, from both worlds:  expressiveness from text languages as well as intuition from visual languages.
 
  #} {; import * 'tour'
 
@@ -200,7 +208,7 @@ The birth of Đ has two main goals:
 
     {## Syntax
      # - Đ Syntax
-     #} { edh'syntax # <- navigable bookmark
+     #} { edh'grammar # <- navigable bookmark
 
     }
 
