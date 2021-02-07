@@ -267,10 +267,12 @@ The `class` keyword defines a usual class.
     class B pass
     class C extends B
     class D extends C
-    class E extends (D, B )
+    class E extends (D,B)
+    # %%
+    E.mro
     # %%
     o = C()
-    export o.a = 5
+    o.a = 5
     # %%
     dir$ o
 

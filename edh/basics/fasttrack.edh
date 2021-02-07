@@ -372,35 +372,224 @@ Prefixing the name of the variable with character(s) to indicate the use make of
 }
 
 
-{## Đ Scopes & Attributes
- # - No variable, only attributes of scopes
+{## Terminology Differences
+ # - Something similar things are called differently
+
+ #} {;
+
+  {## Procedure instead of Function
+   # - There are procedures, but no function
+
+
+   #} {;
+    {## Procedure instead of Function #}
+    export edh'term'proc'stead'func = bookmark
+
+  }
+
+
+  {## Attribute instead of Variable
+   # - There are attributes, but no variable
 
 Variable in most programming languages is a misconception, ...
 
-There is not such a thing named variable in Đ ...
-
- #} {;
-  {## Đ Scopes & Attributes #}
-  export edh'scopes'attributes = bookmark
+   #} {;
+    {## Attribute instead of Variable #}
+    export edh'term'attr'stead'var = bookmark
 
 
-}
-
-
-{## Đ Closures
- # - Closures are way more coarse grained in Đ
-
-Lexical scopes and closuress ...
-
- #} {;
-  {## Đ Closures #}
-  export edh'closures = bookmark
-
+  }
 
 }
 
 
-{## Notable Differences of Đ Value System
+{## Lexical Structure & Closures
+ # - The usual lexical scoping works similar to Python and JavaScript, yet with subtle differences
+ #} {;
+
+
+  {## Value Association Key
+   # - What's called *variable identifier* or *variable name* elsewhere
+
+   #} {;
+    {## Value Association Keys #}
+    export edh'val'asso'keys = bookmark
+
+
+    {## Usual Keys
+     # - Just like how *variable*s can be named in other programming languages such as Python
+     #} {;
+
+      # Most programming languages allow only alphanumeric strings as variable identifiers, with limited choices of special characters (such as the usual underscore (`_`), and `$` in Java)
+
+    }
+
+    {## Symbolic Keys
+     # - In favor of mythology - or, integration of effectful components from independent vendors
+     #} {;
+
+      # JavaScript introduced symbol allowed as identifier of object properties:
+      #   https://developer.mozilla.org/en-US/docs/Glossary/Symbol
+
+      # Đ takes this idea further, by giving it dedicated syntax:
+      # %%
+      symbol @secret'stuff
+      # %#
+
+      # It is particularly necessary when a shared scope must be used to serve effectful artifacts collected from various vendors independent of each others, where coordination for name clashing prevention can hardly be done. If they don't use symbolic identifiers for their effects, name clashing is of high tendency.
+
+      # %% # e.g.
+      effect import * 'net/effects'
+      effect import * 'dim/effects'
+      # %#
+
+    }
+
+
+    {## Quaint Keys
+     # - Technically, any string can be used
+     #} {;
+
+      # %% # TODO this will fail at runtime, as no REPL with els host modules yet
+      import ( @'textDocument/didChange', **_ ) 'els/services'
+      desc$ @'textDocument/didChange'
+      # %#
+
+    }
+
+
+  }
+
+
+  {## Scopes, Entities, and Attributes
+   # - No variable, only entities with attributes backing scopes
+   #} {;
+
+    # There is not such a thing called variable in Đ ...
+    edh'term'attr'stead'var
+
+
+    {## Attribute Reading
+     # - An attribue can be addressed off any scope enclosing the access point
+
+The resolution is from inner-most scope to outer-most scope (which is the world root namespace), which ever matched by attribute key becomes the resolution result
+
+     #} {;
+      {## Attribute Reading #}
+      export edh'attr'read = bookmark
+
+
+    }
+
+
+    {## Attribute Writing
+     # - Direct assignment always update the inner-most current scope
+
+There is no way to directly write to any scope other than current scope in context
+
+     #} {;
+      {## Attribute Writing #}
+      export edh'attr'write = bookmark
+
+
+    }
+
+
+    {## Attribute Deletion
+     # - Instead of Python's `del` statement and JavaScript's `delete` operator, assignment with `nil` does the trick in Đ
+
+
+     #} {;
+      {## Attribute Deletion #}
+      export edh'deletion = bookmark
+
+    }
+
+  }
+
+
+  {## Namespaces
+   # - Similar to TypeScript namespace
+
+An Đ namespace is a special object defined with dedicated syntax
+
+   #} {;
+    {## Namespaces #}
+    export edh'namespaces = bookmark
+
+
+  }
+
+
+  {## Scoped Blocks
+   # - A usual block doesn't create a scope, but there is special syntax
+   #} {;
+    {## Scoped Blocks #}
+    export edh'scoped'blocks = bookmark
+
+
+  }
+
+
+  {## Closures
+   # - Closures are way more coarse grained in Đ
+
+A closure/procedure captures the full lexical scope hierarchy at the point it is defined.
+
+   #} {;
+    {## Closures #}
+    export edh'closures = bookmark
+
+
+    {## Compared to Python `nonlocal` Variables
+     # - Đ is more dynamic than Python
+
+Đ attribute access
+
+     #} {;
+      {## Compared to Python `nonlocal` Variables #}
+      export edh'more'dyn'than'py'nonlocal = bookmark
+
+
+    }
+
+
+  }
+
+}
+
+
+{## Object-Oriented, but Not Entirely
+ # - Everything is a Value (instead of Object) in Đ
+
+Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Oriented* as Python, *NOT* everything is an object here, such as numbers, strings, and procedures. And there are a handful of special values.
+
+ #} {; import * '../intermediate/objs' # <- navigate to elaboration of Đ Value System
+
+  {## Identity Test Corrected
+   # - Object identity has some flaws, value semantics can fix that
+
+
+   #} {;
+
+  }
+
+
+  {## Modules and Namespaces are Objects
+   # - There are builtin classes for module and namespace respectively
+
+
+   #} {;
+    {## Modules and Namespaces are Objects #}
+    export edh'modu'ns'be'obj = bookmark
+
+
+  }
+
+}
+
+
+{## Notable Aspects of Đ Value System
  # - Everything is a value in Đ, something is different
  #} {; import * '../intermediate/vals'
 
@@ -558,24 +747,6 @@ Lexical scopes and closuress ...
   show$ (!)
 
   # %#
-}
-
-
-{## Object-Oriented, but Not Entirely
- # - Everything is a Value (instead of Object) in Đ
-
-Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Oriented* as Python, *NOT* everything is an object here, such as numbers, strings, and procedures. And there are a handful of special values.
-
- #} {; import * '../intermediate/objs' # <- navigate to elaboration of Đ Value System
-
-  {## Identity Test Corrected
-   # - Object identity has some flaws, value semantics can fix that
-
-
-   #} {;
-
-  }
-
 }
 
 
