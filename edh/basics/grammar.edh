@@ -233,27 +233,204 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 }
 
 
-{## Procedures & Lambdas
- # - Đ is functional to such an extent
- #
- # Several type of procedures, the lambda forms (arrow procedures),
- # and expression being 1st class as well
+{## Classes
+ # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
+ #} {; import * '../intermediate/objs'
+  {## Đ Classes #}
+  export edh'classes = bookmark
+
+
+  {## Data Classes
+   # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
+
+Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines in pattern matching use cases, closely mimics ADT, predating PEP-634 (which is upcoming in Python 3.10).
+
+   #} {;
+    {## Data Classes #}
+    export edh'data'classes = bookmark
+
+
+  }
+
+
+  {## Usual Classes
+   # - A data class is still a usual class under the hood
+
+The `class` keyword defines a usual class.
+
+   #} {;
+    {## Usual Classes #}
+    export edh'usual'classes = bookmark
+
+
+    # %%
+    class B pass
+    class C extends B
+    class D extends C
+    class E extends (D, B )
+    # %%
+    o = C()
+    export o.a = 5
+    # %%
+    dir$ o
+
+    # %#
+  }
+
+}
+
+
+{## Modules and Namespaces
+ # - `module` and `namespace` are two special builtin classes
+
+
  #} {;
-  {## Procedures & Lambdas #}
-  export edh'lambdas = bookmark
+  {## Modules and Namespaces #}
+  export bookmark'identifier = bookmark
 
 
 }
 
 
-{## Data Classes & Normal Class
- # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
+{## Lexical Scopes
+ # - Every scope is backed by an entity with an (implicit) identity, plus a dynamic set of attributes
 
-Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines in pattern matching use cases, closely mimics ADT, predating PEP-634 (which is up-coming in Python 3.10).
+Every scope can be wrapped as an object of `scope` class
 
  #} {;
-  {## Data Classes & Normal Class #}
-  export edh'data'class'syntax = bookmark
+  {## Lexical Scopes #}
+  export edh'lexi'scopes = bookmark
 
+  # %%
+  s = scope()
+  # %%
+  s.attrs() |type
+  # %%
+  dir$ s
+  # %%
+  s.put( a= 5, b=2, )
+  s.eval( expr c = 3 )
+  # %%
+  dir$ s
+  # %%
+  s.eval( expr c += 2 )
+  s.get( 'c' )
+  # %#
+
+}
+
+
+{## Procedures
+ # - Đ is functional to such an extent
+
+Several type of procedures, the lambda forms (arrow procedures), and expression being 1st class as well
+
+
+ #} {;
+  {## Procedures #}
+  export edh'procs = bookmark
+
+
+  {## Methods, Bound and Unbound
+   # - Procedures owned by some object
+
+All procedures are methods of some object, but a particular method doesn't have to be bound
+
+   #} {;
+    {## Methods, Bound and Unbound #}
+    export edh'mths'bound'unbound = bookmark
+
+
+  }
+
+
+  {## This/That/Super Reference
+   # - A class of multiple inheritance creates composite objects
+
+Đ follows JavaScript/Java/C++ to use `this` keyword, instead of Python's `self`, however this is not a simple choice end here.
+
+
+`that` reference solves a problem akin to the slicing problem of C++
+  https://en.wikipedia.org/wiki/Object_slicing
+
+
+   #} {;
+    {## This/That/Super Reference #}
+    export edh'this'that'super'ref = bookmark
+
+
+  }
+
+
+  {## Closure
+   # - A procedure always captures the full lexical context it is defined in
+
+Đ closure is rather coarse grained.
+
+   #} {;
+    {## Closure #}
+    export edh'closure = bookmark
+
+
+  }
+
+}
+
+
+{## Expressions
+ # - Lambda without formal argument declaration
+
+A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
+
+ #} {;
+  {## Expressions #}
+  export edh'exprs = bookmark
+
+
+  {## The `expr` Expression
+   # - Original source preserved
+
+Expression is 1st class in Đ, you can create expression values with literal form
+
+   #} {;
+    {## The `expr` Expression #}
+    export edh'expr'expr = bookmark
+
+    # %%
+    x = expr a + b * c
+
+    # %#
+
+  }
+
+
+  {## Expr Arguments to Procedures
+   # - Arguments are passed in expr form, to interpreter procedures and 3af operator procedures
+
+For an interpreter procedure or an infix operator procedure with 3 positional arguments, the first argument will be wrapped scope object of its caller, and rest arguments are all expression values.
+
+   #} {;
+    {## Expr Arguments to Procedures #}
+    export edh'expr'args = bookmark
+
+    # %%
+    x' = makeExpr( a + b * c )
+    # %%
+    s.eval( x' )
+    # %#
+
+  }
+
+  {## Code as Data
+   # - A runnable piece of Đ code is just data from the perspective of the host language/runtime
+
+Đ host procedures (written in Haskell) see Đ AST directly.
+
+   #} {;
+    {## Code as Data #}
+    export edh'host'proc'exprs = bookmark
+
+
+  }
 
 }

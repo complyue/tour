@@ -200,3 +200,388 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 '''
   # %#
 }
+
+
+{## Common Part with Pervasive Languages
+ # - Good interoperability with Python/JavaScript etc. at source level
+
+Đ shares some common syntax with most programming languages (e.g. Python, JavaScript), where parentheses pair is the call-making operator, and expressions consist of named references plus prefix/infix/postfix operators with precedences and associativities, and parentheses again used to override precedence.
+
+ #} {;
+  {## Đ Syntax Common To Other Languages #}
+  export edh'common'syntax = bookmark
+
+  # %%
+  # `console` hooks to the interpreter program's stdio
+  # `console.print()` does exactly what you think it should
+  console.print( 'Đ code can have usual looking of Python, JavaScript etc.' )
+
+  # %%
+  # As a code cell is run by a REPL, the result of evaluation will be printed,
+  # so you don't really need `console.print()` that often
+  1 + 2 - 3 * 7
+
+  # %%
+  # When precedence rule doesn't work outright, parentheses comes to rescue
+  1 + ( 2 - 3 ) * 7
+  # %#
+
+  {## Minor but Subtle/Surprising Differences
+   # - You might be surprised by a few things though
+   #} {;
+
+    {## String Literals
+     # - Almost all possible forms can be written
+
+In era without code syntax highlighting, multi-line strings can be adversely confusing, but nowadays no text editor can claim itself being a code editor without proper syntax highlighting. So Đ allows a string literal to span multi lines anyway, dunno if this can trip someone up, but be aware.
+
+     #} {;
+      {## String Literals #}
+      export edh'str'literals = bookmark
+
+      # %%
+      'single-quote, single-line string'
+      # %%
+      'single-quote,
+multi-line string'
+      # %%
+      "double-quote, single-line string"
+      # %%
+      "double-quote,
+multi-line string"
+      # %%
+      `tick-quote, single-line string`
+      # %%
+      `tick-quote,
+multi-line string`
+      # %%
+      '''triple-single-quote, single-line string'''
+      # %%
+      '''triple-single-quote,
+multi-line string'''
+      # %%
+      """triple-double-quote, single-line string"""
+      # %%
+      """triple-double-quote,
+multi-line string"""
+      # %%
+      ```triple-tick-quote, single-line string```
+      # %%
+      ```triple-tick-quote,
+multi-line string```
+
+      {## Trailing Spaces in Multi-line String Literal
+       # - It'll be removed by Đ code formatter
+
+One particar note for multi-line strings, though:
+  ALL TRAILING SPACES will be REMOVED by Đ code formatter
+That includes such spaces inside a multi-line string literal, you need a workaround just in case.
+
+       #} {;
+        {## Trailing Spaces in Multi-line String Literal #}
+        export edh'fmt'rm'trail'spc'in'str'lit = bookmark
+
+        # %%
+        """You'll need tricks like   """ +
+        """this to preserve space(s), which otherwise,
+will be at the end of a source line."""
+        # %#
+      }
+    }
+
+    {## Fractional Numbers
+     # - Don't take floating point numbers for granted
+
+Floating point arithmetic is intrinsic to numbers in most computer programming languages of today, see:
+> What Every Programmer Should Know About Floating-Point Arithmetic
+  https://floating-point-gui.de/
+
+Python `float` and JavaScript `number` are all subject to those gotchas.
+
+     #} {;
+      # %% Check it in Đ then:
+      0.1 + 0.2
+      # Oops! Not the case you'd encounter with Python or JavaScript
+
+      # %% Then see result of this:
+      x = 7 / 3
+      # %% And this:
+      x * 9
+      # You get it? Numbers can be lossless-fractional in Đ
+
+      # %% And in case you need integral division, use (//) as in Python
+      7 // 3
+      # %#
+
+      # Takeaway is:
+      #   Numbers in Đ are lossless (within extent of rational numbers)
+      # Well please keep in mind that comes at a rather high cost, both spacial and time complexity are much higher to work with numbers in Đ, than in other languages.
+
+      # The overhead is justified for ergonomics concerns where human errors can be disastrous, and raw machine performance should be pursued by perfessionals and by meaning means, such as the approach of `hasdim` you'll see at:
+      import * 'dim/tour' into Nothing
+    }
+
+    {## Single Quote in Identifiers
+     # - It came from Haskell, and Math in turn
+
+The single quote character (') can appear in an identifier, only if it's not the first character.
+     #} {;
+
+      # %%
+      # In Haskell and Math, a suffix ' is used to denote something slightly different from the symbol without it:
+      let ( x, y ) = ( 7, 3 )
+      let ( q, q' ) = ( x / y, x // y )
+      'Is ' + q' + ' equal to ' + q + " ? That's " + ( q'==q ) + ' of course!'
+      # %#
+
+      # There are norms in Haskell for two or even more ' as the suffix, and technically it can appear anywhere except being the start of an identifier, it's the same in Đ
+
+      {## An Unnamed Naming Convention
+       # - Or do you know its name?
+
+About naming conventions, quoting:
+  http://www.wellho.net/mouth/4611_Hungarian-Camel-Snake-and-Kebab-variable-naming-conventions.html
+
+Camel case: numberOfPeople
+A series of words, with each intermeidiate word started with a capital letter. Called "Camel Case" because the capital letters make it look like the humps of a camel.
+
+Kebab case: number-of-people
+Hypehated words - like chunks of meat or vegatables on a kebab skewer. Note that cannot case only works in a gew languahes such as Tcl and Perl 6, as the minus sign most usually is the subtraction operator.
+
+Snake case: number_of_people
+Words separated with underscores - the word snakes along past the underscores. Unlike Kebab case which is of limited (language) use, you can use Snake Case with most modern languages.
+
+Hungarian (Systems) notation: iNumberOfPeople
+In hungarian notation, you preceed the variable name with an additional character or characters to indicate the type of variable - in Hungarian Systems notation, that's an indiction of the internal data type such as i for Integer. You can see the developemnt of Hungarin Systems Notation from old Fortran conventions where variable names starting with I J K L M or N were integers, and others were floats.
+
+Hungarian (Apps) notation: cntNumberOfPeople
+Prefixing the name of the variable with character(s) to indicate the use make of a variable within the application - in my example, I have used cnt to incicate it's a counter ... and in my old Fortran programs you'll find "JPxxxxx" all over th eplace to indicate an integer pointer.
+
+       #} {;
+        # %%
+        # In Đ more usages of ' can be seen, such as word delimiters in a long identifier, maybe a whole new naming convention, but dunno its name:
+        number'of'people :: non'negative!int!DecimalType
+        number'of'people = 5
+        # %#
+        # Note about (::) and (!), they are annotation operators in Đ, will be
+        # explained later
+      }
+    }
+  }
+
+}
+
+
+{## Đ Scopes & Attributes
+ # - No variable, only attributes of scopes
+
+Variable in most programming languages is a misconception, ...
+
+There is not such a thing named variable in Đ ...
+
+ #} {;
+  {## Đ Scopes & Attributes #}
+  export edh'scopes'attributes = bookmark
+
+
+}
+
+
+{## Đ Closures
+ # - Closures are way more coarse grained in Đ
+
+Lexical scopes and closuress ...
+
+ #} {;
+  {## Đ Closures #}
+  export edh'closures = bookmark
+
+
+}
+
+
+{## Notable Differences of Đ Value System
+ # - Everything is a value in Đ, something is different
+ #} {; import * '../intermediate/vals'
+
+  {## Named Values / Term Definitions
+   # - Got the familiar (:=) operator for definition
+   #} { edh'term'def # <- follow this bookmark to learn more details or just run following cells to get some feel
+
+    # %% # make sure to run this cell before the ones following it
+    π := 3.14
+
+    # %% # this prints its name, not value
+    repr( π )
+
+    # %% # after arithmetics, it is no more a term,
+    repr( π * 1 ) # just an immutable numeric value
+
+    # %% # while type of a term comes from its value
+    type( π )
+
+    # %% # and Đ knows it being a term, and can show that accordingly
+    show( π )
+
+    # %% # otherwise it's can be used just like an attribute
+    r = 1.58
+    C = 2 * π * r
+
+    # %#
+  }
+
+  {## Đ Vocabulary for Nullability
+   # - nil, null, None, Nothing and friends
+   #} { edh'nullability # <- follow this bookmark to learn more details
+    # or just run following cells to get some feel
+
+    # %% # `nil` will not be printed by REPL
+    nil
+
+    # %%
+    type( nil ) is nil
+
+    # %% `null()` is the null-test procedure, relatable to the `null`
+    # function as in Haskell, but semantically more like:
+    #  - Negated *Truth Value Testing* as in Python
+    #  https://docs.python.org/3/library/stdtypes.html#truth-value-testing
+    # And
+    #  - *Falsy Testing* as in JavaScript
+    #  https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+    # For a dynamic language
+    null( nil )
+    # %%
+    null( 0 )
+    # %%
+    null( 1 )
+
+    # %% # Note a procedure value will always be *truthy*
+    null( null ) # recognize the result please
+
+    # With the mechanism to define named values (i.e. terms), some named *nil* values can be defined for special purpose:
+
+    # %%
+    None
+    # %%
+    Nothing
+
+    # %%
+    show( None )
+    # %%
+    show( Nothing )
+
+    # %%
+    None == Nothing
+    # %%
+    None is Nothing
+
+    # %%
+    None == nil
+    # %%
+    None is nil
+
+    # %%
+    Nothing == nil
+    # %%
+    Nothing is nil
+
+    # %#
+  }
+
+  {## Applicability Semantics
+   # - We talk about the lack thereof, actually
+   #} { import * '../intermediate/appl' # <- navigate to elaboration of Đ Applicability Semantics
+
+    edh'na'semantics # <- follow this bookmark to learn more details
+
+    # %% # NA stands for Not/Applicable, it's a literal constant in Đ
+    NA
+
+    # %% # How is it technically working?
+    show( NA )
+
+    # %% # The actually `NA` value is a defined constant term, with the value in turn being a *default* expression of literal `nil`, so it is technically a shorthand of `NA := default nil`
+    default nil
+    # %#
+
+    # More about *default* expressions later, but you just see its repr now for some intuition
+  }
+
+}
+
+
+{## Fancy Operators
+ # - Some stylish from Haskell
+ #} {;
+  {## Đ Operators #}
+  export edh'operators = bookmark
+
+  # %%
+  console.print$ 'The low-precedence, procedure-call operator `($)` '
+  ++ 'can be used for a little stranger syntax.'
+
+  # %% May be even more strange
+  show$ ($)
+  # %#
+  # Run above cell, you should see:
+  #  intrinsic: infixr -5 ($)
+
+  # You'd feel familiar if you know about Haskell, `$` is a right-associative, infix operator, of precedence -5 (which is rather low) in Đ (not the core language, but a custom operator from the default batteries technically). The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as the function-application operator in Haskell.
+
+  # To address an operator, you quote it with a pair of parentheses just like in Haskell, so `show$ ($)` should be interpreted as calling procedure `show` with the value of ($) operator procedure (which is first class value in Đ) as the only argument.
+
+  # %% For better understanding, it can be written like this, which is more usual
+  op = ($)
+  show( op )
+
+  # %%
+  console.print$ 'Though the (+) operator works to concatenate strings for'
+  + ' Python interoperability, the (++) operator is more idiomatic in Đ'
+  ++ ' for string concatenation, resembling Haskell.'
+
+  ; # As you have learned, a semicolon is usually necessary before a starting parentheses, to disambiguate from procedure-call-making, which binds the tightest
+  # %% # The pipe operator (|) is flipped ($) operator
+  ($) |show
+  # %% # This is equivalent to:
+  show$ ($)
+  # %% # Checkout what the (|) operator is
+  show$ (|)
+  # %#
+
+  # Note the (|) operator resembles UNIX pipe, while its semantics is more close to the (&) operator in Haskell, which is flipped ($) operator.
+
+  # Some other operators of interest:
+
+  # %%
+  show$ (::)
+  # %%
+  show$ (!)
+
+  # %#
+}
+
+
+{## Object-Oriented, but Not Entirely
+ # - Everything is a Value (instead of Object) in Đ
+
+Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Oriented* as Python, *NOT* everything is an object here, such as numbers, strings, and procedures. And there are a handful of special values.
+
+ #} {; import * '../intermediate/objs' # <- navigate to elaboration of Đ Value System
+
+  {## Identity Test Corrected
+   # - Object identity has some flaws, value semantics can fix that
+
+
+   #} {;
+
+  }
+
+}
+
+
+{## More or Less Functional than You'd Expect
+ # - Roots in Haskell, Go, Python, and JavaScript
+
+
+ #} {;
+}
