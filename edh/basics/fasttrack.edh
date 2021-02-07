@@ -619,6 +619,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
     # %#
   }
 
+
   {## Đ Vocabulary for Nullability
    # - nil, null, None, Nothing and friends
    #} { edh'nullability # <- follow this bookmark to learn more details
@@ -677,6 +678,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
     # %#
   }
 
+
   {## Applicability Semantics
    # - We talk about the lack thereof, actually
    #} { import * '../intermediate/appl' # <- navigate to elaboration of Đ Applicability Semantics
@@ -694,6 +696,66 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
     # %#
 
     # More about *default* expressions later, but you just see its repr now for some intuition
+  }
+
+
+  {## Expressions
+   # - Lambda without formal argument declaration
+
+A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
+
+   #} {;
+    {## Expressions #}
+    export edh'exprs = bookmark
+
+
+    {## The `expr` Expression
+     # - Original source preserved
+
+Expression is 1st class in Đ, you can create expression values with literal form
+
+     #} {;
+      {## The `expr` Expression #}
+      export edh'expr'expr = bookmark
+
+      # %%
+      x = expr a + b * c
+
+      # %#
+
+    }
+
+
+    {## Expr Arguments to Procedures
+     # - Arguments are passed in expr form, to interpreter procedures and 3af operator procedures
+
+For an interpreter procedure or an infix operator procedure with 3 positional arguments, the first argument will be wrapped scope object of its caller, and rest arguments are all expression values.
+
+     #} {;
+      {## Expr Arguments to Procedures #}
+      export edh'expr'args = bookmark
+
+      # %%
+      x' = makeExpr( a + b * c )
+      # %%
+      s.eval( x' )
+      # %#
+
+    }
+
+
+    {## Code as Data
+     # - A runnable piece of Đ code is just data from the perspective of the host language/runtime
+
+Đ host procedures (written in Haskell) see Đ AST directly.
+
+     #} {;
+      {## Code as Data #}
+      export edh'host'proc'exprs = bookmark
+
+
+    }
+
   }
 
 }
