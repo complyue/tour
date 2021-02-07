@@ -1,5 +1,9 @@
 {## Đ Syntax, Semantics, and Pragmatics #}
 
+{## Đ Grammar Details #}
+export edh'grammar'details = bookmark()
+
+
 {## Đ Code Style
  # - Đ code style is officially opinionated
  #} {;
@@ -25,11 +29,11 @@ FYI, the original idea comes from Henry Ford's famous quotes about the Model T:
 > Any customer can have a car painted any colour that he wants,
 > so long as it is black.
 
-Home page of the formatter should have described the rules and your rights (freedom) well,  after modification, save or right-click to select "Format Document", then you'll see what the formatter thinks.
-
    #} {;
     {## The Official Đ Code Formatter #}
     export edh'code'formatter = bookmark
+
+    # Home page of the formatter should have described the rules and your rights (freedom) well,  after modification, save or right-click to select "Format Document", then you'll see what the formatter thinks.
 
     # %% # try play with this cell:
     #    add/remove spaces, break it into multip lines, you name it
@@ -107,15 +111,15 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
 
     # The following 5 cells too, have identical semantics and result value
     # %%
-    { 'a' : 5, 'b' : 3, 'c' : 9, } # <- idiomatic one
+    { 'a': 5, 'b': 3, 'c': 9, } # <- idiomatic one
     # %%
-    {, 'a' : 5 'b' : 3 'c' : 9 }
+    {, 'a': 5 'b': 3 'c': 9 }
     # %%
-    { 'a' : 5 'b' : 3, 'c' : 9 }
+    { 'a': 5 'b': 3, 'c': 9 }
     # %%
-    { 'a' : 5 'b' : 3 'c' : 9, }
+    { 'a': 5 'b': 3 'c': 9, }
     # %%
-    { 'a' : 5 'b' : 3 'c' : 9 }
+    { 'a': 5 'b': 3 'c': 9 }
     # %#
 
     # The following 5 cells too, have identical semantics and result value
@@ -182,6 +186,19 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
     {;
       # It can still parse as dict literal with comments inside
     }
+
+
+    # Finally, a comma to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
+    # %% # A single argument pack
+    ; ( 3*7, )
+    # %% # A parenthese-quoted expression
+    ; ( 3*7 )
+    # %%
+    ; type( ( 3*7, ) )
+    # %%
+    ; type( ( 3*7 ) )
+    # %#
+
   }
 
 
@@ -212,6 +229,7 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 '''
     # %#
   }
+
 }
 
 

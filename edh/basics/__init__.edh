@@ -41,7 +41,7 @@ export {
    #
    #} {; import * './grammar'
     {##  Đ Syntax, Semantics, and Pragmatics #}
-    edh'grammar = bookmark
+    export edh'grammar = bookmark
 
 
     {## Common Part with Pervasive Languages

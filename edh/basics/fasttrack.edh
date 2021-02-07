@@ -1,0 +1,202 @@
+{## Learn Đ by Comparison #}
+import * './grammar'
+
+
+{## Target Audience
+ # - Suitable for developers familiar with some other Object-Oriented, dynamic scripting language
+ #} {;
+  {## Target Audience #}
+  export edh'learn'by'cmp'audience = bookmark
+
+  # If you are familiar with any other Object-Oriented, dynamic, scripting language, like Python, JavaScript, Smalltalk etc. , this is for you. You just need to know the differences and a few important gotchas, could save you a great deal of time going over some basic concepts.
+
+  # Familiarity with Haskell is a great plus, as the base Đ interpreter is written in Haskell, and many Đ language constructs are influenced by Haskell.
+
+  # But if you don't know another OO dynamic scripting language, many narrations here might not click for you, then please resort to:
+  edh'grammar'details # <- follow this link to detailed tour of Đ grammar
+
+  # Alternatively, you can learn Python first if you prefer.
+}
+
+
+{## Đ Code are Auto-Formatted
+ # - There is an official code formatter for Đ
+
+You may already know what's an opinionated code formatter, such as Black for Python, or Prettier for JavaScript (and HTML, CSS etc.):
+  https://black.readthedocs.io
+  https://prettier.io
+
+So it should be no surprise to you, that Đ comes with its own formatter, yet officially:
+  https://github.com/e-wrks/edh-vscode-formatter
+  https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-formatter
+
+ #} {;
+
+  # Home page of the formatter should have described the rules and your rights (freedom) well,  after modification, save or right-click to select "Format Document", then you'll see what the formatter thinks.
+
+  # %% # try play with this cell:
+  #    add/remove spaces, break it into multip lines, you name it
+  1+ ( 2 - 3 ) *5 /9
+  # %#
+
+  # TODO any gotcha to be showcased here?
+
+  # For why Đ chose curly braces over indentation rules like Python, see:
+  edh'sps'insensitivity
+
+}
+
+
+{## Optional Semicolons and Commas
+ # - Semicolons and commas are technically optional
+
+Examples ought to be enough, and just idiomatic guidelines:
+
+* Avoid semicolons unless absolutely necessary
+* Place trailing commas where possible
+
+Note semicolons can be really technically omitted in Đ, not the case like in JavaScript that the language does:
+  > Automatic Semicolon Insertion <
+  https://tc39.es/ecma262/#sec-automatic-semicolon-insertion
+
+ #} {;
+
+  # The following 5 cells have identical semantics and result value
+  # %%
+  { a=5; b=3; c=9; }
+  # %%
+  {; a=5 b=3 c=9 } # <- idiomatic one
+  # %%
+  { a=5 b=3; c=9 }
+  # %%
+  { a=5 b=3 c=9; }
+  # %%
+  { a=5 b=3 c=9 }
+  # %#
+
+  # The following 5 cells too, have identical semantics and result value
+  # %%
+  { 'a': 5, 'b': 3, 'c': 9, } # <- idiomatic one
+  # %%
+  {, 'a': 5 'b': 3 'c': 9 }
+  # %%
+  { 'a': 5 'b': 3, 'c': 9 }
+  # %%
+  { 'a': 5 'b': 3 'c': 9, }
+  # %%
+  { 'a': 5 'b': 3 'c': 9 }
+  # %#
+
+  # The following 5 cells too, have identical semantics and result value
+  # %%
+  ; [ 5, 3, 9, ] # <- idiomatic one
+  # %%
+  ; [, 5 3 9 ]
+  # %%
+  ; [ 5 3, 9 ]
+  # %%
+  ; [ 5 3 9, ]
+  # %%
+  ; [ 5 3 9 ]
+  # %#
+
+  # The following 5 cells too, have identical semantics and result value
+  # %%
+  ; ( 5, 3, 9, ) # <- idiomatic one
+  # %%
+  ; (, 5 3 9 )
+  # %%
+  ; ( 5 3, 9 )
+  # %%
+  ; ( 5 3 9, )
+  # %%
+  ; ( 5 3 9 )
+  # %#
+
+
+  {## Cases Disambiguation Needed
+   # - However, you'd better be reminded of necessary disambiguations
+
+These examples should work for you.
+
+   #} {;
+
+    {## Disambiguate Unintended Indexing / Calling #}
+    export edh'disambig'idx'call = bookmark
+
+    # Noticed the semicolons before each pair of square/round brackets? Why are they there?
+
+    # The answer is: There usually need a semicolon before a pair of square/round brackets, when you don't mean to do indexing or calling against artifact before it.
+
+
+    {## Disambiguate Block from Dict #}
+    export edh'disambig'blk'dict = bookmark
+
+    # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
+
+    # %% # Well, check out this:
+    type( {; } )
+    # %% # Then this:
+    type( {} )
+    # %#
+
+    # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
+
+    # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exceptin of branches' early break, though, about that later)
+    # %% # And an empty block evals to `nil`, check this to be true
+    {; } is nil
+    # %#
+
+    # Though you don't need a semicolon when there is at least 1 statement in a block, e.g.
+    # %% # This is a block with a single assignment expression statement
+    { a=1 }
+    # %% # But this is the idiomatic form, which is preferable for foolproof modifications in later code maintenance:
+    {; a=1 }
+    # %#
+
+    # The idiomatic style is to put a semicolon right after the opening curly brace/bracket, when there are risks for it to be mis-interpreted/parsed as a dict literal:
+    {;
+      # It can still parse as dict literal with comments inside
+    }
+
+
+    # Finally, a comma to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
+    # %% # A single argument pack
+    ; ( 3*7, )
+    # %% # A parenthese-quoted expression
+    ; ( 3*7 )
+    # %%
+    ; type( ( 3*7, ) )
+    # %%
+    ; type( ( 3*7 ) )
+    # %#
+
+  }
+
+}
+
+
+{## Recommended Line Length
+ # - It is under your control, well some advice here
+
+For the record, Đ langauge support extension for VSCode sets the following config options per the language:
+
+* Show rulers at column positions: 80, 100, 120
+* Soft-wrap lines at 100, while adapting to narrower window width
+
+You are recommended to hard-wrap source lines around column 80, and that's not for good old line printers set for Fortran punch cards, but to enable a human reader have 2~3 editor columns layed out on wide screens, to cross check code segments from multiple sites, without necessarity of tab switching, which is good for productivity.
+
+For long paragraphs in comments, of mere documentation purpose, it's considered more idiomatic to keep them as long lines per each paragraph, so you don't need to manually maintain hard-wrap points when update documentation, just leave it soft-wrapped at 100 columns by default.
+
+Nevertheless you can change per user settings of your IDE, for a different soft wrap strategy.
+
+ #
+ #} {;
+  # %%
+  '''                                                             80 columns ▽
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                                                                                       100 columns △
+'''
+  # %#
+}
