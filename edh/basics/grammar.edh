@@ -7,7 +7,7 @@ export edh'grammar'details = bookmark
 {## Overview
  # - Why and What is here with Đ
 
-Đ seeks to ease development of more embedded DSLs (Domain Specific Langauges) speaking / realizing business needs, i.e. a Business Integration language. How computers work and to be optimized in solving programming problems, are addressed by a large research discipline in its own right, i.e. Computer Science. But CS is too different and often too far from practical needs of realworld business, dedicated languages are of much interest, and Đ attempts to be a comprehensive solution.
+Đ seeks to ease development of embedded DSLs (Domain Specific Langauges) speaking / realizing business needs, i.e. a Business Integration language. How computers work and to be optimized in solving programming problems, are addressed by a large research discipline in its own right, i.e. Computer Science. But CS is too different and often too far from practical needs of realworld business, dedicated languages are of much interest, and Đ attempts to be a comprehensive solution.
 
 **Đ (Edh)** stands for **Event Distributing & Hosting**, an _event_ is a consistent (but not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to **Algebraic Data Type** in _type theory_ as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
 
