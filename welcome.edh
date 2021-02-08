@@ -174,18 +174,38 @@ The rest contents in this module contain many links that can teleport you to var
  #} {; import * 'tour'
 
   {## Language Basics
-   # - Syntax, Utilities, Commands, ...
-   #} { import * './edh/basics' # <- navigable for elaborate source
+   # - Comparison, Grammar, Utilities, Commands, ...
+   #} {; import * './edh/basics' # <- navigable for elaborate source
+
+    {## Compared to Similar Languages
+     # - Đ Compared to Similar Languages
+     #} {; edh'lang'cmp # <- navigable bookmark
+
+      # TODO briefs & short examples here
+
+    }
 
     {## Grammar
      # - Đ Grammar
-     #} { edh'grammar # <- navigable bookmark
+     #} {; edh'grammar # <- navigable bookmark
+
+      # TODO briefs & short examples here
 
     }
 
     {## Utilities
      # - Đ Utilities
-     #} { edh'utilities # <- navigable bookmark
+     #} {; edh'utilities # <- navigable bookmark
+
+      # TODO briefs & short examples here
+
+    }
+
+    {## Commands
+     # - Đ Commands
+     #} {; edh'commands # <- navigable bookmark
+
+      # TODO briefs & short examples here
 
     }
 
@@ -199,7 +219,7 @@ The rest contents in this module contain many links that can teleport you to var
 
 An "Đ Terminal Session" running different interpreter (REPL) would be needed to run "Code Lens" there, "Go To Definition" of the following import to take the Tour there.
 
- #} { import * 'swarm/tour' }
+ #} {; import * 'swarm/tour' }
 
 
 {## HasDim
@@ -209,7 +229,7 @@ Vectorized High Performance Numeric Computing with NVM (e.g. disk) backed SIMD r
 
 An "Đ Terminal Session" running different interpreter (REPL) would be needed to run "Code Lens" there, "Go To Definition" of the following import to take the Tour there.
 
- #} { import * 'dim/tour' }
+ #} {; import * 'dim/tour' }
 
 
 {## HaskIt
@@ -219,7 +239,7 @@ Under the hood is BokehJS, for Data / Idea · Exploration / Exposition.
 
 An "Đ Terminal Session" running different interpreter (REPL) would be needed to run "Code Lens" there, "Go To Definition" of the following import to take the Tour there.
 
- #} { import * 'haskit/tour' }
+ #} {; import * 'haskit/tour' }
 
 
 {## Swarming Đ
@@ -231,7 +251,7 @@ It is capable of scheduling Pandas / Numpy / C/C++ based Python works, as well a
 
 An "Đ Terminal Session" running different interpreter (REPL) would be needed to run "Code Lens" there, "Go To Definition" of the following import to take the Tour there.
 
- #} { import * 'swarm/tour' }
+ #} {; import * 'swarm/tour' }
 
 
 {## How Đ Language Server Works
@@ -239,4 +259,4 @@ An "Đ Terminal Session" running different interpreter (REPL) would be needed to
 
 That Tour is some different, I'd just send you there from here.
 
- #} { import * 'els/tour' }
+ #} {; import * 'els/tour' }

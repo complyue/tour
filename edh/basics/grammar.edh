@@ -1,8 +1,56 @@
 {## Đ Syntax, Semantics, and Pragmatics #}
 
 {## Đ Grammar Details #}
-export edh'grammar'details = bookmark()
+export edh'grammar'details = bookmark
 
+
+{## Overview
+ # - What's here with Đ
+
+The Đ grammar is designed with a major goal of interoperation by scripting,
+for IPC across processes of heterogeneous runtime implementations.
+
+While some constructs from Haskell, Go, Python and others, are introduced
+for purpose of ergonomics. E.g.
+
+- custom infix operators, with arbitrary associativity and precedence
+    * from Haskell, C++ etc.
+
+- pattern matching & branching
+    * from typical FP languages, as well as upcoming PEP-634 of Python
+
+- goroutine
+    * from Go
+
+- compositional object
+    * sorta from Go type embedding, and C++ multiple-inheritance
+
+- class based inheritance
+    * from Python, Smalltalk etc.
+
+- C3 linearized multiple inheritance
+    * from Python, which is in turn from Dylan
+
+- magic object methods
+    * from Python
+
+- data classes
+    * from Python PEP-557
+
+- prototype based inheritance
+    * from JavaScript
+
+- fat-arrow procedure (lambda)
+    * from JavaScript, while the lambda aspect from all multi-paradigm
+      languages with FP in mind, including JavaScript and Python
+
+- symbols
+    * from JavaScript, yet much enhanced
+
+ #} {;
+  {## Overview #}
+  export edh'lang'overview = bookmark
+}
 
 {## Đ Code Style
  # - Đ code style is officially opinionated
@@ -28,6 +76,10 @@ FYI, the original idea comes from Henry Ford's famous quotes about the Model T:
 
 > Any customer can have a car painted any colour that he wants,
 > so long as it is black.
+
+Also opinionated formatters with similar goals:
+  https://prettier.io  - Prettier for JavaScript (and HTML, CSS etc.)
+  https://github.com/tweag/ormolu  - Ormolu for Haskell
 
    #} {;
     {## The Official Đ Code Formatter #}
@@ -83,7 +135,7 @@ Whitespace sensitivity has become outdated now, brackets (curly, square or round
 
 For the record, in Đ code it's considered idiomatic to:
 
-* Avoid semicolons unless absolutely necessary
+* Avoid semicolons without good reasons
 * Place trailing commas where possible
 
 Note semicolons can be really technically omitted in Đ, not the case like in JavaScript that the language does:

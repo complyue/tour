@@ -1,18 +1,20 @@
-{## Learn Đ by Comparison #}
-import * './grammar'
+{## Đ Compared to Similar Languages #}
+
+{## Đ Compared to Similar Languages #}
+export edh'lang'cmp'details = bookmark
 
 
 {## Target Audience
- # - Suitable for developers familiar with some other Object-Oriented, dynamic scripting language
- #} {;
+ # - For developers familiar with some other Object-Oriented, dynamic scripting language
+ #} {; import * './grammar'
   {## Target Audience #}
-  export edh'learn'by'cmp'audience = bookmark
+  export edh'lang'cmp'audience = bookmark
 
   # If you are familiar with any other Object-Oriented, dynamic, scripting language, like Python, JavaScript, Smalltalk etc. , this is for you. You just need to know the differences and a few important gotchas, could save you a great deal of time going over some basic concepts.
 
   # Familiarity with Haskell is a great plus, as the base Đ interpreter is written in Haskell, and many Đ language constructs are influenced by Haskell.
 
-  # But if you don't know another OO dynamic scripting language, many narrations here might not click for you, then please resort to:
+  # But if you don't know another Object-Oriented dynamic scripting language, some jargons here might not click for you, then please resort to:
   edh'grammar'details # <- follow this link to detailed tour of Đ grammar
 
   # Alternatively, you can learn Python first if you prefer.
@@ -22,9 +24,10 @@ import * './grammar'
 {## Đ Code are Auto-Formatted
  # - There is an official code formatter for Đ
 
-You may already know what's an opinionated code formatter, such as Black for Python, or Prettier for JavaScript (and HTML, CSS etc.):
+You may already know what an opinionated code formatter is, such as Black for Python, Prettier for JavaScript (and HTML, CSS etc.), an Ormolu for Haskell:
   https://black.readthedocs.io
   https://prettier.io
+  https://github.com/tweag/ormolu
 
 So it should be no surprise to you, that Đ comes with its own formatter, yet officially:
   https://github.com/e-wrks/edh-vscode-formatter
@@ -52,7 +55,7 @@ So it should be no surprise to you, that Đ comes with its own formatter, yet of
 
 Examples ought to be enough, and just idiomatic guidelines:
 
-* Avoid semicolons unless absolutely necessary
+* Avoid semicolons without good reasons
 * Place trailing commas where possible
 
 Note semicolons can be really technically omitted in Đ, not the case like in JavaScript that the language does:
@@ -498,7 +501,7 @@ Namespaces are important in Đ, as alternative solutions to certain problems sol
 
     # Alternative to Python nonlocal semantics
 
-    # Alternative to JavaScript hoisting
+    # Alternative to JavaScript hoisting, - for a piece of code in need of calling a later defined procedure, wrap it in a method procedure of the ns, defined earlier
 
   }
 
