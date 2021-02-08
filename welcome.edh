@@ -143,11 +143,24 @@ Note you can also place your keyboard cursor into 'tour' below, by either arrow 
     export edh'world'navi = bookmark
   }
 
+
+  {## Use a more Friendly Color Theme
+   # - Đ (and Haskell) can be highlighted better
+
+Standard color themes come with VSCode can NOT differentiate several types of syntactical elements in Đ (as well as Haskell) code, so the [Đ Syntax & Snippets](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-syntax) extension bundles a few color themes optimized.
+
+Press **F1** to bring out **Command Palette**, keyin `theme` and choose [`Preferences: Color Theme`], then select [`Đ (Edh) - Calm Warm`] or any other you'd like.
+
+   #} {;
+    {## Use a more Friendly Color Theme #}
+    export edh'color'theme = bookmark
+  }
+
 }
 
 
-{## Ready! Takeoff
- # - Code Navigation can be extremely useful
+{## Ready to Takeoff
+ # - Guide yourself
 
 Assuming the [Pre-Flight Checks] are all good for you, it is important not only in taking this tour, as well it'll give you great power in software development workflows, with or without Đ.
 

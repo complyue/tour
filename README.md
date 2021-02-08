@@ -15,7 +15,7 @@ Greetings! TL;DR - Just click:
       - [Haskell Toolchain](#haskell-toolchain)
     - [Choose a Modern IDE](#choose-a-modern-ide)
       - [Install Language Extensions](#install-language-extensions)
-      - [Optional: Use a more Edh/Haskell friendly Color Theme](#optional-use-a-more-edhhaskell-friendly-color-theme)
+      - [Optional: Use a more Đ/Haskell friendly Color Theme](#optional-use-a-more-đhaskell-friendly-color-theme)
     - [Install EPM](#install-epm)
     - [Initialize a Workspace](#initialize-a-workspace)
     - [Clone and Open the Tour Repository](#clone-and-open-the-tour-repository)
@@ -228,11 +228,11 @@ Easiest way is from the IDE's _Extensions_ view, search for `Edh` and `Haskell`,
   - [Haskell](https://marketplace.visualstudio.com/items?itemName=haskell.haskell)
   - [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
 
-##### Optional: Use a more Edh/Haskell friendly Color Theme
+##### Optional: Use a more Đ/Haskell friendly Color Theme
 
-Press **F1** to bring out **Command Palette**, keyin _theme_ and choose
-**Preferences: Color Theme**, then select `Đ (Edh) - Calm Warm` or any other
-you'd like.
+Standard color themes come with VSCode can NOT differentiate several types of syntactical elements in Đ (as well as Haskell) code, so the [Đ Syntax & Snippets](https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-syntax) extension bundles a few color themes optimized.
+
+Press **F1** to bring out **Command Palette**, keyin `theme` and choose [`Preferences: Color Theme`], then select [`Đ (Edh) - Calm Warm`] or any other you'd like.
 
 #### Install EPM
 

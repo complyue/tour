@@ -469,6 +469,57 @@ Variable in most programming languages is a misconception, ...
     edh'term'attr'stead'var
 
 
+  }
+
+
+  {## Modules
+   # - Similar to Python Modules
+
+Each `.edh` file is an Đ module
+
+   #} {;
+    {## Modules #}
+    export edh'modules = bookmark
+
+
+  }
+
+
+  {## Namespaces
+   # - Similar to TypeScript namespace
+
+An Đ namespace is a special object defined with dedicated syntax
+
+Namespaces are important in Đ, as alternative solutions to certain problems solved differently in other languages.
+
+   #} {;
+    {## Namespaces #}
+    export edh'namespaces = bookmark
+
+    # Alternative to Python nonlocal semantics
+
+    # Alternative to JavaScript hoisting
+
+  }
+
+
+  {## Scoped Blocks
+   # - A usual block doesn't create a scope, but there is special syntax
+   #} {;
+    {## Scoped Blocks #}
+    export edh'scoped'blocks = bookmark
+
+
+  }
+
+
+  {## Lexical Scoping Rules
+   # - Close to Python/JavaScript, yet with subtle difference
+
+   #} {;
+    {## Lexical Scoping Rules #}
+    export edh'lexi'rules = bookmark
+
     {## Attribute Reading
      # - An attribue can be addressed off any scope enclosing the access point
 
@@ -505,54 +556,29 @@ There is no way to directly write to any scope other than current scope in conte
 
     }
 
-  }
-
-
-  {## Namespaces
-   # - Similar to TypeScript namespace
-
-An Đ namespace is a special object defined with dedicated syntax
-
-   #} {;
-    {## Namespaces #}
-    export edh'namespaces = bookmark
-
-
-  }
-
-
-  {## Scoped Blocks
-   # - A usual block doesn't create a scope, but there is special syntax
-   #} {;
-    {## Scoped Blocks #}
-    export edh'scoped'blocks = bookmark
-
-
-  }
-
-
-  {## Closures
-   # - Closures are way more coarse grained in Đ
+    {## Closures
+     # - Closures are way more coarse grained in Đ
 
 A closure/procedure captures the full lexical scope hierarchy at the point it is defined.
 
-   #} {;
-    {## Closures #}
-    export edh'closures = bookmark
+     #} {;
+      {## Closures #}
+      export edh'closures = bookmark
 
 
-    {## Compared to Python `nonlocal` Variables
-     # - Đ is more dynamic than Python
+      {## Compared to Python `nonlocal` Variables
+       # - Đ is more dynamic than Python
 
 Đ attribute access
 
-     #} {;
-      {## Compared to Python `nonlocal` Variables #}
-      export edh'more'dyn'than'py'nonlocal = bookmark
+       #} {;
+        {## Compared to Python `nonlocal` Variables #}
+        export edh'more'dyn'than'py'nonlocal = bookmark
 
+
+      }
 
     }
-
 
   }
 
