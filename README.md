@@ -24,21 +24,11 @@ Greetings! TL;DR - Just click:
 
 ## What's Đ (Edh)
 
-**Đ (Edh)** stands for **Event Distributing & Hosting**,
-it is an _Object-Oriented_, _Scripting_ (_Dynamic_) programming language,
-serving as the surface langauge for interoperation between distributed
-processes as well as computations within a local process. Where massive
-**Concurrency** and auto mapping to **Parallelism** are very expected.
+**Đ (Edh)** stands for **Event Distributing & Hosting**, it is an _Object-Oriented_, _Scripting_ (_Dynamic_) programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
 
-Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop
-certain runtime environment programmed in another, more versatile
-programming language, i.e. the _host langauge_,
-currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
+Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
 
-**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language
-design, raw machine performance as well as a prosperous ecosystem and etc.
-are less a goal, they are offloaded to efforts by the _host language_ and/or
-_runtime_ .
+**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language design, raw machine performance as well as a prosperous ecosystem and etc. are less a goal, they are offloaded to efforts by the _host language_ and/or _runtime_ .
 
 Đ seeks to be a Business Integration language, as well as a User Interface language, it is born for two main goals:
 
@@ -48,7 +38,7 @@ _runtime_ .
 
   > An _event_ is a consistent (not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to _Algebraic Data Type_ in mathematics as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
 
-  > Anyhow the _event_ abstraction will greatly simplify and decouple the complexity, at least degrade the problem to be solvable by *Citizen Devloper*s.
+  > Anyhow the _event_ abstraction will greatly simplify and decouple the complexity, at least degrade the problem to be solvable by *Citizen Developer*s.
 
 - To be directly usable by users of all roles in the organization, especially stake-holders of the business
 
@@ -64,7 +54,7 @@ _runtime_ .
 
   > This is much closer to a GUI, yet with more flexible variance & context. The greatest advantage of this tactic is, a user can make slight changes to the code in a template cell, then execute it to achieve tasks in need of a complex phrasing of scription. Traditional TUI requires the user to type out a complete sentence for the job, which needs greatly internalized knowledge about what/how he/she is doing, as well as mental effort nevertheless; while traditional GUI might be just inable to provide the flexibility needed due to level of complexity of the task.
 
-  > So with Đ and its tooling, we can obtain more advantages at the same time, from both worlds: expressiveness from text languages as well as intuition from visual languages. And Đ is even more _dynamic_ and _interactive_ than Python, also it facilitates effectful functionality composition in a novel way. From REPLs atop stdio, to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer, and i.e. _Citizen Developer_.
+  > So with Đ and its tooling, we can obtain more advantages at the same time, from both worlds: expressiveness from textual languages as well as intuition from visual languages. And Đ is even more _dynamic_ and _interactive_ than Python, also it facilitates effectful functionality composition in a novel way (i.e. _Dynamic Scoped Effects_). From REPLs atop stdio, to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer, and i.e. _Citizen Developer_.
 
 ## Taking the Tour
 
