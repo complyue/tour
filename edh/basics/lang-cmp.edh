@@ -21,7 +21,7 @@ export edh'lang'cmp'details = bookmark
 }
 
 
-{## Đ Code are Auto-Formatted
+{## Đ Code is Formatted-on-Save
  # - There is an official code formatter for Đ
 
 You may already know what an opinionated code formatter is, such as Black for Python, Prettier for JavaScript (and HTML, CSS etc.), an Ormolu for Haskell:
@@ -196,7 +196,8 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
  #
  #} {;
   # %%
-  '''                                                             80 columns ▽
+  '''
+                                                                    80 columns ▽
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
                                                                                        100 columns △
@@ -211,23 +212,45 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 Đ shares some common syntax with most programming languages (e.g. Python, JavaScript), where parentheses pair is the call-making operator, and expressions consist of named references plus prefix/infix/postfix operators with precedences and associativities, and parentheses again used to override precedence.
 
  #} {;
-  {## Đ Syntax Common To Other Languages #}
-  export edh'common'syntax = bookmark
 
-  # %%
-  # `console` hooks to the interpreter program's stdio
-  # `console.print()` does exactly what you think it should
-  console.print( 'Đ code can have usual looking of Python, JavaScript etc.' )
+  {## Common Syntax
+   # - Đ syntax common to some languages
+   #} {;
+    {## Đ Syntax Common To Some Languages #}
+    export edh'common'syntax = bookmark
 
-  # %%
-  # As a code cell is run by a REPL, the result of evaluation will be printed,
-  # so you don't really need `console.print()` that often
-  1 + 2 - 3 * 7
+    # %%
+    # `console` hooks to the interpreter program's stdio
+    # `console.print()` does exactly what you think it should
+    console.print( 'Đ code can have usual looking of Python, JavaScript etc.' )
 
-  # %%
-  # When precedence rule doesn't work outright, parentheses comes to rescue
-  1 + ( 2 - 3 ) * 7
-  # %#
+    # %%
+    # As a code cell is run by a REPL, the result of evaluation will be printed,
+    # so you don't really need `console.print()` that often
+    1 + 2 - 3 * 7
+
+    # %%
+    # When precedence rule doesn't work outright, parentheses comes to rescue
+    1 + ( 2 - 3 ) * 7
+    # %#
+  }
+
+
+  {## Module System
+   # - Đ module system is somewhat like the Node.js module system, with roughly ES6 module import/export syntax, and some Python module naming convention, combined together
+
+  https://nodejs.org/api/modules.html
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+  https://docs.python.org/3/tutorial/modules.html
+
+   #} {;
+    {## Module System #}
+    export edh'modu'system = bookmark
+
+    # You've seen enough `import/export` appeared in this and other `.edh` files  by far
+
+  }
+
 
   {## Minor but Subtle/Surprising Differences
    # - You might be surprised by a few things though
@@ -755,13 +778,13 @@ Expression is 1st class in Đ, you can create expression values with literal for
     }
 
 
-    {## Expr Arguments to Procedures
+    {## Expression Arguments to Procedures
      # - Arguments are passed in expr form, to interpreter procedures and 3af operator procedures
 
 For an interpreter procedure or an infix operator procedure with 3 positional arguments, the first argument will be wrapped scope object of its caller, and rest arguments are all expression values.
 
      #} {;
-      {## Expr Arguments to Procedures #}
+      {## Expression Arguments to Procedures #}
       export edh'expr'args = bookmark
 
       # %%
@@ -791,53 +814,80 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
 
 {## Fancy Operators
- # - Some stylish from Haskell
+ # - Favoring the language of Math in defining operations
  #} {;
   {## Đ Operators #}
   export edh'operators = bookmark
 
-  # %%
-  console.print$ 'The low-precedence, procedure-call operator `($)` '
-  ++ 'can be used for a little stranger syntax.'
+  {## Call Making
+   # - Beyond parentheses as the call-operator
+   #} {;
+    {## Call Making #}
+    export edh'call'making'op = bookmark
 
-  # %% May be even more strange
-  show$ ($)
-  # %#
-  # Run above cell, you should see:
-  #  intrinsic: infixr -5 ($)
 
-  # You'd feel familiar if you know about Haskell, `$` is a right-associative, infix operator, of precedence -5 (which is rather low) in Đ (not the core language, but a custom operator from the default batteries technically). The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as the function-application operator in Haskell.
+    # %%
+    console.print$ 'The low-precedence, procedure-call operator `($)` '
+    ++ 'can be used for a little stranger syntax.'
 
-  # To address an operator, you quote it with a pair of parentheses just like in Haskell, so `show$ ($)` should be interpreted as calling procedure `show` with the value of ($) operator procedure (which is first class value in Đ) as the only argument.
+    # %% May be even more strange
+    show$ ($)
+    # %#
+    # Run above cell, you should see:
+    #  intrinsic: infixr -5 ($)
 
-  # %% For better understanding, it can be written like this, which is more usual
-  op = ($)
-  show( op )
+    # You'd feel familiar if you know about Haskell, `$` is a right-associative, infix operator, of precedence -5 (which is rather low) in Đ (not the core language, but a custom operator from the default batteries technically). The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as the function-application operator in Haskell.
 
-  # %%
-  console.print$ 'Though the (+) operator works to concatenate strings for'
-  + ' Python interoperability, the (++) operator is more idiomatic in Đ'
-  ++ ' for string concatenation, resembling Haskell.'
+    # To address an operator, you quote it with a pair of parentheses just like in Haskell, so `show$ ($)` should be interpreted as calling procedure `show` with the value of ($) operator procedure (which is first class value in Đ) as the only argument.
 
-  ; # As you have learned, a semicolon is usually necessary before a starting parentheses, to disambiguate from procedure-call-making, which binds the tightest
-  # %% # The pipe operator (|) is flipped ($) operator
-  ($) |show
-  # %% # This is equivalent to:
-  show$ ($)
-  # %% # Checkout what the (|) operator is
-  show$ (|)
-  # %#
+    # %% For better understanding, it can be written like this, which is more usual
+    op = ($)
+    show( op )
 
-  # Note the (|) operator resembles UNIX pipe, while its semantics is more close to the (&) operator in Haskell, which is flipped ($) operator.
+    # %%
+    console.print$ 'Though the (+) operator works to concatenate strings for'
+    + ' Python interoperability, the (++) operator is more idiomatic in Đ'
+    ++ ' for string concatenation, resembling Haskell.'
 
-  # Some other operators of interest:
+    ; # As you have learned, a semicolon is usually necessary before a starting parentheses, to disambiguate from procedure-call-making, which binds the tightest
+    # %% # The pipe operator (|) is flipped ($) operator
+    ($) |show
+    # %% # This is equivalent to:
+    show$ ($)
+    # %% # Checkout what the (|) operator is
+    show$ (|)
+    # %#
 
-  # %%
-  show$ (::)
-  # %%
-  show$ (!)
+    # Note the (|) operator resembles UNIX pipe, while its semantics is more close to the (&) operator in Haskell, which is flipped ($) operator.
 
-  # %#
+  }
+
+  {## Exception Handling
+   # - Operators + Pattern Matching, instead of `try/catch/finally`
+
+   #} {;
+    {## Exception Handling #}
+    export edh'exc'hndl'op = bookmark
+
+
+  }
+
+  {## Other Interesting Operators
+   # - Misc
+   #} {;
+    {## Other Interesting Operators #}
+    export edh'misc'ops = bookmark
+
+    # Some other operators of interest:
+
+    # %%
+    show$ (::)
+    # %%
+    show$ (!)
+
+    # %#
+  }
+
 }
 
 
