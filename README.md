@@ -25,7 +25,7 @@ Greetings! TL;DR - Just click:
 
 ## What's Đ (Edh)
 
-**Đ (Edh)** stands for **Event Distributing & Hosting**, it is an _Object-Oriented_, _Scripting_ (_Dynamic_) programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
+**Đ (Edh)** it is an _Object-Oriented_, _Scripting_ (_Dynamic_) programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
 
 Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
 
@@ -37,9 +37,9 @@ Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certa
 
   > State of art architecture requires design of various (restful as you've likely heard of) communication specs, after expensive modeling of the business, then infrastructure and software deployments continuously refactored into distributed spaghetti code.
 
-  > An _event_ is a consistent (not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to _Algebraic Data Type_ in mathematics as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
+  > **Đ (Edh)** stands for **Event Distributing & Hosting**, an _event_ is a consistent (but not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to **Algebraic Data Type** in _type theory_ as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
 
-  > Anyhow the _event_ abstraction will greatly simplify and decouple the complexity, at least degrade the problem to be solvable by *Citizen Developer*s.
+  > The _event_ abstraction should decouple much of the complexity, and degrade much part of the problem, to be solvable by _Citizen Developers_, especially with the aid of modern software engineering toolings.
 
 - To be directly usable by users of all roles in the organization, especially stake-holders of the business
 

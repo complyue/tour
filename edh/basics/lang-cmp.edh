@@ -21,6 +21,53 @@ export edh'lang'cmp'details = bookmark
 }
 
 
+{## Overview
+ # - General reason of most design choices
+
+The Đ grammar is designed with a major goal of interoperation by scripting, for IPC (Inter-Process Communication) across processes of heterogeneous runtime implementations.
+
+While some constructs from Haskell, Go, Python and others, are introduced
+for purpose of ergonomics. E.g.
+
+- custom infix operators, with arbitrary associativity and precedence
+    * from Haskell, C++ etc.
+
+- pattern matching & branching
+    * from typical FP languages, as well as upcoming PEP-634 of Python
+
+- goroutine
+    * from Go
+
+- compositional object
+    * sorta from Go type embedding, and C++ multiple-inheritance
+
+- class based inheritance
+    * from Python, Smalltalk etc.
+
+- C3 linearized multiple inheritance
+    * from Python, which is in turn from Dylan
+
+- magic object methods
+    * from Python
+
+- data classes
+    * from Python PEP-557
+
+- prototype based inheritance
+    * from JavaScript
+
+- fat-arrow procedure (lambda)
+    * from JavaScript, while the lambda aspect from all multi-paradigm languages with FP in mind, including JavaScript and Python
+
+- symbols
+    * from JavaScript, yet much enhanced
+
+ #} {;
+  {## Overview #}
+  export edh'lang'overview = bookmark
+}
+
+
 {## Đ Code is Formatted-on-Save
  # - There is an official code formatter for Đ
 
@@ -814,7 +861,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
 
 {## Fancy Operators
- # - Favoring the language of Math in defining operations
+ # - Like in mathematics, symbolic notations usually come more concise
  #} {;
   {## Đ Operators #}
   export edh'operators = bookmark

@@ -25,7 +25,7 @@ If you are familar with Python, JavaScript, or another Object-Oriented dynamic s
 {## Grammar
  # - Syntax, Semantics, and Pragmatics of Đ
 
-In lieu of this chapter, you can get all you need to know from the chapter above if you happen to know some other similar languages. Skip this chapter as you like if that's the case.
+In lieu of this chapter, you can get all you need to know from the chapter above, if you happen to know some other similar languages. Skip this chapter as you like if that's the case.
 
 This chapter is more like a reference of the langauge, before some more formal language specification is defined. Hopefully this can serve better for readers without priori backgroud knowledge in programming, or only experienced in functional programming (with Haskell likely), since no priori knowledge about procedure / imperative programming is assumed, and more broken-down examples are presented in this chapter, for easier and more complete understandings.
 
@@ -42,7 +42,7 @@ This chapter is more like a reference of the langauge, before some more formal l
  # - Procedures & Classes generally useful
  #} {;
   {## Đ Utilities #}
-  edh'utilities = bookmark
+  export edh'utilities = bookmark
 
   # TODO briefs & short examples here
 
@@ -53,7 +53,7 @@ This chapter is more like a reference of the langauge, before some more formal l
  # - How REPLs and other interactive components can be more friendly and adaptive for you
  #} {;
   {## Đ Commands #}
-  edh'commands = bookmark
+  export edh'commands = bookmark
 
   # TODO briefs & short examples here
 

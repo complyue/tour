@@ -5,52 +5,23 @@ export edh'grammar'details = bookmark
 
 
 {## Overview
- # - What's here with Đ
+ # - Why and What is here with Đ
 
-The Đ grammar is designed with a major goal of interoperation by scripting,
-for IPC across processes of heterogeneous runtime implementations.
+Đ seeks to ease development of more embedded DSLs (Domain Specific Langauges) speaking / realizing business needs, i.e. a Business Integration language. How computers work and to be optimized in solving programming problems, are addressed by a large research discipline in its own right, i.e. Computer Science. But CS is too different and often too far from practical needs of realworld business, dedicated languages are of much interest, and Đ attempts to be a comprehensive solution.
 
-While some constructs from Haskell, Go, Python and others, are introduced
-for purpose of ergonomics. E.g.
+**Đ (Edh)** stands for **Event Distributing & Hosting**, an _event_ is a consistent (but not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to **Algebraic Data Type** in _type theory_ as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
 
-- custom infix operators, with arbitrary associativity and precedence
-    * from Haskell, C++ etc.
+The _event_ abstraction should decouple much of the complexity, and degrade much part of the problem, to be solvable by _Citizen Developers_, especially with the aid of modern software engineering toolings.
 
-- pattern matching & branching
-    * from typical FP languages, as well as upcoming PEP-634 of Python
+You will be using Đ to describe reactions to incoming events from other parts of the system, in forms of local entity attribute updates, and more complex logics with control flows. As well, you can post commands for event delivery, to other parts of the system. Modularized components can be developed for reuse, by your team or by 3rd parties. Realworld systems are inherently effectful, any event upon it is distributed / hosted, usually implies effects it should cause, you will also use Đ to describe what effects are expected to be there, and how those effects should be realized. Note effects are inherently context sensitive, as a fairly sophisticated effect is usually implemented by other effects maybe simpler but nevertheless sensitive to its own context.
 
-- goroutine
-    * from Go
-
-- compositional object
-    * sorta from Go type embedding, and C++ multiple-inheritance
-
-- class based inheritance
-    * from Python, Smalltalk etc.
-
-- C3 linearized multiple inheritance
-    * from Python, which is in turn from Dylan
-
-- magic object methods
-    * from Python
-
-- data classes
-    * from Python PEP-557
-
-- prototype based inheritance
-    * from JavaScript
-
-- fat-arrow procedure (lambda)
-    * from JavaScript, while the lambda aspect from all multi-paradigm
-      languages with FP in mind, including JavaScript and Python
-
-- symbols
-    * from JavaScript, yet much enhanced
+**Monad** working with a functional programming langauge is state of the art way to track effects, while **Algebraic Effect & Handlers** is an active and promising research topic in academic today, for similiar purpose. **Dynamic Scoped Effects** as implemented with Đ should work sufficiently well for effect tracking purpose in the imperative / procedural paradigm. It is **Dynamic Scoping** per se, with the historic failing harm to software engineering practices contained by dedicated syntax and namespace.
 
  #} {;
   {## Overview #}
   export edh'lang'overview = bookmark
 }
+
 
 {## Đ Code Style
  # - Đ code style is officially opinionated
