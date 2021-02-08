@@ -5,6 +5,7 @@ Greetings! TL;DR - Just click:
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour)
 
 - [What's Đ (Edh)](#whats-đ-edh)
+- [About this Tour](#about-this-tour)
 - [Taking the Tour](#taking-the-tour)
   - [Fast and Easy Way - Gitpod workspace](#fast-and-easy-way---gitpod-workspace)
   - [Seasoned and UX Rich Way - local IDE](#seasoned-and-ux-rich-way---local-ide)
@@ -55,6 +56,20 @@ Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certa
   > This is much closer to a GUI, yet with more flexible variance & context. The greatest advantage of this tactic is, a user can make slight changes to the code in a template cell, then execute it to achieve tasks in need of a complex phrasing of scription. Traditional TUI requires the user to type out a complete sentence for the job, which needs greatly internalized knowledge about what/how he/she is doing, as well as mental effort nevertheless; while traditional GUI might be just inable to provide the flexibility needed due to level of complexity of the task.
 
   > So with Đ and its tooling, we can obtain more advantages at the same time, from both worlds: expressiveness from textual languages as well as intuition from visual languages. And Đ is even more _dynamic_ and _interactive_ than Python, also it facilitates effectful functionality composition in a novel way (i.e. _Dynamic Scoped Effects_). From REPLs atop stdio, to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer, and i.e. _Citizen Developer_.
+
+## About this Tour
+
+This tour is an entry point (with briefs) to various standalone tours provided by many Đ packages of respective purpose, here is more like an explorative playground, or a self-guided walkthrough, rather than a typical tutorial with a linear narrative. You are not supposed to follow the text run in any particular order. Materials are organized in cyclic hierarchies, with the principle that shallower (wrt discoverability) contents should be more brief, and deeper contents to provide more elaborate explainations and examples of greater verbosity.
+
+It is designed for reading efficiency & pleasure. We try not bore experienced readers with unnecessary details, while for readers unfamiliar with certain programming concepts, in elsewhere we craft elaborate explaination and more live examples of greater verbosity, then make those artifacts linked to briefs. The reader can use standard code navigation capability of the IDE to follow those links into greater details. Note ultimately all of these become hierarchies of materials with plenty interconnections.
+
+Clever readers, even noob to some concept, can merely run relevant Code Lens and try comprehend the output result, good intuition is already enough at times. After all, code navigation is your freedom, go back and forth, any time, any where, for whatever reason, just remember you can right-mouse-click most highlighted code elements in any Đ file (with `bookmark`s even dedicated for this purpose), then select [Go To Definition] to navigate to elaborate definition (explaination) of it. The tooltip shown up when you hover the mouse cursor over it may already give some useful information.
+
+Experiences in other programming languages, Python, JavaScript, Go, Haskell and etc. are good source of intuition to complete this tour faster, but never a necessarity.
+
+And it is very expected for sophisticated developers to come back at times, in seeking inspirations from discussions regarding various topics reachable from here, we just have brief & links to many tours by various standalone packages maintained here, this is an open, public Github repository welcoming contributions.
+
+The big mission be it evolves to a general learning resource as well as a framework, for advanced computer application practices, enabling massive open _Citizen Development_, but not without code, instead business languages (DSLs), textual and better supplemented with visuals, can be trivially developed and efficiently used in properly facilitated environments (IDEs).
 
 ## Taking the Tour
 
@@ -310,6 +325,15 @@ Open `tour/welcome.edh` and start from there.
 
 ## Contributing
 
-There are rough edges both within this Tour and the _IntelliSense_ provided by
-the [Edh Language Server](https://github.com/e-wrks/els), contributions from
-major improvements to minor typo fixes are all welcome and appreciated.
+There are rough edges within both this Tour and the _IntelliSense_ provided by
+the [Edh Language Server](https://github.com/e-wrks/els)
+
+If you ever met any incident when walking through this tour, please consult the [issue tracker](http://github.com/e-wrks/tour/issues?q=is%3Aissue) to see whether it is a known issue and has solutions or workarounds.
+
+In case no existing one solves your problem, please file a new issue, that'll help later comers from meeting the same trouble.
+
+Even difficulties in understanding count, let's figure out how to improve the experience for people from a similar background of you.
+
+Consider opening a PR if you can, to add more information or details, correct conceptions or backgrounds, improve the wording / phrasing, link to your package's tour, or merely correct some typos, contributions are more than welcome!
+
+https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request
