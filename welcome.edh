@@ -9,14 +9,16 @@ Clever readers, even noob to some concept, can merely run relevant Code Lens and
 
 Experiences in other programming languages, Python, JavaScript, Go, Haskell and etc. are good source of intuition to complete this tour faster, but never a necessarity.
 
-And it is very expected for sophisticated developers to come back at times, in seeking inspirations from discussions regarding various topics reachable from here, we just have brief & links to many tours by various standalone packages maintained here, this is an open, public Github repository welcoming contributions. The big mission be it evolves to a general learning resource for advanced computer application practices, enabling massive open *Citizen Development* driven by communities.
+And it is very expected for sophisticated developers to come back at times, in seeking inspirations from discussions regarding various topics reachable from here, we just have brief & links to many tours by various standalone packages maintained here, this is an open, public Github repository welcoming contributions.
+
+The big mission be it evolves to a general learning resource as well as a framework, for advanced computer application practices, enabling massive open *Citizen Development*, but not without code, instead business languages (DSLs), textual and better supplemented with visuals, can be trivially developed and efficiently used in properly facilitated environments (IDEs).
 
   http://github.com/e-wrks/tour
 
  #}
 
 
-{## Troubleshooting & Contribution
+{## Troubleshooting & Contributing
  # - Please use the issue tracker, and make PRs as you can
 
 If you ever met any incident when walking through this tour, please consult
@@ -104,12 +106,11 @@ The tricks particularly helpful in browsing a single module (such as this file `
     export edh'term'repls = bookmark
 
     # You should see clickable labels in the following line:
-    # %% Note this line is a cell marker (prefixed with `# %%`)
-    # Try click [Run Cell] above, then select `edh Run: epm x edh` from the
-    # popup list
+    # %% # This line is a cell marker (prefixed with `# %%`)
+    # Try click [Run Cell] above, then select [edh Run: epm x edh] from the popup list
     console.print( 'Hello, Đ world!' )
 
-    # %% This line starts another cell
+    # %% # This line starts another cell, separately runnable
     let ( do's, don'ts, ) = (
       [ 'feel it', 'experience it',
         'keep things up-to-date', ],
@@ -119,23 +120,18 @@ The tricks particularly helpful in browsing a single module (such as this file `
     for ( todo, to'not'do ) from zip( do's, don'ts ) do {
       console.print$ 'Do ' ++ todo ++ ", don't " ++ to'not'do ++ '!'
     }
-
     # %# Note this line is an end-of-cell marker (prefixed with `# %#`)
 
-    {#
-A new Đ terminal session should be starated, and a cell qua a piece of code get executed in the terminal, when you click [Run Cell] above it.
+    # A new Đ terminal session should have been starated, and code in a cell executed in the terminal, as you click [Run Cell] above it. Repeat clicking and it'll get executed more times.
 
-Note that Gitpod/Theia's *Integrated Terminal* is less frictionless than VSCode's atm, it may not work well the first time you click `Run Cell`, don't worry, it's fairly safe to click the link more times, repeat a few times, it should eventually work correctly.
-     #}
+    # Note that Gitpod/Theia's *Integrated Terminal* is less frictionless than VSCode's atm, it may not work well the first time you click [Run Cell], don't worry, repeat more times, it should eventually work correctly.
 
-    {#
-Also note you are free to interact with the REPL in the terminal, just like a traditional one you started from command line.
-     #}
+    # Also note you are free to interact with the REPL in the terminal, just like a traditional one you started from command line.
 
     {#
-Also also note, you can run multiple Đ terminal sessions within an IDE, running same or different command lines, to start one more, press *F1* to bring out the command palette, keyin `edh` then select the option:
+Also also note, you can run multiple Đ terminal sessions within an IDE, running same or different command lines, to start one more session, press *F1* to bring out the command palette, keyin `edh` then select the option:
 
-  "Edh: New Đ Terminal"
+  [Edh: New Đ Terminal]
 
 For how to managing multiple terminal sessions, checkout:
   https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-multiple-terminals
@@ -171,7 +167,7 @@ Note you can also place your keyboard cursor into 'tour' below, by either arrow 
 }
 
 
-{## Ready! Here You Start
+{## Ready! Takeoff
  # - Code Navigation can be extremely useful
 
 Assuming the [Pre-Flight Checks] are all good for you, it is important not only in taking this tour, as well it'll give you great power in software development workflows, with or without Đ.
