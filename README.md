@@ -33,25 +33,38 @@ processes as well as computations within a local process. Where massive
 Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop
 certain runtime environment programmed in another, more versatile
 programming language, i.e. the _host langauge_,
-currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org),
-with [Julia](https://julialang.org), [Go](https://golang.org),
-[Python](https://python.org), and
-[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-to be hopefully supported in the future.
+currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
 
 **Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language
 design, raw machine performance as well as a prosperous ecosystem and etc.
 are less a goal, they are offloaded to efforts by the _host language_ and/or
 _runtime_ .
 
-You are expected to write the core logic (e.g. service methods) of your program
-in the _host language_, leveraging its mature ecosystem, then expose various
-artifacts to **Đ (Edh)** for interopertions both locally and remotely. So the
-**Đ (Edh)** parser, interpreter, runtime, as well as its default batteries and
-a handful of optional packages, are distributed as libraries in the
-_host language_ in source form, together with complementary **Đ (Edh)**
-modules, you can build executable **Đ (Edh)** interpreters with your own
-batteries baked in, then run them with all necessary **Đ (Edh)** source code.
+Đ seeks to be a Business Integration language, as well as a User Interface language, it is born for two main goals:
+
+- To upscale business-oriented integration of distributed, heterogeneous software components
+
+  > State of art architecture requires design of various (restful as you've likely heard of) communication specs, after expensive modeling of the business, then infrastructure and software deployments continuously refactored into distributed spaghetti code.
+
+  > An _event_ is a consistent (not necessarily atomic) piece of data, encapsulating the information of something just happend in one place, and sent to another place for its consequences to be realized there. _Event_ is conceptually coherent to _Algebraic Data Type_ in mathematics as well as a functional programming language, but it's not practical to be a mechanical utility in a procedural langauge like Đ. So _event_ stays conceptual in Đ the language.
+
+  > Anyhow the _event_ abstraction will greatly simplify and decouple the complexity, at least degrade the problem to be solvable by *Citizen Devloper*s.
+
+- To be directly usable by users of all roles in the organization, especially stake-holders of the business
+
+  > Most people have been accustomed to GUI (Graphical User Interface) for interaction with a computer system, while visual languages still lack sufficient expressiveness in many tasks for global efficiency. Text based communication, governed by grammar (syntax, semantics, pragmatics), can be way more productive and constructive in such cases, and fortunately modern IDEs have filled much of the gap between GUI and TUI (Terminal User Interface), especially when we put Code Lens into good use:
+
+  > > https://code.visualstudio.com/blogs/2017/02/12/code-lens-roundup
+
+  > Inspired by Jupyter code cells:
+
+  > > https://donjayamanne.github.io/pythonVSCodeDocs/docs/jupyter_getting-started/#Running-a-cell-in-a-kernel
+
+  > Each Đ code cell (a piece of code) is individually executable by a single mouse click, on a _Code Lens_ above it reads [Run Cell] (note the click/execution can be repeated).
+
+  > This is much closer to a GUI, yet with more flexible variance & context. The greatest advantage of this tactic is, a user can make slight changes to the code in a template cell, then execute it to achieve tasks in need of a complex phrasing of scription. Traditional TUI requires the user to type out a complete sentence for the job, which needs greatly internalized knowledge about what/how he/she is doing, as well as mental effort nevertheless; while traditional GUI might be just inable to provide the flexibility needed due to level of complexity of the task.
+
+  > So with Đ and its tooling, we can obtain more advantages at the same time, from both worlds: expressiveness from text languages as well as intuition from visual languages. And Đ is even more _dynamic_ and _interactive_ than Python, also it facilitates effectful functionality composition in a novel way. From REPLs atop stdio, to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer, and i.e. _Citizen Developer_.
 
 ## Taking the Tour
 
@@ -77,15 +90,30 @@ to begin the tour.
 
 Note:
 
-> Being soly [Eclipse Theia](https://theia-ide.org) based,
-> [Gitpod](https://gitpod.io) workspace is currently less featureful compared
-> to [VSCode](https://code.visualstudio.com) / [VSCodium](https://vscodium.com),
-> while the good news are upcoming
-> [Github Codespaces](https://github.com/features/codespaces) and
-> [Gitpod's push of VSCode support](https://www.gitpod.io/blog/root-docker-and-vscode) in response, esp.
-> [Gitpod's big vision](https://www.gitpod.io/blog/moving-software-development-to-the-cloud).
+> Being soly [Eclipse Theia](https://theia-ide.org) based, [Gitpod](https://gitpod.io) workspace is currently less featureful / UX-rich compared to [VSCode](https://code.visualstudio.com) / [VSCodium](https://vscodium.com), while the good news are upcoming [Github Codespaces](https://github.com/features/codespaces) and [Gitpod's push of VSCode support](https://www.gitpod.io/blog/root-docker-and-vscode) in response, esp. [Gitpod's big vision](https://www.gitpod.io/blog/moving-software-development-to-the-cloud).
 
 ### Seasoned and UX Rich Way - local IDE
+
+The Đ tooling struggles for ergonomics in software development, it achieves so on the shoulders of modern IDEs, with optimized workflows to build, test, demonstrate, and run relevant software components.
+
+The most preferable/testified IDE is [VSCode](https://code.visualstudio.com)
+/ [VSCodium](https://vscodium.com), and 2nd best is [Gitpod](https://gitpod.io) (which is [Eclipse Theia](https://theia-ide.org) based). Other IDEs such as SublimeText, Emacs, Vim, are not supported by far, merely lacking a LSP client component to communicate with `els`, they are hopefully to be supported in the future.
+
+[EPM](https://github.com/e-wrks/epm) is always under the hood, used to initialize (possibly cascaded for localized dependencies) EPM homes, Đ packages from public or private Git repositories, are installed into each EPM home, and updated as a whole.
+
+An Đ package consists of multiple Đ script files under `edh_modules` subdir, and optionally:
+
+- A tour for the package on its own right, typicaly under `edh_modules/<pkg-name>/tour` subdir
+- A Haskell package, typically under `host.hs` subdir
+- Some Python modules under `host.py` subdir
+- Some JavaScript modules under `host.js` subdir
+- More artifacts to support running Đ in different hosting environments
+
+`epm` cli utility will organize all Haskell packages in an EPM home as both a [stack](https://haskellstack.org) project and a [cabal](https://www.haskell.org/cabal) project, under the `edh-universe` subdir, so it is suffice to build and install Haskell based Đ interpreters by simply running `stack install` or `cabal install` there, then the built interpreter programs can be used to run Đ modules and files.
+
+Use `epm exec <prog>` or the shorthand `epm x <prog>` is a portable way to run Đ programs without installing them into system locations, it locates the nearest EPM home from the directory you run `epm`, and takes care of localized dependencies automatically.
+
+The [Đ Language Server](https://github.com/e-wrks/els) `els` is such an Đ package per se, and needs to be built and installed such way for proper support of Đ software development from the IDE, including code navigation, which is crucial for the UX you'd take this tour.
 
 #### Prerequisites
 
