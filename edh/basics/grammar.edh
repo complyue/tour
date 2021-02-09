@@ -298,19 +298,45 @@ For long paragraphs in comments, of mere documentation purpose, it's considered 
 
 Nevertheless you can change per user settings of your IDE, for a different soft wrap strategy.
 
-   #
    #} {;
     {## Recommended Line Length #}
     export edh'line'len'adivce = bookmark
 
     # %%
-    '''                                                             80 columns ▽
+    '''
+                                                                    80 columns ▽
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
                                                                                        100 columns △
 '''
     # %#
   }
+
+}
+
+
+{## Expressions and Statements, Strict Evaluation
+ # - Đ is a strict language
+
+_Strict_ contrasts to _lazy_ in describing how a language has its code semantically executed.
+
+ #} {;
+  {## Expressions and Statements, Strict Evaluation #}
+  export edh'strict'eval = bookmark
+
+
+}
+
+
+{## Pattern Matching
+ # - A concise way to organize conditional control branches
+
+A computer is not needed when actual items are handled one by one, some level of abstraction has to be there for a computer, thuse a program written for it, to be useful. This leads to polymorphism, i.e. the input to a program must be able to vary at certain degrees.
+
+ #} {;
+  {## Pattern Matching #}
+  export edh'pattern'matching = bookmark
+
 
 }
 
@@ -461,18 +487,48 @@ All procedures are methods of some object, but a particular method doesn't have 
 }
 
 
-{## Expressions
- # - Lambda without formal argument declaration
-
-A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
-
+{## Expression Values and Scope Wrapprs
+ # - Here is why Đ is even More dynamic than Python
  #} {;
-  {## Expressions #}
+  {## Expression Values and Scope Wrappers #}
   export edh'exprs = bookmark
+
+  {## Scope Wrappers
+   # - A scope can be wrapped as an object to do reflection in Đ
+
+`scope` is a builtin class.
+
+   #} {;
+    {## Scope Wrappers #}
+    export edh'scope'wrappers = bookmark
+
+    # %% # without argument, it creates an object wrapping the scope where it's called from
+    method f() {
+      method g() {
+        let ( a, b, ) = ( 7, 3, )
+        scope()
+      }
+      let ( c, d, ) = ( 2, 8, )
+      return g() @=> g = nil # dispose g after one-time used
+    }
+    s = f()
+    'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
+
+    # %% # if an object is passed as ctor argument, it creates an object wrapping that object's scope
+    class C pass
+    o = C()
+    s = scope(o)
+    s.put( a= 3, c= 2, b= 5, )
+    s.attrs()
+
+    # %#
+  }
 
 
   {## The `expr` Expression
    # - Original source preserved
+
+A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
 
 Expression is 1st class in Đ, you can create expression values with literal form
 
@@ -488,13 +544,13 @@ Expression is 1st class in Đ, you can create expression values with literal for
   }
 
 
-  {## Expr Arguments to Procedures
+  {## Expression Arguments to Procedures
    # - Arguments are passed in expr form, to interpreter procedures and 3af operator procedures
 
 For an interpreter procedure or an infix operator procedure with 3 positional arguments, the first argument will be wrapped scope object of its caller, and rest arguments are all expression values.
 
    #} {;
-    {## Expr Arguments to Procedures #}
+    {## Expression Arguments to Procedures #}
     export edh'expr'args = bookmark
 
     # %%

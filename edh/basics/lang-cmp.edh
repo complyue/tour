@@ -240,7 +240,6 @@ For long paragraphs in comments, of mere documentation purpose, it's considered 
 
 Nevertheless you can change per user settings of your IDE, for a different soft wrap strategy.
 
- #
  #} {;
   # %%
   '''
@@ -798,18 +797,48 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
   }
 
 
-  {## Expressions
-   # - Lambda without formal argument declaration
-
-A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
-
+  {## Expression Values and Scope Wrapprs
+   # - Here is why Đ is even More dynamic than Python
    #} {;
-    {## Expressions #}
+    {## Expression Values and Scope Wrappers #}
     export edh'exprs = bookmark
+
+    {## Scope Wrappers
+     # - A scope can be wrapped as an object to do reflection in Đ
+
+`scope` is a builtin class.
+
+     #} {;
+      {## Scope Wrappers #}
+      export edh'scope'wrappers = bookmark
+
+      # %% # without argument, it creates an object wrapping the scope where it's called from
+      method f() {
+        method g() {
+          let ( a, b, ) = ( 7, 3, )
+          scope()
+        }
+        let ( c, d, ) = ( 2, 8, )
+        return g() @=> g = nil # dispose g after one-time used
+      }
+      s = f()
+      'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
+
+      # %% # if an object is passed as ctor argument, it creates an object wrapping that object's scope
+      class C pass
+      o = C()
+      s = scope(o)
+      s.put( a= 3, c= 2, b= 5, )
+      s.attrs()
+
+      # %#
+    }
 
 
     {## The `expr` Expression
-     # - Original source preserved
+     # - Lambda without formal argument declaration
+
+A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
 
 Expression is 1st class in Đ, you can create expression values with literal form
 
