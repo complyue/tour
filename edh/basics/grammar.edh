@@ -13,9 +13,9 @@ export edh'grammar'details = bookmark
 
 The _event_ abstraction should decouple much of the complexity, and degrade much part of the problem, to be solvable by _Citizen Developers_, especially with the aid of modern software engineering toolings.
 
-You will be using Đ to describe reactions to incoming events from other parts of the system, in forms of local entity attribute updates, and more complex logics with control flows. As well, you can post commands for event delivery, to other parts of the system. Modularized components can be developed for reuse, by your team or by 3rd parties. Realworld systems are inherently effectful, any event upon it is distributed / hosted, usually implies effects it should cause, you will also use Đ to describe what effects are expected to be there, and how those effects should be realized. Note effects are inherently context sensitive, as a fairly sophisticated effect is usually implemented by other effects maybe simpler but nevertheless sensitive to its own context.
+You will be using Đ to describe reactions to incoming events from other parts of the system, in forms of local entity attribute updates, and more complex logics with control flows. As well, you can post commands for event delivery, to other parts of the system. Modularized components can be developed for reuse, by your team or by 3rd parties. Realworld systems are inherently effectful, any event upon it is distributed / hosted, usually implies effects it should cause, you will also use Đ to describe what effects are expected to be there, and how those effects should be realized. Note effects are inherently context sensitive, as a fairly sophisticated effect is usually implemented by means of other effects, those maybe simpler but nevertheless sensitive to their own context.
 
-**Monad** working with a functional programming langauge is state of the art way to track effects, while **Algebraic Effect & Handlers** is an active and promising research topic in academic today, for similiar purpose. **Dynamic Scoped Effects** as implemented with Đ should work sufficiently well for effect tracking purpose in the imperative / procedural paradigm. It is **Dynamic Scoping** per se, with the historic failing harm to software engineering practices contained by dedicated syntax and namespace.
+**Monad** is state of the art way to track effects, while **Algebraic Effect & Handlers** being actively researched in academic for similiar purpose today, but they both work with functional programming langauges. Then inspired by **Algebraic Effect & Handlers**, Đ implements **Dynamic Scoped Effects** for effect tracking in the imperative / procedural paradigm. It is **Dynamic Scoping** per se. Historically, **Dynamic Scoping** designs are proved failures , but with Đ's dedicated syntax / namespacing to have dynamic artifacts isolated from lexical context, the confusing semantics / behaviors can be avoided, and then finally done right.
 
  #} {;
   {## Overview #}
@@ -56,10 +56,10 @@ Also opinionated formatters with similar goals:
     {## The Official Đ Code Formatter #}
     export edh'code'formatter = bookmark
 
-    # Home page of the formatter should have described the rules and your rights (freedom) well,  after modification, save or right-click to select "Format Document", then you'll see what the formatter thinks.
+    # Home page of the formatter should have described the rules and your rights (freedom) well. After modification, save it, or right-click anywhere, then select [Format Document], the formatter will adjust the file content according to the rules, you'll see what it thinks.
 
     # %% # try play with this cell:
-    #    add/remove spaces, break it into multip lines, you name it
+    # indent or outdent the line, add/remove extranous spaces, break it into multiple lines, add extranous blank lines, ...
     1+ ( 2 - 3 ) *5 /9
     # %#
 
@@ -67,37 +67,73 @@ Also opinionated formatters with similar goals:
   }
 
   {## Indentation and Brackets
-   # - Đ is whitespace insensitive, indentations are infered from brackets
+   # - Đ interpreter is whitespace insensitive, indentation is enforced by Đ formatter
 
-The programmer is responsible for the brackets (scoping), while the formatter is in charge of proper indentation.
+The programmer is responsible for the brackets (scoping), while the formatter is in charge of proper indentation, it infers indentation level of each line from the nesting of brackets.
 
    #} {;
 
     {## Whitespace Sensitivity is Outdated
      # - Indentation can be inferred, no reason to DIY today
 
->> Why Python’s whitespace rule is right <<
-   https://unspecified.wordpress.com/2011/10/18/why-pythons-whitespace-rule-is-right
+> Why Python’s whitespace rule is right
+  https://unspecified.wordpress.com/2011/10/18/why-pythons-whitespace-rule-is-right
 
->> There is not a single situation in any country, in any programming language, or at any skill level, in which is it acceptable to not indent your code the way Python requires it.
+> There is not a single situation in any country, in any programming language, or at any skill level, in which is it acceptable to not indent your code the way Python requires it.
 
 This is much agreeable even at today.
 
->> When you really analyse it, Python’s whitespace sensitivity is actually the only logical choice for a programming language, ...
+> When you really analyse it, Python’s whitespace sensitivity is actually the only logical choice for a programming language, ...
 
-Well, this conclusion holds right in its time, when auto code formatters are still some luxury to have. But today, besides the compiler(s), we are affording way more expensive analyzing tools like linters, test runners, coverage, profilers, and usually comprehensive langauge servers, amongst which code formatters become rather commonplace.
+Well, this conclusion holds right in its time, when auto code formatters are still some luxury to have. But today, besides the compiler(s), we are affording way more expensive analyzing tools like linters, test runners, coverage, profilers, and usually comprehensive langauge servers, amongst what code formatters become rather commonplace.
 
-Scopes (either lexical or conceptual) have to be decided and expressed by the programmer, but even excluding extreme cases, a code block can consist of up to hundreds of lines, it's ridiculous to manually maintain proper indentation for every line, when the formatter can painlessly do it for you.
+Scopes (either lexical or conceptual) have to be decided and expressed by the programmer (or document writer), but even excluding extreme cases, a code block can consist of up to hundreds of lines, it's ridiculous to manually maintain proper indentation for every line, when the formatter can do it for you straight forward.
 
-Whitespace sensitivity has become outdated now, brackets (curly, square or round) come handy-dandy to express various scopes in your mind, just leave indentation for the formatters to care about.
+Whitespace sensitivity has become outdated today, brackets (curly, square or round) come handy-dandy to express various scopes in your mind, just leave indentation for the formatters to care about.
 
      #
      #} {;
       {## Đ is Whitespace Insensitive #}
       export edh'sps'insensitivity = bookmark
 
-      # TODO showcases here?
+      {## Comments are Indented as well
+       # - Both line comment and block comment
+
+As you may have noticed, block comments (started with `{#`) are indented, also a line of comments are indented when it starts with #, whether it is a standalone line comment, or part of a block comment.
+
+       #} {;
+        {## Comments are Indented as well #}
+        export edh'cmt'indent = bookmark
+
+        # This is a standalone comment line, will always be indented by the formatter. Try adjust the indentation level of any line in this section, then save or do [Format Document] to see how the formatter corrects your mistakes.
+
+        {# This is a short block comment #}
+
+        {# This is multi-line block comment
+
+         # This line is part of the outer comment block, but will be indented by the formatter, as it starts with #.
+
+Try remove the leading # of the line above, then adjust its indentation level, you'll see the formatter stops working against you.
+
+         #}
+
+        {## This is a doc comment
+         # A doc comment makes sense when placed:
+         #  * At the very beginning of an Đ module file
+         #    - Serving as the documentation for that whole module
+         #  * Immediately before a block
+         #    - Serving as the documentation for that nested block
+         #  * Immediately before a statement
+         #    - Serving as the documentation for whatever defined by that statement, possible being:
+         #      * A procedure
+         #      * A class
+         #      * An attribute
+         #}
+        edh'documented'attr'example'π = 3.14
+      }
+
     }
+
   }
 
 
