@@ -139,124 +139,147 @@ Try remove the leading # of the line above, then adjust its indentation level, y
 
   {## Semicolons and Commas
    # - They are optional everywhere in Đ, unless for disambiguation
-
-For the record, in Đ code it's considered idiomatic to:
-
-* Avoid semicolons without good reasons
-* Place trailing commas where possible
-
-Note semicolons can be really technically omitted in Đ, not the case like in JavaScript that the language does:
-  > Automatic Semicolon Insertion <
-  https://tc39.es/ecma262/#sec-automatic-semicolon-insertion
-
    #} {;
     {## Semicolons and Commas #}
     export edh'semicolons'and'commas = bookmark
 
-    # Semicolons and commas are said to be optional in Đ, which means, leading ones, trailing ones, as well as middle ones, all can be omitted. Let's see some examples with the idiomatic form pointed out.
+    {## Technically Optional
+     # - That is, can be omitted
 
-    # The following 5 cells have identical semantics and result value
-    # %%
-    { a=5; b=3; c=9; }
-    # %%
-    {; a=5 b=3 c=9 } # <- idiomatic one
-    # %%
-    { a=5 b=3; c=9 }
-    # %%
-    { a=5 b=3 c=9; }
-    # %%
-    { a=5 b=3 c=9 }
-    # %#
+Semicolons can be really technically omitted in Đ, not the case like in JavaScript that the language does:
+  > Automatic Semicolon Insertion
+  https://tc39.es/ecma262/#sec-automatic-semicolon-insertion
 
-    # The following 5 cells too, have identical semantics and result value
-    # %%
-    { 'a': 5, 'b': 3, 'c': 9, } # <- idiomatic one
-    # %%
-    {, 'a': 5 'b': 3 'c': 9 }
-    # %%
-    { 'a': 5 'b': 3, 'c': 9 }
-    # %%
-    { 'a': 5 'b': 3 'c': 9, }
-    # %%
-    { 'a': 5 'b': 3 'c': 9 }
-    # %#
+Which means, leading ones, trailing ones, as well as middle ones, all can be omitted.
 
-    # The following 5 cells too, have identical semantics and result value
-    # %%
-    ; [ 5, 3, 9, ] # <- idiomatic one
-    # %%
-    ; [, 5 3 9 ]
-    # %%
-    ; [ 5 3, 9 ]
-    # %%
-    ; [ 5 3 9, ]
-    # %%
-    ; [ 5 3 9 ]
-    # %#
+     #} {;
+      {## Technically Optional #}
+      export edh'omit'semicolon'and'commas = bookmark
 
-    # The following 5 cells too, have identical semantics and result value
-    # %%
-    ; ( 5, 3, 9, ) # <- idiomatic one
-    # %%
-    ; (, 5 3 9 )
-    # %%
-    ; ( 5 3, 9 )
-    # %%
-    ; ( 5 3 9, )
-    # %%
-    ; ( 5 3 9 )
-    # %#
+      # Let's see some examples with the idiomatic form pointed out.
 
+      # The following 5 cells have identical semantics and equally evaluates a block, gives out the value of last assignment statement in it
+      # %%
+      { a=5; b=3; c=9; }
+      # %%
+      {; a=5 b=3 c=9 } # <- idiomatic one
+      # %%
+      { a=5 b=3; c=9 }
+      # %%
+      { a=5 b=3 c=9; }
+      # %%
+      { a=5 b=3 c=9 }
+      # %#
 
-    {## Disambiguate Unintended Indexing / Calling #}
-    export edh'disambig'idx'call = bookmark
+      # The following 5 cells too, have identical semantics and equal result value of a dict
+      # %%
+      { 'a': 5, 'b': 3, 'c': 9, } # <- idiomatic one
+      # %%
+      {, 'a': 5 'b': 3 'c': 9 }
+      # %%
+      { 'a': 5 'b': 3, 'c': 9 }
+      # %%
+      { 'a': 5 'b': 3 'c': 9, }
+      # %%
+      { 'a': 5 'b': 3 'c': 9 }
+      # %#
 
-    # Noticed the semicolons before each pair of square/round brackets? Why are they there?
+      # The following 5 cells too, have identical semantics and equal result value of a list
+      # %%
+      ; [ 5, 3, 9, ] # <- idiomatic one
+      # %%
+      ; [, 5 3 9 ]
+      # %%
+      ; [ 5 3, 9 ]
+      # %%
+      ; [ 5 3 9, ]
+      # %%
+      ; [ 5 3 9 ]
+      # %#
 
-    # The answer is: There usually need a semicolon before a pair of square/round brackets, when you don't mean to do indexing or calling against artifact before it.
-
-
-    {## Disambiguate Block from Dict #}
-    export edh'disambig'blk'dict = bookmark
-
-    # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
-
-    # %% # Well, check out this:
-    type( {; } )
-    # %% # Then this:
-    type( {} )
-    # %#
-
-    # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
-
-    # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exceptin of branches' early break, though, about that later)
-    # %% # And an empty block evals to `nil`, check this to be true
-    {; } is nil
-    # %#
-
-    # Though you don't need a semicolon when there is at least 1 statement in a block, e.g.
-    # %% # This is a block with a single assignment expression statement
-    { a=1 }
-    # %% # But this is the idiomatic form, which is preferable for foolproof modifications in later code maintenance:
-    {; a=1 }
-    # %#
-
-    # The idiomatic style is to put a semicolon right after the opening curly brace/bracket, when there are risks for it to be mis-interpreted/parsed as a dict literal:
-    {;
-      # It can still parse as dict literal with comments inside
+      # The following 5 cells too, have identical semantics and result value of a positional-only ArgsPack
+      # %%
+      ; ( 5, 3, 9, ) # <- idiomatic one
+      # %%
+      ; (, 5 3 9 )
+      # %%
+      ; ( 5 3, 9 )
+      # %%
+      ; ( 5 3 9, )
+      # %%
+      ; ( 5 3 9 )
+      # %#
     }
 
+    {## Disambiguation Needs
+     # - At times, a semicolon / comma is needed for disambiguation
+     #} {;
+      {## Disambiguation Needs #}
+      export edh'disambiguation'needs = bookmark
 
-    # Finally, a comma to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
-    # %% # A single argument pack
-    ; ( 3*7, )
-    # %% # A parenthese-quoted expression
-    ; ( 3*7 )
-    # %%
-    ; type( ( 3*7, ) )
-    # %%
-    ; type( ( 3*7 ) )
-    # %#
+      {## Disambiguate Unintended Indexing / Calling #}
+      export edh'disambig'idx'call = bookmark
+
+      # Noticed the semicolons before each pair of square/round brackets? Why are they there?
+
+      # The answer is: There usually need a semicolon before a pair of square/round brackets, when you don't mean to do indexing or calling against artifact before it.
+
+
+      {## Disambiguate Block from Dict #}
+      export edh'disambig'blk'dict = bookmark
+
+      # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
+
+      # %% # Well, check out this:
+      type( {; } )
+      # %% # Then this:
+      type( {} )
+      # %#
+
+      # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
+
+      # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exceptin of branches' early break, though, about that later)
+      # %% # And an empty block evals to `nil`, check this to be true
+      {; } is nil
+      # %#
+
+      # Though you don't need a semicolon when there is at least 1 statement in a block, e.g.
+      # %% # This is a block with a single assignment expression statement
+      { a=1 }
+      # %% # But this is the idiomatic form, which is preferable for foolproof modifications in later code maintenance:
+      {; a=1 }
+      # %#
+
+      # Finally, a comma to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
+      # %% # A single argument pack
+      ; ( 3*7, )
+      # %% # A parenthese-quoted expression
+      ; ( 3*7 )
+      # %%
+      ; type( ( 3*7, ) )
+      # %%
+      ; type( ( 3*7 ) )
+      # %#
+    }
+
+    {## Idioms
+     # - Idiomatic Semicolon / Comma Placements
+
+In Đ code it's considered idiomatic to:
+
+* Avoid semicolons without good reasons
+* Place trailing commas where possible
+
+     #} {;
+      {## Idioms #}
+      export edh'semicolon'comma'idioms = bookmark
+
+      # The idiomatic style is to put a semicolon right after the opening curly brace/bracket, when a block instead of dict literal intended:
+      {;
+        # It can still parse as dict literal with comments inside, if without the semicolon
+      }
+
+    }
 
   }
 
