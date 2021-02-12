@@ -328,15 +328,73 @@ _Strict_ contrasts to _lazy_ in describing how a language has its code semantica
 }
 
 
-{## Pattern Matching
- # - A concise way to organize conditional control branches
+{## Control Flows
+ # - Handling varity of input
 
-A computer is not needed when actual items are handled one by one, some level of abstraction has to be there for a computer, thuse a program written for it, to be useful. This leads to polymorphism, i.e. the input to a program must be able to vary at certain degrees.
+A computer makes no sense if every distinct input has to be processed by a unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient varity. So some level of abstraction has to be there, this leads to polymorphism.
+
 
  #} {;
-  {## Pattern Matching #}
-  export edh'pattern'matching = bookmark
+  {## Control Flows #}
+  export edh'ctrl'flows = bookmark
 
+
+  {## `if-then-else` Conditional Branches
+   # - one or two choices to make
+
+
+   #} {;
+    {## `if-then-else` Conditional Branches #}
+    export edh'if'then'else = bookmark
+
+
+  }
+
+
+  {## Pattern Matching
+   # - A concise way to organize arbitrary number of control branches
+
+   #} {;
+    {## Pattern Matching #}
+    export edh'pattern'matching = bookmark
+
+
+    {## Guard Conditions
+     # - Guard a match with certain conditions
+
+
+     #} {;
+      {## Guard Conditions #}
+      export edh'pattern'guard = bookmark
+
+
+    }
+
+  }
+
+
+  {## Conditional Branching
+   # - Jump out of a block earlier on certain conditions
+
+
+   #} {;
+    {## Conditional Branching #}
+    export edh'branching = bookmark
+
+
+  }
+
+
+  {## `for-from-do` Loop
+   # - Looping is ...
+
+
+   #} {;
+    {## `for-from-do` Loop #}
+    export edh'looping = bookmark
+
+
+  }
 
 }
 
