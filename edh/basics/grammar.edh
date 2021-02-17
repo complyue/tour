@@ -328,6 +328,91 @@ _Strict_ contrasts to _lazy_ in describing how a language has its code semantica
 }
 
 
+{## Values, Naming, Equality
+ # - Naming is the mother of ten-thousands things
+
+ #} {;
+  {## Values, Naming, Equality #}
+  export edh'val'equality = bookmark
+
+
+  {## Named Values / Term Definitions
+   # -
+   # details
+   #} {;
+    {## Named Values / Term Definitions #}
+    export edh'term'def = bookmark
+
+    # %% # make sure to run this cell before the ones following it
+    π := 3.14
+
+    # %% # this prints its name, not value
+    repr( π )
+
+    # %% # after arithmetics, it is no more a term,
+    repr( π * 1 ) # just an immutable numeric value
+
+    # %% # while type of a term comes from its value
+    type( π )
+
+    # %% # and Đ knows it being a term, and can show that accordingly
+    show( π )
+
+    # %% # otherwise it's can be used just like an attribute
+    r = 1.58
+    C = 2 * π * r
+
+    # %#
+  }
+
+
+  {## Null Test
+   # - Nullability
+
+
+   #} {;
+    {## Null Test #}
+    export edh'null'test = bookmark
+
+
+  }
+
+
+  {## Identity Equal
+   # - Being identical
+
+   #} {;
+    {## Identity Equal #}
+    export edh'id'eq = bookmark
+
+
+  }
+
+
+  {## Value Equal
+   # - The usual _equality_
+
+   #} {;
+    {## Value Equal #}
+    export edh'value'eq = bookmark
+
+
+  }
+
+
+  {## Namely Equal
+   # - Equal values can be differently named
+
+   #} {;
+    {## Namely Equal #}
+    export edh'namely'eq = bookmark
+
+
+  }
+
+}
+
+
 {## Control Flows
  # - Handling varity of input
 
@@ -339,33 +424,35 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
   export edh'ctrl'flows = bookmark
 
 
-  {## `if-then-else` Conditional Branches
-   # - one or two choices to make
+  {## `if-then-else` - Boolean Branching
+   # - Conditionally branching
 
 
    #} {;
-    {## `if-then-else` Conditional Branches #}
+    {## `if-then-else` - Boolean Branching #}
     export edh'if'then'else = bookmark
 
 
   }
 
 
-  {## Pattern Matching
-   # - A concise way to organize arbitrary number of control branches
+  {## Blocks, Matching Branches, Fallthrough
+   # - Forming a hierarchy of control elements
+
 
    #} {;
-    {## Pattern Matching #}
-    export edh'pattern'matching = bookmark
+    {## Blocks, Matching Branches, Fallthrough #}
+    export edh'branching = bookmark
 
 
-    {## Guard Conditions
-     # - Guard a match with certain conditions
+    {## `case-of` - Nested Matching Context
+     # - With a local matching target
 
+Dynamically compute a value, with it being the matching target, evaluate a block of expressions (or rarely a single expression)
 
      #} {;
-      {## Guard Conditions #}
-      export edh'pattern'guard = bookmark
+      {## `case-of` - Nested Matching Context #}
+      export edh'case'of = bookmark
 
 
     }
@@ -373,25 +460,24 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
   }
 
 
-  {## Conditional Branching
-   # - Jump out of a block earlier on certain conditions
+  {## `for-from-do` Loop
+   # - Looping against some undeterminisic source
 
 
    #} {;
-    {## Conditional Branching #}
-    export edh'branching = bookmark
+    {## `for-from-do` Loop #}
+    export edh'for'loop = bookmark
 
 
   }
 
 
-  {## `for-from-do` Loop
-   # - Looping is ...
-
+  {## `while` Loop
+   # - Checked iterations
 
    #} {;
-    {## `for-from-do` Loop #}
-    export edh'looping = bookmark
+    {## `while` Loop #}
+    export edh'while'loop = bookmark
 
 
   }
@@ -401,7 +487,7 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
 
 {## Classes
  # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
- #} {; import * '../intermediate/objs'
+ #} {; import * '../advanced/objs'
   {## Đ Classes #}
   export edh'classes = bookmark
 
