@@ -3,9 +3,12 @@
 {## Everything is a Value
  # - Some immutable scalars / containers, some mutable containers, and the ultimate mutable thing - objects
 
-Everything is a Value in Đ, and every Value is of some Type, although there are a handful of special cases
+Everything is a _value_ in Đ, every _value_ is of some _type_. Some types are immutable, the others are mutable. Also there are a handful of special values.
 
  #} {;
+  {## Everything is a Value #}
+  export everything'is'a'value = bookmark
+
 }
 
 
@@ -14,8 +17,8 @@ Everything is a Value in Đ, and every Value is of some Type, although there are
  #} {;
 
   {## Named Values / Term Definitions
-   # -
-   # details
+   # - The named is the mother of ten thousand things
+
    #} {;
     {## Named Values / Term Definitions #}
     export edh'term'def = bookmark

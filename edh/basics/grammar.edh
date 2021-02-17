@@ -329,19 +329,20 @@ _Strict_ contrasts to _lazy_ in describing how a language has its code semantica
 
 
 {## Values, Naming, Equality
- # - Naming is the mother of ten-thousands things
+ # - Everything is a value in Đ
 
- #} {;
+ #} {; import * '../advanced/vals' # details of Đ Value System
+
   {## Values, Naming, Equality #}
   export edh'val'equality = bookmark
 
+  everything'is'a'value # <- follow this to see how & why everything is a value
+
 
   {## Named Values / Term Definitions
-   # -
-   # details
+   # - The named is the mother of ten thousand things
+
    #} {;
-    {## Named Values / Term Definitions #}
-    export edh'term'def = bookmark
 
     # %% # make sure to run this cell before the ones following it
     π := 3.14
