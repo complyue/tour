@@ -1,10 +1,14 @@
 {## Đ Language Basics #}
 
-export {
-  import * './lang-cmp'
-  import * './grammar'
-  import * './utils'
-  import * './cmds'
+
+{## Utilities
+ # - Tools to inspect the world
+ #} {; export import * './utils'
+  {## Đ Utilities #}
+  export edh'utilities = bookmark
+
+  # TODO briefs & short examples here
+
 }
 
 
@@ -13,7 +17,7 @@ export {
 
 If you are familar with Python, JavaScript, or another Object-Oriented dynamic scripting langauge, you should read this chapter instead of (or at least before) the grammar chapter, you'll probably learn the syntax, semantics and pragmatics of Đ faster with your background knowledge about object orientation, lexical scoping and etc. Especially some important gotchas are presented there, those you'd better know before trapped with wrong assumptions about Đ with respect to related features in those other langauges / runtimes.
 
- #} {;
+ #} {; export import * './lang-cmp'
   {## Đ Compared to Similar Languages #}
   export edh'lang'cmp = bookmark
 
@@ -27,33 +31,11 @@ If you are familar with Python, JavaScript, or another Object-Oriented dynamic s
 
 In lieu of this chapter, you can get all you need to know from the chapter above, if you happen to know some other similar languages. Skip this chapter as you like if that's the case.
 
-This chapter is more like a reference of the langauge, before some more formal language specification is defined. Hopefully this can serve better for readers without priori backgroud knowledge in programming, or only experienced in functional programming (with Haskell likely), since no priori knowledge about procedure / imperative programming is assumed, and more broken-down examples are presented in this chapter, for easier and more complete understandings.
+Before some more formal language specification is defined, this chapter is a closest thing to that. Hopefully this can serve better for readers without priori backgroud knowledge in programming, or only experienced in functional programming (with Haskell likely), since no priori knowledge about procedure / imperative programming is assumed, and more broken-down examples are presented in this chapter, for easier and more complete understandings.
 
- #} {;
+ #} {; export import * './grammar'
   {## Đ Grammar #}
   export edh'grammar = bookmark
-
-  # TODO briefs & short examples here
-
-}
-
-
-{## Utilities
- # - Procedures & Classes generally useful
- #} {;
-  {## Đ Utilities #}
-  export edh'utilities = bookmark
-
-  # TODO briefs & short examples here
-
-}
-
-
-{## Commands
- # - How REPLs and other interactive components can be more friendly and adaptive for you
- #} {;
-  {## Đ Commands #}
-  export edh'commands = bookmark
 
   # TODO briefs & short examples here
 

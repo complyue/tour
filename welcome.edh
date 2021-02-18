@@ -174,40 +174,69 @@ The rest contents in this module contain many links that can teleport you to var
  #} {; import * 'tour'
 
   {## Language Basics
-   # - Comparison, Grammar, Utilities, Commands, ...
+   # - Useful utilities, grammar, and comparison to similar languages
    #} {; import * './edh/basics' # <- navigable for elaborate source
+
+
+    {## Utilities
+     # - Handful tools whenever you work with Đ stuff
+
+     #} {; edh'utilities # <- follow this to details
+
+      # TODO briefs & short examples here
+
+    }
+
 
     {## Compared to Similar Languages
      # - Đ Compared to Similar Languages
-     #} {; edh'lang'cmp # <- navigable bookmark
+     #} {; edh'lang'cmp # <- follow this to details
 
       # TODO briefs & short examples here
 
     }
+
 
     {## Grammar
-     # - Đ Grammar
-     #} {; edh'grammar # <- navigable bookmark
+     # - Syntax, Semantics, and Pragmatics
+     #} {; edh'grammar # <- follow this to details
 
       # TODO briefs & short examples here
 
     }
 
-    {## Utilities
-     # - Đ Utilities
-     #} {; edh'utilities # <- navigable bookmark
+  }
 
-      # TODO briefs & short examples here
 
-    }
+  {## Advanced Topics
+   # - Make the best out of Đ
 
-    {## Commands
-     # - Đ Commands
-     #} {; edh'commands # <- navigable bookmark
+   #} {;
+    {## Advanced Topics #}
+    export edh'advanced = bookmark
 
-      # TODO briefs & short examples here
 
-    }
+  }
+
+
+  {## Becoming a Veteran
+   # - Distinguished Đ developers doing sophisticated things
+
+   #} {;
+    {## Becoming a Veteran #}
+    export edh'veteran = bookmark
+
+
+  }
+
+
+  {## Language Reference
+   # - The boring list of all things
+
+   #} {;
+    {## Language Reference #}
+    export edh'lang'refs = bookmark
+
 
   }
 

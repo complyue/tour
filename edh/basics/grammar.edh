@@ -321,39 +321,134 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 export edh'semantics = bookmark
 
 
-{## Strict Evaluation of Expressions and Statements
- # - Đ is a strict language
+{## Entities, Attributes and Naming
+ # - Attributes with (alphanumeric or symbolic names) are grouped into entities
 
-_Strict_ contrasts to _lazy_ (wrt evaluation), describes how a language / runtime has its code semantically executed. An Đ interpreter program evaluates a statement immediately upon one encountered.
+Entity is the logical unit for information to be organized in an Đ world. Entities only exist conceptually, some entities are used to each back a scope (module scope or procedure scope), other entities are used to each back an object (excepting host objects). While some objects (e.g. module objects, namespace objects, class objects) each encapsulate a scope of its own, such an object and the scope it encapsolutes are backed by a same entity.
 
-Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated.
+ #} {;
+  {## Entities, Attributes and Naming #}
+  export edh'ent'attr'naming = bookmark
 
-Expressions can be combined together (e.g. by an infix, binary operator), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarachy.
+
+  {## Symbols
+   # - Unique attribute identifiers
+
+   #} {;
+    {## Symbols #}
+    export edh'symbols = bookmark
+
+
+  }
+
+
+  {## A Typical Entity Example
+   # - Let's take a namespace object for example
+
+
+   #} {;
+    {## A Typical Entity Example #}
+    export edh'entity'example = bookmark
+
+
+  }
+
+}
+
+
+{## Expressions and Statements
+ # - A piece of Đ code is just a sequence of statements
+
+Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated. An expression may or may not have side-effects when evaluated.
+
+Expressions can be combined together (e.g. by an infix, binary operator), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarchy.
 
 For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it induces useful side-effects.
 
+Đ is _strict_ in evaluation of statements, an Đ interpreter program evaluates a statement immediately upon one is encountered. (The contrary is _lazy_ wrt evaluation, in which sense the actually evaluation can be postponed until absolutely necessary.)
+
  #} {; import * '../refs'
-  {## Strict Evaluation of Expressions and Statements #}
-  export edh'strict'eval = bookmark
+  {## Expressions and Statements #}
+  export edh'exprs'stmts = bookmark
 
-  # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
-  let (a, b, c,) = (3, 2, 7,)
-  # %# See that there's NO result by running this cell?
+  {## Typical Examples
+   # - Commonplace expressions and statements
+   #} {;
+    {## Typical Examples #}
+    export edh'expr'stmt'examples = bookmark
 
-  # %% # Arithmetic expression is so typical
-  a + b * c
-  # %# See the result?
-  # Note `*` is the multiplication operator ( i.e. × in everywhere else than a programming language )
 
-  # see Đ langauge reference for a detailed list of statements (including expressions) Đ code can have.
-  edh'lang'refs
+    # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
+    let (a, b, c,) = (3, 2, 7,)
+    # %# See that there's NO result by running this cell?
+
+    # %% # Arithmetic expressions are very typical, usually having literal expressions and attribute expressions joined with binary operators, e.g.:
+    a + b * c - 5
+    # %# See the result?
+    # Note `*` is the multiplication operator (while in everywhere else other than a programming language, it is `×`)
+  }
+
+
+  {## Operators
+   # - Fully customizable infix operators with a few intrinsic prefix and postfix operators
+
+Each infix operator has its own precedence and associativity (fixity) as so defined respectively, but in Đ, infix operators are not defined intrinsicly by the language,
+
+   #} {;
+    {## Operators #}
+    export edh'operators = bookmark
+
+
+    {## Indexing & Calling
+     # - Intrinsic postfix operators
+
+     #} {;
+      {## Indexing & Calling #}
+      export edh'indexing'calling = bookmark
+
+
+    }
+
+  }
+
+
+  {## More Expressions and Statements
+   # - There are more types of expressions and statements in Đ
+
+For example:
+ * Dict Expresssion
+ * List Expression
+ * Namespace Expression
+ * Class Expression
+ * Block Expression
+ * Yield Expression
+ * Index Expression
+ * Call Expression
+ * Default Expression
+ * Go Statement
+ * Defer Statement
+ * Perceive Statement
+ * Break Statement
+ * Continue Statement
+ * Fallthrough Statement
+ * Throw Statement
+ * Rethrow Statement
+ * Return Statement
+
+   #} {;
+    {## More Expressions and Statements #}
+    export more'exprs'stmts = bookmark
+
+    edh'lang'refs # <- follow this to Đ langauge reference for a detailed list of statements (including expressions) Đ code can have
+  }
+
 }
 
 
 {## Values, Naming, Equality
  # - Everything is a value in Đ
 
- #} {; import * '../advanced/vals' # details of Đ Value System
+ #} {; import * '../advanced/vals' # <- details of Đ Value System
 
   {## Values, Naming, Equality #}
   export edh'val'equality = bookmark
@@ -560,42 +655,26 @@ The `class` keyword defines a usual class.
 }
 
 
-{## Modules and Namespaces
- # - `module` and `namespace` are two special builtin classes
+{## Modules
+ # - Each module object is loaded from a particular `.edh` file
 
 
  #} {;
-  {## Modules and Namespaces #}
-  export bookmark'identifier = bookmark
+  {## Modules #}
+  export edh'modules = bookmark
 
 
 }
 
 
-{## Lexical Scopes
- # - Every scope is backed by an entity with an (implicit) identity, plus a dynamic set of attributes
+{## Namespaces
+ # - A namespace is a special object
 
-Every scope can be wrapped as an object of `scope` class
 
  #} {;
-  {## Lexical Scopes #}
-  export edh'lexi'scopes = bookmark
+  {## Namespaces #}
+  export edh'namespaces = bookmark
 
-  # %%
-  s = scope()
-  # %%
-  s.attrs() |type
-  # %%
-  dir$ s
-  # %%
-  s.put( a= 5, b=2, )
-  s.eval( expr c = 3 )
-  # %%
-  dir$ s
-  # %%
-  s.eval( expr c += 2 )
-  s.get( 'c' )
-  # %#
 
 }
 
@@ -641,6 +720,16 @@ All procedures are methods of some object, but a particular method doesn't have 
 
   }
 
+}
+
+
+{## Lexical Scoping
+ # - Static scoping is used for usual artifact resolution (i.e. other than effect resolution)
+
+ #} {;
+  {## Lexical Scoping #}
+  export edh'lexi'scoping = bookmark
+
 
   {## Closure
    # - A procedure always captures the full lexical context it is defined in
@@ -672,6 +761,7 @@ All procedures are methods of some object, but a particular method doesn't have 
     {## Scope Wrappers #}
     export edh'scope'wrappers = bookmark
 
+
     # %% # without argument, it creates an object wrapping the scope where it's called from
     method f() {
       method g() {
@@ -683,6 +773,8 @@ All procedures are methods of some object, but a particular method doesn't have 
     }
     s = f()
     'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
+    # %#
+
 
     # %% # if an object is passed as ctor argument, it creates an object wrapping that object's scope
     class C pass
@@ -690,8 +782,8 @@ All procedures are methods of some object, but a particular method doesn't have 
     s = scope(o)
     s.put( a= 3, c= 2, b= 5, )
     s.attrs()
-
     # %#
+
   }
 
 
@@ -743,5 +835,16 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
 
   }
+
+}
+
+
+{## Effect Tracking
+ # - Vending & consuming effects with dynamic scoping
+
+ #} {;
+  {## Effect Tracking #}
+  export edh'eff'tracking = bookmark
+
 
 }

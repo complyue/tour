@@ -1,16 +1,62 @@
+{## Đ Utilities #}
+export edh'utilities'details = bookmark
 
-# %%
-# `desc()` `show()` as well as the `repr()` familiar from Python, and etc.
-# are utility procedures from the default batteries, hover on refs to them
-# below, to see their doc as tooltip, or go to / peek their respective
-# (meta) definition as you like:
-desc show repr str
-# Note they are implemented as host procedures, the `batteries/meta` module
-# set just presents meta documentation for them.
 
-# %% Run this cell
-show( console )
-# %% And the equivalent
-show$ console
-# Make yourself comfortable with the Haskell style syntax,
-# that should be considered more idiomatic in Đ codebases.
+{## Pretty-Showing
+ # - Interactive, instant observation of certain values
+
+ #} {;
+  {## Pretty-Showing #}
+  export edh'pretty'show = bookmark
+
+
+  # %%
+  # `desc()` `show()` as well as the `repr()` familiar from Python, and etc.
+  # are utility procedures from the default batteries, hover on refs to them
+  # below, to see their doc as tooltip, or go to / peek their respective
+  # (meta) definition as you like:
+  desc show repr str
+  # Note they are implemented as host procedures, the `batteries/meta` module
+  # set just presents meta documentation for them.
+
+  # %% Run this cell
+  show( console )
+  # %% And the equivalent
+  show$ console
+  # Make yourself comfortable with the Haskell style syntax,
+  # that should be considered more idiomatic in Đ codebases.
+
+}
+
+
+{## Interface of the REPL
+ # - Rendezvous with your vendor/user
+
+ #} {;
+  {## Interface of the REPL #}
+  export edh'repl'ui = bookmark
+
+
+  {## Commands
+   # - Idiomatic formats, context-sensitive behaviors
+
+   #} {;
+    {## Commands #}
+    export edh'commands = bookmark
+
+
+    # %% to see what's directly in-scope
+    dir
+
+    # %%
+    desc$ dir
+
+    # %% it shows attributes in current scope, which is equivalent to this
+    dir$ scope()
+
+    # %% to see what's more available from outer scopes
+    dir$ scope() .outer
+
+  }
+
+}
