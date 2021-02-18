@@ -1,0 +1,27 @@
+{## Đ Language Reference #}
+
+export edh'lang'refs = bookmark
+
+
+{## Expressions
+ # - Code with a direct evaluation result
+
+Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated.
+
+Expressions can be combined together (e.g. by an infix, binary operator), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarachy.
+
+ #} {; export import * './exprs'
+  {## Expressions #}
+  export edh'exprs = bookmark
+}
+
+
+{## Other Statements
+ # - Code for side-effects
+
+For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it induces useful side-effects.
+
+ #} {; export import * './stmts'
+  {## Other Statements #}
+  export edh'stmts = bookmark
+}

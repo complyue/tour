@@ -1,4 +1,4 @@
-{## Đ Syntax, Semantics, and Pragmatics #}
+{## Syntax, Semantics, and Pragmatics of Đ #}
 
 {## Đ Grammar Details #}
 export edh'grammar'details = bookmark
@@ -15,7 +15,7 @@ The _event_ abstraction should decouple much of the complexity, and degrade much
 
 You will be using Đ to describe reactions to incoming events from other parts of the system, in forms of local entity attribute updates, and more complex logics with control flows. As well, you can post commands for event delivery, to other parts of the system. Modularized components can be developed for reuse, by your team or by 3rd parties. Realworld systems are inherently effectful, any event upon it is distributed / hosted, usually implies effects it should cause, you will also use Đ to describe what effects are expected to be there, and how those effects should be realized. Note effects are inherently context sensitive, as a fairly sophisticated effect is usually implemented by means of other effects, those maybe simpler but nevertheless sensitive to their own context.
 
-**Monad** is state of the art way to track effects, while **Algebraic Effect & Handlers** being actively researched in academic for similiar purpose today, but they both work with functional programming langauges. Then inspired by **Algebraic Effect & Handlers**, Đ implements **Dynamic Scoped Effects** for effect tracking in the imperative / procedural paradigm. It is **Dynamic Scoping** per se. Historically, **Dynamic Scoping** designs are proved failures , but with Đ's dedicated syntax / namespacing to have dynamic artifacts isolated from lexical context, the confusing semantics / behaviors can be avoided, and then finally done right.
+**Monad** is state of the art way for effect tracking, while **Algebraic Effects & Handlers** being actively researched in academic for similiar purpose today, but they both work with functional programming langauges. Then inspired by **Algebraic Effects & Handlers**, Đ implements **Dynamic Scoped Effects** for effect tracking in the imperative / procedural paradigm. It is **Dynamic Scoping** per se. Historically, **Dynamic Scoping** designs are proved failures, but with Đ's dedicated syntax / namespacing to have dynamic artifacts isolated from lexical artifacts, the confusing semantics / behaviors can be avoided, and then finally done right.
 
  #} {;
   {## Overview #}
@@ -23,11 +23,14 @@ You will be using Đ to describe reactions to incoming events from other parts o
 }
 
 
-{## Đ Code Style
+export edh'syntax = bookmark
+
+
+{## Syntax & Style
  # - Đ code style is officially opinionated
  #} {;
-  {## Đ Code Style #}
-  export edh'code'style = bookmark
+  {## Syntax & Style #}
+  export edh'syntax'style = bookmark
 
   {## The Official Đ Code Formatter
    # - Any style you like, so long as it is formatted such
@@ -315,16 +318,35 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 }
 
 
-{## Expressions and Statements, Strict Evaluation
+export edh'semantics = bookmark
+
+
+{## Strict Evaluation of Expressions and Statements
  # - Đ is a strict language
 
-_Strict_ contrasts to _lazy_ in describing how a language has its code semantically executed.
+_Strict_ contrasts to _lazy_ (wrt evaluation), describes how a language / runtime has its code semantically executed. An Đ interpreter program evaluates a statement immediately upon one encountered.
 
- #} {;
-  {## Expressions and Statements, Strict Evaluation #}
+Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated.
+
+Expressions can be combined together (e.g. by an infix, binary operator), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarachy.
+
+For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it induces useful side-effects.
+
+ #} {; import * '../refs'
+  {## Strict Evaluation of Expressions and Statements #}
   export edh'strict'eval = bookmark
 
+  # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
+  let (a, b, c,) = (3, 2, 7,)
+  # %# See that there's NO result by running this cell?
 
+  # %% # Arithmetic expression is so typical
+  a + b * c
+  # %# See the result?
+  # Note `*` is the multiplication operator ( i.e. × in everywhere else than a programming language )
+
+  # see Đ langauge reference for a detailed list of statements (including expressions) Đ code can have.
+  edh'lang'refs
 }
 
 
@@ -484,6 +506,9 @@ Dynamically compute a value, with it being the matching target, evaluate a block
   }
 
 }
+
+
+export edh'pragmatics = bookmark
 
 
 {## Classes
