@@ -166,7 +166,11 @@ Assuming the [Pre-Flight Checks] are all good for you, it is important not only 
 
 The rest contents in this module contain many links that can teleport you to various places of interest.
 
- #} {; }
+ #} {;
+
+  # TODO some tricks to work with the REPL/IDE
+
+}
 
 
 {## Đ the Language

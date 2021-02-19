@@ -2,61 +2,275 @@
 export edh'utilities'details = bookmark
 
 
+{## Command Interface of the REPL
+ # - Rendezvous with your vendor/user
+
+ #} {;
+  {## Command Interface of the REPL #}
+  export edh'repl'ci = bookmark
+
+  # Using commands is the idiomatic way of Đ to carry out flexible yet powerful interactions between a REPL user and the software component he/she is working with.
+
+  # `Command` is a data class comes with the default batteries of an Đ interpreter, object instances of this class i.e. command objects, are passed to a REPL by the user, then interpreted by the software component powering the REPL.
+  Command # <- go to its definition to see the implementation details
+
+  # Different REPLs can interpret a same command differently, the vendor of a REPL is obliged to implement intuitive behaviors for commonsense commands, while being free to implement as many specific commands as they make good senses.
+
+  # You can navigate to the implementation of `edh` REPL below to see it as a minimal working example
+  import * 'repl/__main__' into Nothing
+
+
+  {## Common Commands
+   # - Some commands are commonplace
+
+Very common commands a REPL should at least support are listed here
+
+   #} {;
+    {## Common Commands #}
+    export edh'common'cmds = bookmark
+
+
+    {## The `quit` Command
+     # - Quit the REPL
+
+The `quit` command should cause the REPL to terminate, though a REPL can refuse to do so, due to various reasons. But a REPL is supposed to explain why the termination is not possible or not desirable, as well as a confirmation it can make with the user.
+
+     #} {;
+      {## The `quit` Command #}
+      export edh'quit'cmd = bookmark
+
+      # %% # Note running this cell is to terminate the active Đ terminal session of your IDE, you are encouraged to try it. Anyway when you try to run another cell later, you'll be prompted to start a new Đ terminal session if no one has already been running.
+      quit # <- you can go to its definition to see more details
+      # %#
+
+    }
+
+
+    {## The `dir` Command
+     # - Show directory of contents
+
+The `dir` command should show a directory of the contents of some specified entity, usually that of a scope or an object.
+
+     #} {;
+      {## The `dir` Command #}
+      export edh'dir'cmd = bookmark
+
+      # %% A bare `dir` command usually shows artifacts currently in-scope
+      dir
+      # %#
+    }
+
+  }
+
+
+  {## Customizing Commands
+   # - Commands should be able to take arguments, of course
+
+A `Command` object can be _called_ with arbitrary arguments (an apk) to further specify more detailed request information, the result will be a new command object of the same class (in case the original command is of a subclass derived from `Command`), and the REPL should interpret the arguments (.apk of the command object) accordingly.
+
+   #} {;
+    {## Customizing Commands #}
+    export edh'cmd'args = bookmark
+
+    # Call-making can be done with the postfix `()` operator in Đ, as with vast majority of mainstream programming languages.
+
+    # %% # E.g. now we obtain the current scope as an object
+    currScope = scope() # More about `scope()` later
+    # `currScope` is now a reflective object wrapping current scope, then we create a new `dir` command by calling the present `dir` command with it
+    dir( currScope ) # The semantics is identical to a bare `dir` command with the `edh` REPL (and most other REPLs)
+    # %# Note you should see `currScope` appeared as a new attribute in the output result, compared to the previous output for `dir` command.
+
+    # %% # Then we can check what's there 1 level outer of current scope:
+    worldRoot = currScope.outer
+    dir( worldRoot )
+    # %# Note you should see many artifacts in the output, because the immediate outer scope of a module scope (like the current scope here) is root scope of the Đ world created by the interpreter program, those are procedures, classes and etc., builtin as default batteries bundled with the Đ interpreter.
+
+    # There are more ways to make the _call_, one particular way could be more convenient in certain cases, though the aesthetics ought to appear differently to different people. You'd better know all your options, as well as to understand code from others with some different style.
+
+    # %% # `$` is the infix operator taking callee from left-hand-side and arguments from right-hand-side
+    dir$ currScope
+    # %# This form is convenient when you have multiple items to be processed by the same command one after another, that later you can recall input history with the up-arrow key and change the target expression.
+
+    # %% # `|` is the infix operator taking callee from right-hand-side and arguments from left-hand-side
+    currScope |dir
+    # %# This form is convenient when you feel need to reveal the value after keyed in some expression (probably yet incomplete for sth bigger), you can later recall last input with the up-arrow key, delete the last 4 characters, then append more parts.
+
+    # Especially note that, precedence makes essential differences in composing expressions, and the `()` operator has highest possible precedence, while the `|` operator has a rather low precedence, and the `$` operator has an even lower precedence.
+    # %%
+    show$ (|) # <- Note hover & [Go to Definition] work for an infix operator reference (i.e. quoted by a pair of parenthese)
+    # %%
+    show$ ($) # <- Try hover or go to definition of the parenthese quoted operator
+    # %#
+
+    # Also note in Đ that all infix operators are customizable and usually implemented with some operator procedure, while all prefix and postfix operators are intrinsic to the language, so have no explicit definition.
+  }
+
+}
+
+
 {## Pretty-Showing
- # - Interactive, instant observation of certain values
+ # - Interactive, in-depth observation of certain values
+
+All REPLs should print the value from evaluation of the expression you'd just input, but the result text is usually the simplest conversion to string representation of the value, sometimes that's not enough to grasp what a complex value (like an object) really is.
+
+Đ comes with several utility procedures meant to show a value with gradually more verbose/informative result, while they all do kinda value to string conversion.
 
  #} {;
   {## Pretty-Showing #}
   export edh'pretty'show = bookmark
 
 
-  # %%
-  # `desc()` `show()` as well as the `repr()` familiar from Python, and etc.
-  # are utility procedures from the default batteries, hover on refs to them
-  # below, to see their doc as tooltip, or go to / peek their respective
-  # (meta) definition as you like:
-  desc show repr str
-  # Note they are implemented as host procedures, the `batteries/meta` module
-  # set just presents meta documentation for them.
+  # `str()` is the simplest and default string conversion, you'd seldom need it when working with a REPL. Well, just in case, you'd know it exits.
+  str # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %% # For a code cell, you usually don't mind yourself to convert the result to string for display purpose
+  3 * 7
+  # %% As the result of a code cell, explicitly doing `str()` conversion usually makes no difference
+  str$ 3 * 7
+  # %% # But intermediate results would make real differences, compare:
+  3 + 5
+  # %% # versus
+  3 + str(5)
+  # %#
 
-  # %% Run this cell
-  show( console )
-  # %% And the equivalent
-  show$ console
-  # Make yourself comfortable with the Haskell style syntax,
-  # that should be considered more idiomatic in Đ codebases.
+
+  # `repr()` can be more or less verbose than `str()`, it stands for _representation_, and the idea is that, the string result it gives out should usualy be able to be evaluated as code, yielding a value ideally identical or equal to the original value. Though that's not always possible / implemented so.
+  repr # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %% # A simple example is the literal _representation_ of strings
+  repr$ 'A string is a string'
+  # %# # The result will be properly quoted as valid Đ source for a string literal
+
+
+  # `show()` is more verbose, it typically speaks out the type of the interesting value, together with its string representation
+  show # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %%
+  show$ 3
+  # %%
+  show$ 'Hello'
+  # %%
+  show$ show
+  # %%
+  show$ this
+  # %#
+
+
+  # `desc()` is more _descriptive_, it stands for _describe_, and the idea is that, for complex data objects, such as a vector, a matrix, or a compound dataset, some statistical information should be computed (and ideally cached), to be given as the description for it. Though it can be just more wordy for relative simple values.
+  desc # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %%
+  desc$ 3
+  # %%
+  desc$ 'Hello'
+  # %%
+  desc$ desc
+  # %#
 
 }
 
 
-{## Interface of the REPL
- # - Rendezvous with your vendor/user
+{## JSON to Interchange with Machines
+ # - Stringifying to JSON form allows copy&paste to otherwhere accepting it
+
+JSON is particularly suitable as the encoding format of structural data, for machines to parse and swallow, while stays fairly readable by humans.
+ - https://www.json.org/json-en.html
 
  #} {;
-  {## Interface of the REPL #}
-  export edh'repl'ui = bookmark
+  {## JSON to Interchange with Machines #}
+  export edh'json'conversion = bookmark
+
+  # `json()` is used to convert any value to its JSON representation in string form.
+  json # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %% # Numbers are encoded pretty much the same as `repr()`
+  json$ 3
+  # %% # Strings likely too
+  json$ 'Hello'
+  # %% # Đ lists are converted to JSON arrays
+  json$ [3, 2, 5,]
+  # %# See? Despite however they are called different, the representations are almost the same, but JSON format doesn't allow trailing commas.
+  # %% # Đ dicts are converted to JSON objects
+  json$ { 'name': 'Compl', 'lucky': 7, 'location': { 'city': 'Chongqing', 'country': 'CN'}, }
+  # %# # See? Despite however they are called different, the representations are almost the same, but the trailing commas.
+
+  # JSON source snippets are valid Đ source pieces, an Đ interpreter should evaluate JSON directly without problem for data taking. There is also `parseEdh()` to convert Đ source into expressions, it works as well for JSON source.
+  parseEdh # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %%
+  parseEdh( '{"name": "Compl", "lucky": 7, "location": { "city": "Chongqing", "country": "CN" } }' )
+  # %#
+
+}
+
+{## The Console
+ # - _stdio_ of UNIX (as well POSIX compliant) programs
+
+A REPL actually does the "Read" and "Print" via the console, there are well standardized channels for input/output by a program like an Đ interpreter, they are:
+
+ * _stdin_ Standard Input
+ * _stdout_ Standard Output
+ * _stderr_ Standard Error - usually conveys logging messages
+
+ #} {;
+  {## The Console #}
+  export edh'console = bookmark
+
+  # %%
+  show$ console # <- go to its definition to learn more details
+  # %#
+
+  # You'll need to work with the console to write REPL like programs / frameworks / libraries in Đ, nevertheless, there are plenty good examples to follow.
+
+}
 
 
-  {## Commands
-   # - Idiomatic formats, context-sensitive behaviors
+{## Reflective Utilities
+ # - Doing introspections with just Đ code
 
-   #} {;
-    {## Commands #}
-    export edh'commands = bookmark
+Being a dynamic language, Đ code can only be sure about the data it's processing until runtime, you'll need to inspect some values programatically in your code, at times.
+
+ #} {;
+  {## Reflective Utilities #}
+  export edh'reflective'utils = bookmark
 
 
-    # %% to see what's directly in-scope
-    dir
+  # `type()` is used to obtain the type of interesting values
+  type # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %%
+  type$ 3
+  # %%
+  type$ 'Hello'
+  # %%
+  type$ type
+  # %#
 
-    # %%
-    desc$ dir
 
-    # %% it shows attributes in current scope, which is equivalent to this
-    dir$ scope()
+  # `null()` is used to perform _null_ tests
+  null # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
+  # %% #
+  null$ 3
+  # %%
+  null$ 0
+  # %%
+  null$ 'Hello'
+  # %%
+  null$ ''
+  # %%
+  null$ true
+  # %%
+  null$ false
+  # %#
 
-    # %% to see what's more available from outer scopes
-    dir$ scope() .outer
 
-  }
+  # Also there are `constructor()` to obtain the class of an object, and `supers()` to obtain super/prototype objects of an object.
+  # %%
+  class B pass
+  class C extends B
+  class D extends C
+  d = D()
+  # %%
+  constructor$ d
+  # %%
+  constructor(d) is D
+  # %%
+  supers$ d
+  # %%
+  constructor( supers(d)[0] ) is C
+  # %#
 
 }
