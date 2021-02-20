@@ -321,35 +321,159 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 export edh'semantics = bookmark
 
 
-{## Entities, Attributes and Naming
- # - Attributes with (alphanumeric or symbolic names) are grouped into entities
+{## Entities, Attributes and Identifiers
+ # - Each entity consists of a dynamic set of attribute values identified by distinct identifiers
 
-Entity is the logical unit for information to be organized in an Đ world. Entities only exist conceptually, some entities are used to each back a scope (module scope or procedure scope), other entities are used to each back an object (excepting host objects). While some objects (e.g. module objects, namespace objects, class objects) each encapsulate a scope of its own, such an object and the scope it encapsolutes are backed by a same entity.
+Entity is the logical unit of information that organized in an Đ world. Entities only exist conceptually, some entities are used to each back a scope (module scope or procedure scope), other entities are used to each back an object (excepting host objects). While some objects (e.g. module objects, namespace objects, class objects) each encapsulate a scope of its own, such an object and the scope it encapsolutes are both backed by a same entity.
+
+Đ is rather dynamic in nature - at runtime, not only each individual attribute value can change arbitrarily, new attributes can be added to an entity, as well as existing attributes can be deleted from it. That is to say, the structure as well as the attribute values of each entity can vary on its own at runtime.
 
  #} {;
-  {## Entities, Attributes and Naming #}
+  {## Entities, Attributes and Identifiers #}
   export edh'ent'attr'naming = bookmark
 
 
-  {## Symbols
-   # - Unique attribute identifiers
+  {## Attribute Identifiers
+   # - About naming attributes
+
+Each attribute of an entity has to be uniquely identified. In Đ, the usual alphanumeric "variable" identifiers (like in other programming languages) can be used.
+
+In addition, symbolic identifiers are also supported and recommended for cross-component scenarios.
+
+And technically, any string (even the empty string) can serve as an attribute identifier in Đ, with at-notation.
 
    #} {;
-    {## Symbols #}
-    export edh'symbols = bookmark
+    {## Attribute Identifiers #}
+    export edh'attr'ids = bookmark
 
 
-  }
+    {## A Typical Entity Example
+     # - Let's take a namespace object for example
+     #} {;
+      {## A Typical Entity Example #}
+      export edh'entity'example = bookmark
+
+      # %% #
+      namespace ns() pass
+      dir$ ns
+      # %#
+
+    }
+
+    {## Alphanumeric Names
+     # - The usual "variable" identifiers in a programming language
+
+An alphanumeric name must start with a letter (i.e. alphabetic Unicode characters (lower-case, upper-case and title-case letters, plus letters of caseless scripts and modifiers letters) or the underscore character (_); more characters can follow, and they must be alphabetic or numeric Unicode characters, or the underscore character (_) or the single-quote character (').
+
+Note the single-quote character is allowed to mean the prime symbol as in mathematics, following Haskell convention.
+
+     #} {;
+      {## Alphanumeric Names #}
+      export edh'alphanum'names = bookmark
+
+      # %% # Some examples:
+      import * (
+        a= 3, _b3= 2, a'= 5,
+        x= 9, y_5= 1, x''= 6,
+        name= 'Compl', city= 'Chongqing', year= 2021,
+      ) into ns
+      dir$ ns
+      # %#
+
+      # Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole wrt scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
+      # %% % Assigning to `_` will not create an attribute named `_` in current scope, though all side-effects by evaluating the right-hand-side expression will apply.
+      _ = 3 * 7 # TODO a better example with desirable side-effects
+      dir
+      # %# See there is no attribute named `_` appeared.
+    }
 
 
-  {## A Typical Entity Example
-   # - Let's take a namespace object for example
+    {## Symbolic Names and At-Notation
+     # - To avoid name clashing across software components
+
+Symbol is a special type of values solely for identification purpose, they are defined and used via at-notations.
+
+     #} {;
+      {## Symbolic Names and At-Notation #}
+      export edh'symbolic'names = bookmark
+      export edh'at'notation = bookmark
+
+      # A symbol is a value of special type, can only be created with a special syntax, where an alphanumeric name for the attribute in current scope to receive the symbol value is specified.
+      # %% # Define a symbol named `secret`
+      symbol @secret
+      dir
+      # %% # Its alphanumeric name can be used against current scope to obtain the value
+      type(secret) is SymbolType
+      # %# See above is true.
+
+      # %% # Create a new attribute named after it, in the namespace, by assignment
+      ns.@secret = 33625
+      ns.@secret
+      # %# Note you can have spaces above around the "dot" and the "at", up to your style.
+
+      # %% # There is infix at-notation works the same way
+      ns @ secret = 33526
+      ns @ secret
+      # %# Note the spaces around `@` above is optional, Đ formatter honors your stylish to have them or not, but more spaces will be collapsed into one.
+
+      # %% # Create a new attribute named after it, in current scope, by assignment
+      ; @secret = 33526
+      dir
+      # %% # Note the semicolons needed above and below to disambiguate from infix at-notation.
+      ; @secret
+      # %#
+
+      # The name for the attribute storing a symbol value, and the attribute named after the symbol value, are two different things. A symbol value can be stored under another name, and used via that alias as well:
+      # %% #
+      confidential = secret
+      ns.@confidential
+      # %% # It is ultimately the symbol value that matters for a symbolic attribute, not how that symbol value is named, so:
+      console.print$ 'Before changed, @secret is: ' ++ ns.@secret
+      ns.@confidential = 12345
+      console.print$ 'After changed, @secret is: ' ++ ns.@secret
+      # %% # Figured out why `@secret` is changed by assigning to `@confidential` ? Hint:
+      confidential is secret
+      # %# That's it, the symbol value for the symbolic names are the same, regardless of how these key values are obtained.
+
+      # %% # Nothing prevents you from creating a new symbol value for a new key, under an existing name, the old, alphanumericly named attribute for the symbol value, will simply be overwritten:
+      symbol @secret
+      confidential is secret
+      # %% # Now they are different keys, so the symbolic names via them are different attributes, thus can be created/changed independently:
+      console.print$ 'Before changed, @confidential is: ' ++ ns.@confidential
+      ns.@secret = 54321
+      console.print$ 'After changed, @confidential is: ' ++ ns.@confidential
+      # %#
+
+      # %% # It can surprise you now:
+      dir$ ns
+      # %# Confused seeing two "@secret" attributes coexisting?
+      # %% # As well as:
+      dir
+      # %# See "confidential= @secret" in the result? That's because a symbol value has its `repr` reflecting how it is initially defined, and will never change, though the value can be assigned to different names as exercised so far.
+    }
 
 
-   #} {;
-    {## A Typical Entity Example #}
-    export edh'entity'example = bookmark
+    {## Quaint Names
+     # - Arbitrary string as identifiers
 
+Another interesting usage of at-notation is, that string values can be used in place of symbols, this enables arbitrary strings as attribute identifiers.
+
+     #} {;
+      {## Quaint Names #}
+      export edh'quaint'names = bookmark
+
+      # %% # Using string literals is apparent
+      ns.@'we-the-people' = 'proud humans'
+      dir$ ns
+      # %# Note the minus inside the key, they'll be interpreted as subtraction operators if not be in a string key of the at-notation
+
+      # A string valued attribute can be used in at-notation for the key value, but you are advised against this style unless absolutely necessary.
+      # %% %
+      bad'symbolic'looking'key = 'No, No, No!'
+      ns.@bad'symbolic'looking'key = 'Confusing :-/'
+      dir$ ns
+      # %# Note there are cases it is useful, but rare.
+    }
 
   }
 
