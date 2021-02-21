@@ -437,24 +437,27 @@ Symbol is a special type of values solely for identification purpose, they are d
       # %# See above is true.
 
       # %% # Create a new attribute named after it, in the namespace, by assignment
-      ns.@secret = 33625
+      ns.@secret = 55632
       ns.@secret
-      # %# Note you can have spaces above around the "dot" and the "at", up to your style.
+      # %# Note neither `.` nor `@` as in above is an operator, also not that they combined. Instead, "dot" (.) followed by "at" (@) and an alphanumeric name, is intrinsic to the language syntax in this form. Remind that `@` can be part (or whole) of an operator symbol, while `.` can never be.
+      # And you can have spaces above around both the "dot" and the "at", up to your style.
 
-      # %% # There is infix at-notation works the same way
+      # %% # There is another form of at-notation works as well, through `@` as an infix operator
+      show$ (@)
+      # %% # Assignments and references work straight forward
       ns @ secret = 33526
       ns @ secret
-      # %# Note the spaces around `@` above is optional, Đ formatter honors your stylish to have them or not, but more spaces will be collapsed into one.
+      # %# Note the spaces around `@` above is optional, Đ formatter honors your stylish to have them or not, but more whitespaces will be collapsed into one.
 
-      # %% # Create a new attribute named after it, in current scope, by assignment
+      # %% # Now create a new attribute named after this symbol, in current scope, by assignment
       ; @secret = 33526
       dir
       # %% # Note the semicolons needed above and below to disambiguate from infix at-notation.
       ; @secret
       # %#
 
-      # The name for the attribute storing a symbol value, and the attribute named after the symbol value, are two different things. A symbol value can be stored under another name, and used via that alias as well:
-      # %% #
+      # The name for the attribute storing a symbol value, and the attribute named after the symbol value, are two different things. A symbol value can be stored under any other name, and used via that alias as well:
+      # %% # Create an alias of the `secret` symbol value
       confidential = secret
       ns.@confidential
       # %% # It is ultimately the symbol value that matters for a symbolic attribute, not how that symbol value is named, so:
@@ -463,9 +466,9 @@ Symbol is a special type of values solely for identification purpose, they are d
       console.print$ 'After changed, @secret is: ' ++ ns.@secret
       # %% # Figured out why `@secret` is changed by assigning to `@confidential` ? Hint:
       confidential is secret
-      # %# That's it, the symbol value for the symbolic names are the same, regardless of how these key values are obtained.
+      # %# That's it, the symbol value for the symbolic names are the same, regardless of how these key values are stored and obtained. This mechanism allows you to import symbols from alien modules, but renamed locally to avoid alphanumeric name clashing, while still be able to exchange symbolic attributes seamlessly.
 
-      # %% # Nothing prevents you from creating a new symbol value for a new key, under an existing name, the old, alphanumericly named attribute for the symbol value, will simply be overwritten:
+      # %% # Nothing prevents you from creating a new symbol value under an existing name, the old, alphanumericly named attribute for the symbol value, will simply be overwritten:
       symbol @secret
       confidential is secret
       # %% # Now they are different keys, so the symbolic names via them are different attributes, thus can be created/changed independently:
@@ -479,7 +482,7 @@ Symbol is a special type of values solely for identification purpose, they are d
       # %# Confused seeing two "@secret" attributes coexisting?
       # %% # As well as:
       dir
-      # %# See "confidential= @secret" in the result? That's because a symbol value has its `repr` reflecting how it is initially defined, and will never change, though the value can be assigned to different names as exercised so far.
+      # %# See "confidential= @secret" in the result? That's because a symbol value has its `repr` reflecting how it is initially defined, and will never change, though the value can be assigned to different names as we have demonstrated here.
     }
 
 
@@ -492,12 +495,12 @@ Another interesting usage of at-notation is, that string values can be used in p
       {## Quaint Names #}
       export edh'quaint'names = bookmark()
 
-      # %% # Using string literals is apparent
+      # %% # Using string literals is idiomatic for identifiers otherwise not valid alphanumeric names
       ns.@'we-the-people' = 'proud humans'
       dir$ ns
-      # %# Note the minus inside the key, they'll be interpreted as subtraction operators if not be in a string key of the at-notation
+      # %# Note the minus inside the key, they'll be interpreted as subtraction operators if not be in a string key of the at-notation.
 
-      # A string valued attribute can be used in at-notation for the key value, but you are advised against this style unless absolutely necessary.
+      # A string valued attribute can be used in at-notation for the key value, thus manifesting dynamicly named attributes, but you are advised against this style unless absolutely necessary.
       # %% %
       bad'symbolic'looking'key = 'No, No, No!'
       ns.@bad'symbolic'looking'key = 'Confusing :-/'
@@ -627,7 +630,7 @@ However, there are a few hard-coded exceptions, namely the following operators:
 
       # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
       scope(custom'infix'ops).eval(expr
-        3 × 7 ÷ 35
+        3 × 7 ÷ -56
       )
       # %%
       scope(custom'infix'ops).eval(expr
