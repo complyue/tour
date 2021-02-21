@@ -668,8 +668,8 @@ It is used to create a default expression with its operand expression.
 It is technically no-op, and used for source-level compatibility with other scripting languages like JavaScript, where scripting based RPC (Remote Procedure Call) would take place.
 
        #} export edh'prefix'new'op = bookmark()
-      # %% # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
-      that.jsRPC(js!expr{
+      # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
+      false and that.jsRPC(js!expr{
           console.log( 'The time now is ' + new Date());
       })
       # %# Note that expression values are described later in this chapter
