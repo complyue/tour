@@ -74,7 +74,7 @@ The tricks particularly helpful in browsing a single module (such as this file `
 
    #} {;
     {## Navigating a Single Module #}
-    export edh'modu'navi = bookmark
+    export edh'modu'navi = bookmark()
   }
 
 
@@ -82,7 +82,7 @@ The tricks particularly helpful in browsing a single module (such as this file `
    # - Good REPLs working nicely with Code Lens
    #} {;
     {## Đ Terminal Sessions of REPLs #}
-    export edh'term'repls = bookmark
+    export edh'term'repls = bookmark()
 
     # You should see clickable labels in the following line:
     # %% # This line is a cell marker (prefixed with `# %%`)
@@ -140,7 +140,7 @@ Note you can also place your keyboard cursor into 'tour' below, by either arrow 
 
     # As well, we expose a bookmark linking to just here
     {## Navigating the World #}
-    export edh'world'navi = bookmark
+    export edh'world'navi = bookmark()
   }
 
 
@@ -153,7 +153,7 @@ Press **F1** to bring out **Command Palette**, keyin `theme` and choose [`Prefer
 
    #} {;
     {## Use a more Friendly Color Theme #}
-    export edh'color'theme = bookmark
+    export edh'color'theme = bookmark()
   }
 
 }
@@ -217,7 +217,7 @@ The rest contents in this module contain many links that can teleport you to var
 
    #} {;
     {## Advanced Topics #}
-    export edh'advanced = bookmark
+    export edh'advanced = bookmark()
 
 
   }
@@ -228,7 +228,7 @@ The rest contents in this module contain many links that can teleport you to var
 
    #} {;
     {## Becoming a Veteran #}
-    export edh'veteran = bookmark
+    export edh'veteran = bookmark()
 
 
   }
@@ -239,7 +239,7 @@ The rest contents in this module contain many links that can teleport you to var
 
    #} {;
     {## Language Reference #}
-    export edh'lang'refs = bookmark
+    export edh'lang'refs = bookmark()
 
 
   }

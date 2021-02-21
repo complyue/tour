@@ -1,7 +1,7 @@
 {## Đ Language Reference #}
 
 {## Đ Language Reference #}
-export edh'lang'refs = bookmark
+export edh'lang'refs = bookmark()
 
 
 {## Expressions
@@ -13,7 +13,7 @@ Expressions can be combined together (e.g. by an infix, binary operator), to for
 
  #} {; export import * './exprs'
   {## Expressions #}
-  export edh'exprs = bookmark
+  export edh'exprs = bookmark()
 }
 
 
@@ -24,5 +24,5 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
 
  #} {; export import * './stmts'
   {## Other Statements #}
-  export edh'stmts = bookmark
+  export edh'stmts = bookmark()
 }

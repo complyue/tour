@@ -44,7 +44,7 @@
    # evaluated for the final result.
    #} {;
     {## Defaulting #}
-    export edh'defaulting = bookmark
+    export edh'defaulting = bookmark()
 
   }
 

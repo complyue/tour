@@ -7,7 +7,7 @@ Everything is a _value_ in Đ, every _value_ is of some _type_. Some types are i
 
  #} {;
   {## Everything is a Value #}
-  export everything'is'a'value = bookmark
+  export everything'is'a'value = bookmark()
 
 }
 
@@ -21,7 +21,7 @@ Everything is a _value_ in Đ, every _value_ is of some _type_. Some types are i
 
    #} {;
     {## Named Values / Term Definitions #}
-    export edh'term'def = bookmark
+    export edh'term'def = bookmark()
 
     # %% # make sure to run this cell before the ones following it
     π := 3.14
@@ -51,7 +51,7 @@ Everything is a _value_ in Đ, every _value_ is of some _type_. Some types are i
    # Đ attributes are nullable,
    #} {;
     {## Nullability #}
-    export edh'nullability = bookmark
+    export edh'nullability = bookmark()
 
     # %% # `nil` will not be printed by REPL
     nil
@@ -172,7 +172,7 @@ Pair is usually used for slicing specification in Đ, but not as cons list thoug
 
    #} {;
     {## Arguments Pack #}
-    export edh'apk = bookmark
+    export edh'apk = bookmark()
 
 
   }
@@ -212,7 +212,7 @@ An object is a mutable value in Đ
 
  #} {;
   {## Objects #}
-  export edh'objs = bookmark
+  export edh'objs = bookmark()
 
 
 }

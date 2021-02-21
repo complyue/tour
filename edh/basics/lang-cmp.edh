@@ -1,14 +1,14 @@
 {## Đ Compared to Similar Languages #}
 
 {## Đ Compared to Similar Languages #}
-export edh'lang'cmp'details = bookmark
+export edh'lang'cmp'details = bookmark()
 
 
 {## Target Audience
  # - For developers familiar with some other Object-Oriented, dynamic scripting language
  #} {; import * './grammar'
   {## Target Audience #}
-  export edh'lang'cmp'audience = bookmark
+  export edh'lang'cmp'audience = bookmark()
 
   # If you are familiar with any other Object-Oriented, dynamic, scripting language, like Python, JavaScript, Smalltalk etc. , this is for you. You just need to know the differences and a few important gotchas, could save you a great deal of time going over some basic concepts.
 
@@ -64,7 +64,7 @@ for purpose of ergonomics. E.g.
 
  #} {;
   {## Overview #}
-  export edh'lang'overview = bookmark
+  export edh'lang'overview = bookmark()
 }
 
 
@@ -172,7 +172,7 @@ These examples should work for you.
    #} {;
 
     {## Disambiguate Unintended Indexing / Calling #}
-    export edh'disambig'idx'call = bookmark
+    export edh'disambig'idx'call = bookmark()
 
     # Noticed the semicolons before each pair of square/round brackets? Why are they there?
 
@@ -180,7 +180,7 @@ These examples should work for you.
 
 
     {## Disambiguate Block from Dict #}
-    export edh'disambig'blk'dict = bookmark
+    export edh'disambig'blk'dict = bookmark()
 
     # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
 
@@ -263,7 +263,7 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
    # - Đ syntax common to some languages
    #} {;
     {## Đ Syntax Common To Some Languages #}
-    export edh'common'syntax = bookmark
+    export edh'common'syntax = bookmark()
 
     # %%
     # `console` hooks to the interpreter program's stdio
@@ -291,7 +291,7 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 
    #} {;
     {## Module System #}
-    export edh'modu'system = bookmark
+    export edh'modu'system = bookmark()
 
     # You've seen enough `import/export` appeared in this and other `.edh` files  by far
 
@@ -309,7 +309,7 @@ In era without code syntax highlighting, multi-line strings can be adversely con
 
      #} {;
       {## String Literals #}
-      export edh'str'literals = bookmark
+      export edh'str'literals = bookmark()
 
       # %%
       'single-quote, single-line string'
@@ -351,7 +351,7 @@ That includes such spaces inside a multi-line string literal, you need a workaro
 
        #} {;
         {## Trailing Spaces in Multi-line String Literal #}
-        export edh'fmt'rm'trail'spc'in'str'lit = bookmark
+        export edh'fmt'rm'trail'spc'in'str'lit = bookmark()
 
         # %%
         """You'll need tricks like   """ +
@@ -455,7 +455,7 @@ Prefixing the name of the variable with character(s) to indicate the use make of
 
    #} {;
     {## Procedure instead of Function #}
-    export edh'term'proc'stead'func = bookmark
+    export edh'term'proc'stead'func = bookmark()
 
   }
 
@@ -467,7 +467,7 @@ Variable in most programming languages is a misconception, ...
 
    #} {;
     {## Attribute instead of Variable #}
-    export edh'term'attr'stead'var = bookmark
+    export edh'term'attr'stead'var = bookmark()
 
 
   }
@@ -485,7 +485,7 @@ Variable in most programming languages is a misconception, ...
 
    #} {;
     {## Value Association Keys #}
-    export edh'val'asso'keys = bookmark
+    export edh'val'asso'keys = bookmark()
 
 
     {## Usual Keys
@@ -551,7 +551,7 @@ Each `.edh` file is an Đ module
 
    #} {;
     {## Modules #}
-    export edh'modules = bookmark
+    export edh'modules = bookmark()
 
 
   }
@@ -566,7 +566,7 @@ Namespaces are important in Đ, as alternative solutions to certain problems sol
 
    #} {;
     {## Namespaces #}
-    export edh'namespaces = bookmark
+    export edh'namespaces = bookmark()
 
     # Alternative to Python nonlocal semantics
 
@@ -579,7 +579,7 @@ Namespaces are important in Đ, as alternative solutions to certain problems sol
    # - A usual block doesn't create a scope, but there is special syntax
    #} {;
     {## Scoped Blocks #}
-    export edh'scoped'blocks = bookmark
+    export edh'scoped'blocks = bookmark()
 
 
   }
@@ -590,7 +590,7 @@ Namespaces are important in Đ, as alternative solutions to certain problems sol
 
    #} {;
     {## Lexical Scoping Rules #}
-    export edh'lexi'rules = bookmark
+    export edh'lexi'rules = bookmark()
 
     {## Attribute Reading
      # - An attribue can be addressed off any scope enclosing the access point
@@ -599,7 +599,7 @@ The resolution is from inner-most scope to outer-most scope (which is the world 
 
      #} {;
       {## Attribute Reading #}
-      export edh'attr'read = bookmark
+      export edh'attr'read = bookmark()
 
 
     }
@@ -612,7 +612,7 @@ There is no way to directly write to any scope other than current scope in conte
 
      #} {;
       {## Attribute Writing #}
-      export edh'attr'write = bookmark
+      export edh'attr'write = bookmark()
 
 
     }
@@ -624,7 +624,7 @@ There is no way to directly write to any scope other than current scope in conte
 
      #} {;
       {## Attribute Deletion #}
-      export edh'deletion = bookmark
+      export edh'deletion = bookmark()
 
     }
 
@@ -635,7 +635,7 @@ A closure/procedure captures the full lexical scope hierarchy at the point it is
 
      #} {;
       {## Closures #}
-      export edh'closures = bookmark
+      export edh'closures = bookmark()
 
 
       {## Compared to Python `nonlocal` Variables
@@ -645,7 +645,7 @@ A closure/procedure captures the full lexical scope hierarchy at the point it is
 
        #} {;
         {## Compared to Python `nonlocal` Variables #}
-        export edh'more'dyn'than'py'nonlocal = bookmark
+        export edh'more'dyn'than'py'nonlocal = bookmark()
 
 
       }
@@ -662,7 +662,7 @@ A closure/procedure captures the full lexical scope hierarchy at the point it is
 
  #} {;
   {## Pattern Matching #}
-  export edh'pattern'matching = bookmark
+  export edh'pattern'matching = bookmark()
 
 
   {## Guard Conditions
@@ -671,7 +671,7 @@ A closure/procedure captures the full lexical scope hierarchy at the point it is
 
    #} {;
     {## Guard Conditions #}
-    export edh'pattern'guard = bookmark
+    export edh'pattern'guard = bookmark()
 
 
   }
@@ -701,7 +701,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
 
    #} {;
     {## Modules and Namespaces are Objects #}
-    export edh'modu'ns'be'obj = bookmark
+    export edh'modu'ns'be'obj = bookmark()
 
 
   }
@@ -823,7 +823,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
    # - Here is why Đ is even More dynamic than Python
    #} {;
     {## Expression Values and Scope Wrappers #}
-    export edh'exprs = bookmark
+    export edh'exprs = bookmark()
 
     {## Scope Wrappers
      # - A scope can be wrapped as an object to do reflection in Đ
@@ -832,7 +832,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
 
      #} {;
       {## Scope Wrappers #}
-      export edh'scope'wrappers = bookmark
+      export edh'scope'wrappers = bookmark()
 
       # %% # without argument, it creates an object wrapping the scope where it's called from
       method f() {
@@ -866,7 +866,7 @@ Expression is 1st class in Đ, you can create expression values with literal for
 
      #} {;
       {## The `expr` Expression #}
-      export edh'expr'expr = bookmark
+      export edh'expr'expr = bookmark()
 
       # %%
       x = expr a + b * c
@@ -883,7 +883,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
      #} {;
       {## Expression Arguments to Procedures #}
-      export edh'expr'args = bookmark
+      export edh'expr'args = bookmark()
 
       # %%
       x' = makeExpr( a + b * c )
@@ -901,7 +901,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
      #} {;
       {## Code as Data #}
-      export edh'host'proc'exprs = bookmark
+      export edh'host'proc'exprs = bookmark()
 
 
     }
@@ -915,13 +915,13 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
  # - Like in mathematics, symbolic notations usually come more concise
  #} {;
   {## Đ Operators #}
-  export edh'operators = bookmark
+  export edh'operators = bookmark()
 
   {## Call Making
    # - Beyond parentheses as the call-operator
    #} {;
     {## Call Making #}
-    export edh'call'making'op = bookmark
+    export edh'call'making'op = bookmark()
 
 
     # %%
@@ -965,7 +965,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
    #} {;
     {## Exception Handling #}
-    export edh'exc'hndl'op = bookmark
+    export edh'exc'hndl'op = bookmark()
 
 
   }
@@ -974,7 +974,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
    # - Misc
    #} {;
     {## Other Interesting Operators #}
-    export edh'misc'ops = bookmark
+    export edh'misc'ops = bookmark()
 
     # Some other operators of interest:
 

@@ -22,7 +22,7 @@
  #
  #} {;
   {## Semantics for Not/Applicable #}
-  export edh'na'semantics = bookmark
+  export edh'na'semantics = bookmark()
 
   # NA semantics is actually a special case of *Defaulting Semantics*, see:
   import * './dflt' # <- navigate to elaboration of Đ Defaulting Semantics

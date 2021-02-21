@@ -1,7 +1,7 @@
 {## Syntax, Semantics, and Pragmatics of Đ #}
 
 {## Đ Grammar Details #}
-export edh'grammar'details = bookmark
+export edh'grammar'details = bookmark()
 
 
 {## Overview
@@ -19,18 +19,18 @@ You will be using Đ to describe reactions to incoming events from other parts o
 
  #} {;
   {## Overview #}
-  export edh'lang'overview = bookmark
+  export edh'lang'overview = bookmark()
 }
 
 
-export edh'syntax = bookmark
+export edh'syntax = bookmark()
 
 
 {## Syntax & Style
  # - Đ code style is officially opinionated
  #} {;
   {## Syntax & Style #}
-  export edh'syntax'style = bookmark
+  export edh'syntax'style = bookmark()
 
   {## The Official Đ Code Formatter
    # - Any style you like, so long as it is formatted such
@@ -57,7 +57,7 @@ Also opinionated formatters with similar goals:
 
    #} {;
     {## The Official Đ Code Formatter #}
-    export edh'code'formatter = bookmark
+    export edh'code'formatter = bookmark()
 
     # Home page of the formatter should have described the rules and your rights (freedom) well. After modification, save it, or right-click anywhere, then select [Format Document], the formatter will adjust the file content according to the rules, you'll see what it thinks.
 
@@ -97,7 +97,7 @@ Whitespace sensitivity has become outdated today, brackets (curly, square or rou
      #
      #} {;
       {## Đ is Whitespace Insensitive #}
-      export edh'sps'insensitivity = bookmark
+      export edh'sps'insensitivity = bookmark()
 
       {## Comments are Indented as well
        # - Both line comment and block comment
@@ -106,7 +106,7 @@ As you may have noticed, block comments (started with `{#`) are indented, also a
 
        #} {;
         {## Comments are Indented as well #}
-        export edh'cmt'indent = bookmark
+        export edh'cmt'indent = bookmark()
 
         # This is a standalone comment line, will always be indented by the formatter. Try adjust the indentation level of any line in this section, then save or do [Format Document] to see how the formatter corrects your mistakes.
 
@@ -144,7 +144,7 @@ Try remove the leading # of the line above, then adjust its indentation level, y
    # - They are optional everywhere in Đ, unless for disambiguation
    #} {;
     {## Semicolons and Commas #}
-    export edh'semicolons'and'commas = bookmark
+    export edh'semicolons'and'commas = bookmark()
 
     {## Technically Optional
      # - That is, can be omitted
@@ -157,7 +157,7 @@ Which means, leading ones, trailing ones, as well as middle ones, all can be omi
 
      #} {;
       {## Technically Optional #}
-      export edh'omit'semicolon'and'commas = bookmark
+      export edh'omit'semicolon'and'commas = bookmark()
 
       # Let's see some examples with the idiomatic form pointed out.
 
@@ -218,10 +218,10 @@ Which means, leading ones, trailing ones, as well as middle ones, all can be omi
      # - At times, a semicolon / comma is needed for disambiguation
      #} {;
       {## Disambiguation Needs #}
-      export edh'disambiguation'needs = bookmark
+      export edh'disambiguation'needs = bookmark()
 
       {## Disambiguate Unintended Indexing / Calling #}
-      export edh'disambig'idx'call = bookmark
+      export edh'disambig'idx'call = bookmark()
 
       # Noticed the semicolons before each pair of square/round brackets? Why are they there?
 
@@ -229,7 +229,7 @@ Which means, leading ones, trailing ones, as well as middle ones, all can be omi
 
 
       {## Disambiguate Block from Dict #}
-      export edh'disambig'blk'dict = bookmark
+      export edh'disambig'blk'dict = bookmark()
 
       # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
 
@@ -275,7 +275,7 @@ In Đ code it's considered idiomatic to:
 
      #} {;
       {## Idioms #}
-      export edh'semicolon'comma'idioms = bookmark
+      export edh'semicolon'comma'idioms = bookmark()
 
       # The idiomatic style is to put a semicolon right after the opening curly brace/bracket, when a block instead of dict literal intended:
       {;
@@ -303,7 +303,7 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 
    #} {;
     {## Recommended Line Length #}
-    export edh'line'len'adivce = bookmark
+    export edh'line'len'adivce = bookmark()
 
     # %%
     '''
@@ -318,7 +318,7 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 }
 
 
-export edh'semantics = bookmark
+export edh'semantics = bookmark()
 
 
 {## Entities, Attributes and Identifiers
@@ -330,7 +330,7 @@ Entity is the logical unit of information that organized in an Đ world. Entitie
 
  #} {;
   {## Entities, Attributes and Identifiers #}
-  export edh'ent'attr'naming = bookmark
+  export edh'ent'attr'naming = bookmark()
 
 
   {## Attribute Identifiers
@@ -344,14 +344,17 @@ And technically, any string (even the empty string) can serve as an attribute id
 
    #} {;
     {## Attribute Identifiers #}
-    export edh'attr'ids = bookmark
+    export edh'attr'ids = bookmark()
 
 
     {## A Typical Entity Example
      # - Let's take a namespace object for example
      #} {;
       {## A Typical Entity Example #}
-      export edh'entity'example = bookmark
+      export edh'entity'example = bookmark()
+
+      # Namespaces are described later in this chapter
+      ; () => edh'namespaces # <- follow this bookmark to that section
 
       # %% #
       namespace ns() pass
@@ -369,7 +372,7 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
 
      #} {;
       {## Alphanumeric Names #}
-      export edh'alphanum'names = bookmark
+      export edh'alphanum'names = bookmark()
 
       # %% # Some examples:
       import * (
@@ -395,8 +398,8 @@ Symbol is a special type of values solely for identification purpose, they are d
 
      #} {;
       {## Symbolic Names and At-Notation #}
-      export edh'symbolic'names = bookmark
-      export edh'at'notation = bookmark
+      export edh'symbolic'names = bookmark()
+      export edh'at'notation = bookmark()
 
       # A symbol is a value of special type, can only be created with a special syntax, where an alphanumeric name for the attribute in current scope to receive the symbol value is specified.
       # %% # Define a symbol named `secret`
@@ -460,7 +463,7 @@ Another interesting usage of at-notation is, that string values can be used in p
 
      #} {;
       {## Quaint Names #}
-      export edh'quaint'names = bookmark
+      export edh'quaint'names = bookmark()
 
       # %% # Using string literals is apparent
       ns.@'we-the-people' = 'proud humans'
@@ -493,13 +496,13 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
 
  #} {; import * '../refs'
   {## Expressions and Statements #}
-  export edh'exprs'stmts = bookmark
+  export edh'exprs'stmts = bookmark()
 
   {## Typical Examples
    # - Commonplace expressions and statements
    #} {;
     {## Typical Examples #}
-    export edh'expr'stmt'examples = bookmark
+    export edh'expr'stmt'examples = bookmark()
 
 
     # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
@@ -520,7 +523,7 @@ Each infix operator has its own precedence and associativity (fixity) as so defi
 
    #} {;
     {## Operators #}
-    export edh'operators = bookmark
+    export edh'operators = bookmark()
 
 
     {## Indexing & Calling
@@ -528,7 +531,7 @@ Each infix operator has its own precedence and associativity (fixity) as so defi
 
      #} {;
       {## Indexing & Calling #}
-      export edh'indexing'calling = bookmark
+      export edh'indexing'calling = bookmark()
 
 
     }
@@ -561,7 +564,7 @@ For example:
 
    #} {;
     {## More Expressions and Statements #}
-    export more'exprs'stmts = bookmark
+    export more'exprs'stmts = bookmark()
 
     edh'lang'refs # <- follow this to Đ langauge reference for a detailed list of statements (including expressions) Đ code can have
   }
@@ -575,7 +578,7 @@ For example:
  #} {; import * '../advanced/vals' # <- details of Đ Value System
 
   {## Values, Naming, Equality #}
-  export edh'val'equality = bookmark
+  export edh'val'equality = bookmark()
 
   everything'is'a'value # <- follow this to see how & why everything is a value
 
@@ -614,7 +617,7 @@ For example:
 
    #} {;
     {## Null Test #}
-    export edh'null'test = bookmark
+    export edh'null'test = bookmark()
 
 
   }
@@ -625,7 +628,7 @@ For example:
 
    #} {;
     {## Identity Equal #}
-    export edh'id'eq = bookmark
+    export edh'id'eq = bookmark()
 
 
   }
@@ -636,7 +639,7 @@ For example:
 
    #} {;
     {## Value Equal #}
-    export edh'value'eq = bookmark
+    export edh'value'eq = bookmark()
 
 
   }
@@ -647,7 +650,7 @@ For example:
 
    #} {;
     {## Namely Equal #}
-    export edh'namely'eq = bookmark
+    export edh'namely'eq = bookmark()
 
 
   }
@@ -663,7 +666,7 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
 
  #} {;
   {## Control Flows #}
-  export edh'ctrl'flows = bookmark
+  export edh'ctrl'flows = bookmark()
 
 
   {## `if-then-else` - Boolean Branching
@@ -672,7 +675,7 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
 
    #} {;
     {## `if-then-else` - Boolean Branching #}
-    export edh'if'then'else = bookmark
+    export edh'if'then'else = bookmark()
 
 
   }
@@ -684,7 +687,7 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
 
    #} {;
     {## Blocks, Matching Branches, Fallthrough #}
-    export edh'branching = bookmark
+    export edh'branching = bookmark()
 
 
     {## `case-of` - Nested Matching Context
@@ -694,7 +697,7 @@ Dynamically compute a value, with it being the matching target, evaluate a block
 
      #} {;
       {## `case-of` - Nested Matching Context #}
-      export edh'case'of = bookmark
+      export edh'case'of = bookmark()
 
 
     }
@@ -708,7 +711,7 @@ Dynamically compute a value, with it being the matching target, evaluate a block
 
    #} {;
     {## `for-from-do` Loop #}
-    export edh'for'loop = bookmark
+    export edh'for'loop = bookmark()
 
 
   }
@@ -719,7 +722,7 @@ Dynamically compute a value, with it being the matching target, evaluate a block
 
    #} {;
     {## `while` Loop #}
-    export edh'while'loop = bookmark
+    export edh'while'loop = bookmark()
 
 
   }
@@ -727,14 +730,14 @@ Dynamically compute a value, with it being the matching target, evaluate a block
 }
 
 
-export edh'pragmatics = bookmark
+export edh'pragmatics = bookmark()
 
 
 {## Classes
  # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
  #} {; import * '../advanced/objs'
   {## Đ Classes #}
-  export edh'classes = bookmark
+  export edh'classes = bookmark()
 
 
   {## Data Classes
@@ -744,7 +747,7 @@ Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines
 
    #} {;
     {## Data Classes #}
-    export edh'data'classes = bookmark
+    export edh'data'classes = bookmark()
 
 
   }
@@ -757,7 +760,7 @@ The `class` keyword defines a usual class.
 
    #} {;
     {## Usual Classes #}
-    export edh'usual'classes = bookmark
+    export edh'usual'classes = bookmark()
 
 
     # %%
@@ -785,7 +788,7 @@ The `class` keyword defines a usual class.
 
  #} {;
   {## Modules #}
-  export edh'modules = bookmark
+  export edh'modules = bookmark()
 
 
 }
@@ -797,7 +800,7 @@ The `class` keyword defines a usual class.
 
  #} {;
   {## Namespaces #}
-  export edh'namespaces = bookmark
+  export edh'namespaces = bookmark()
 
 
 }
@@ -811,7 +814,7 @@ Several type of procedures, the lambda forms (arrow procedures), and expression 
 
  #} {;
   {## Procedures #}
-  export edh'procs = bookmark
+  export edh'procs = bookmark()
 
 
   {## Methods, Bound and Unbound
@@ -821,7 +824,7 @@ All procedures are methods of some object, but a particular method doesn't have 
 
    #} {;
     {## Methods, Bound and Unbound #}
-    export edh'mths'bound'unbound = bookmark
+    export edh'mths'bound'unbound = bookmark()
 
 
   }
@@ -839,7 +842,7 @@ All procedures are methods of some object, but a particular method doesn't have 
 
    #} {;
     {## This/That/Super Reference #}
-    export edh'this'that'super'ref = bookmark
+    export edh'this'that'super'ref = bookmark()
 
 
   }
@@ -852,7 +855,7 @@ All procedures are methods of some object, but a particular method doesn't have 
 
  #} {;
   {## Lexical Scoping #}
-  export edh'lexi'scoping = bookmark
+  export edh'lexi'scoping = bookmark()
 
 
   {## Closure
@@ -862,7 +865,7 @@ All procedures are methods of some object, but a particular method doesn't have 
 
    #} {;
     {## Closure #}
-    export edh'closure = bookmark
+    export edh'closure = bookmark()
 
 
   }
@@ -874,7 +877,7 @@ All procedures are methods of some object, but a particular method doesn't have 
  # - Here is why Đ is even More dynamic than Python
  #} {;
   {## Expression Values and Scope Wrappers #}
-  export edh'exprs = bookmark
+  export edh'exprs = bookmark()
 
   {## Scope Wrappers
    # - A scope can be wrapped as an object to do reflection in Đ
@@ -883,7 +886,7 @@ All procedures are methods of some object, but a particular method doesn't have 
 
    #} {;
     {## Scope Wrappers #}
-    export edh'scope'wrappers = bookmark
+    export edh'scope'wrappers = bookmark()
 
 
     # %% # without argument, it creates an object wrapping the scope where it's called from
@@ -920,7 +923,7 @@ Expression is 1st class in Đ, you can create expression values with literal for
 
    #} {;
     {## The `expr` Expression #}
-    export edh'expr'expr = bookmark
+    export edh'expr'expr = bookmark()
 
     # %%
     x = expr a + b * c
@@ -937,7 +940,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
    #} {;
     {## Expression Arguments to Procedures #}
-    export edh'expr'args = bookmark
+    export edh'expr'args = bookmark()
 
     # %%
     x' = makeExpr( a + b * c )
@@ -955,7 +958,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
    #} {;
     {## Code as Data #}
-    export edh'host'proc'exprs = bookmark
+    export edh'host'proc'exprs = bookmark()
 
 
   }
@@ -968,7 +971,7 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
  #} {;
   {## Effect Tracking #}
-  export edh'eff'tracking = bookmark
+  export edh'eff'tracking = bookmark()
 
 
 }

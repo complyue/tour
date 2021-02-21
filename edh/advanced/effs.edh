@@ -7,7 +7,7 @@ To contrast with *monad*, which is a closed, statically typed effect tracking sy
 
  #} {;
   {## Dynamic Scoped Effects #}
-  export edh'effs = bookmark
+  export edh'effs = bookmark()
 
 
 }

@@ -1,5 +1,5 @@
 {## Đ Utilities #}
-export edh'utilities'details = bookmark
+export edh'utilities'details = bookmark()
 
 
 {## Command Interface of the REPL
@@ -7,7 +7,7 @@ export edh'utilities'details = bookmark
 
  #} {;
   {## Command Interface of the REPL #}
-  export edh'repl'ci = bookmark
+  export edh'repl'ci = bookmark()
 
   # Using commands is the idiomatic way of Đ to carry out flexible yet powerful interactions between a REPL user and the software component he/she is working with.
 
@@ -27,7 +27,7 @@ Very common commands a REPL should at least support are listed here
 
    #} {;
     {## Common Commands #}
-    export edh'common'cmds = bookmark
+    export edh'common'cmds = bookmark()
 
 
     {## The `quit` Command
@@ -37,7 +37,7 @@ The `quit` command should cause the REPL to terminate, though a REPL can refuse 
 
      #} {;
       {## The `quit` Command #}
-      export edh'quit'cmd = bookmark
+      export edh'quit'cmd = bookmark()
 
       # %% # Note running this cell is to terminate the active Đ terminal session of your IDE, you are encouraged to try it. Anyway when you try to run another cell later, you'll be prompted to start a new Đ terminal session if no one has already been running.
       quit # <- you can go to its definition to see more details
@@ -53,7 +53,7 @@ The `dir` command should show a directory of the contents of some specified enti
 
      #} {;
       {## The `dir` Command #}
-      export edh'dir'cmd = bookmark
+      export edh'dir'cmd = bookmark()
 
       # %% A bare `dir` command usually shows artifacts currently in-scope
       dir
@@ -70,7 +70,7 @@ A `Command` object can be _called_ with arbitrary arguments (an apk) to further 
 
    #} {;
     {## Customizing Commands #}
-    export edh'cmd'args = bookmark
+    export edh'cmd'args = bookmark()
 
     # Call-making can be done with the postfix `()` operator in Đ, as with vast majority of mainstream programming languages.
 
@@ -117,7 +117,7 @@ All REPLs should print the value from evaluation of the expression you'd just in
 
  #} {;
   {## Pretty-Showing #}
-  export edh'pretty'show = bookmark
+  export edh'pretty'show = bookmark()
 
 
   # `str()` is the simplest and default string conversion, you'd seldom need it when working with a REPL. Well, just in case, you'd know it exits.
@@ -174,7 +174,7 @@ JSON is particularly suitable as the encoding format of structural data, for mac
 
  #} {;
   {## JSON to Interchange with Machines #}
-  export edh'json'conversion = bookmark
+  export edh'json'conversion = bookmark()
 
   # `json()` is used to convert any value to its JSON representation in string form.
   json # <- hover on it to see the meta doc as tooltip, or go to its definition to learn about its friends those also documented there
@@ -208,7 +208,7 @@ A REPL actually does the "Read" and "Print" via the console, there are well stan
 
  #} {;
   {## The Console #}
-  export edh'console = bookmark
+  export edh'console = bookmark()
 
   # %%
   show$ console # <- go to its definition to learn more details
@@ -226,7 +226,7 @@ Being a dynamic language, Đ code can only be sure about the data it's processin
 
  #} {;
   {## Reflective Utilities #}
-  export edh'reflective'utils = bookmark
+  export edh'reflective'utils = bookmark()
 
 
   # `type()` is used to obtain the type of interesting values
