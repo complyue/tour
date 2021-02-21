@@ -356,12 +356,13 @@ And technically, any string (even the empty string) can serve as an attribute id
       # Namespaces are described later in this chapter
       ; () => edh'namespaces # <- follow this bookmark to that section
 
-      # %% #
+      # %% # An empty namespace object can be created like this
       namespace ns() pass
       dir$ ns
       # %#
 
     }
+
 
     {## Alphanumeric Names
      # - The usual "variable" identifiers in a programming language
@@ -374,20 +375,56 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
       {## Alphanumeric Names #}
       export edh'alphanum'names = bookmark()
 
+
       # %% # Some examples:
-      import * (
+      namespace alphanum'named'arts (
         a= 3, _b3= 2, a'= 5,
         x= 9, y_5= 1, x''= 6,
         name= 'Compl', city= 'Chongqing', year= 2021,
-      ) into ns
-      dir$ ns
-      # %#
+        π= 3.141592653589793238462643383279502884197169399375105820974944592307,
+        Ω= 0.567143290409783872999968662210,
+        Ð= 'A language with great tooling',
+      ) {
+
+        method factorial(n) n <= 1 and 1 or n * factorial(n - 1)
+
+        method 𝛴(*items) case items of {
+          () -> 0
+          { item1 :> rest } -> {
+            s = item1
+            for i from rest do s += i
+            return s
+          }
+        }
+
+        infixl 7 (×) (lhv, rhv) lhv * rhv
+        infixl 7 (÷) (lhv, rhv) lhv / rhv
+
+      }
+      dir$ alphanum'named'arts
+
+      # %% # Method procedures in a namespace can be called via dot-notation
+      alphanum'named'arts.factorial(5)
+      # %%
+      alphanum'named'arts.𝛴( 3, 7, 9, )
+      # %# Procedures and dot-notation are described later in this chapter
+      ; () => edh'procs # <- follow this bookmark to that section
+      ; () => edh'dot'notation # <- follow this bookmark to that section
+
+      # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
+      scope(alphanum'named'arts).eval(expr
+        3 × 7 ÷ 35
+      )
+      # %# Expression values and scope wrappers are described later in this chapter
+      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+
 
       # Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole wrt scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
       # %% % Assigning to `_` will not create an attribute named `_` in current scope, though all side-effects by evaluating the right-hand-side expression will apply.
       _ = 3 * 7 # TODO a better example with desirable side-effects
       dir
       # %# See there is no attribute named `_` appeared.
+
     }
 
 
@@ -399,7 +436,7 @@ Symbol is a special type of values solely for identification purpose, they are d
      #} {;
       {## Symbolic Names and At-Notation #}
       export edh'symbolic'names = bookmark()
-      export edh'at'notation = bookmark()
+      export edh'at'notations = bookmark()
 
       # A symbol is a value of special type, can only be created with a special syntax, where an alphanumeric name for the attribute in current scope to receive the symbol value is specified.
       # %% # Define a symbol named `secret`
@@ -526,15 +563,58 @@ Each infix operator has its own precedence and associativity (fixity) as so defi
     export edh'operators = bookmark()
 
 
-    {## Indexing & Calling
-     # - Intrinsic postfix operators
+    {## Intrinsic Prefix Operators
+     # - All unary
 
      #} {;
-      {## Indexing & Calling #}
-      export edh'indexing'calling = bookmark()
+      {## Intrinsic Prefix Operators #}
+      export edh'prefix'ops = bookmark
 
 
     }
+
+
+    {## Intrinsic Postfix Operators
+     # - All unary
+
+     #} {;
+      {## Intrinsic Postfix Operators #}
+      export edh'postfix'ops = bookmark
+
+
+      {## Indexing & Calling
+       # - Intrinsic postfix operators
+
+       #} {;
+        {## Indexing & Calling #}
+        export edh'indexing'calling = bookmark()
+
+
+      }
+
+    }
+
+
+    {## Customizable Infix Operators
+     # - All infix operators are custom defined, with precedence & associativity/fixity
+
+     #} {;
+      {## Customizable Infix Operators #}
+      export edh'infix'ops = bookmark
+
+
+    }
+
+  }
+
+
+  {## Dot Notation
+   # - The Object-Oriented way of namespacing
+
+   #} {;
+    {## Dot Notation #}
+    export edh'dot'notation = bookmark()
+
 
   }
 
@@ -877,7 +957,7 @@ All procedures are methods of some object, but a particular method doesn't have 
  # - Here is why Đ is even More dynamic than Python
  #} {;
   {## Expression Values and Scope Wrappers #}
-  export edh'exprs = bookmark()
+  export edh'exprs'in'scopes = bookmark()
 
   {## Scope Wrappers
    # - A scope can be wrapped as an object to do reflection in Đ
