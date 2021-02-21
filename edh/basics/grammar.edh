@@ -516,13 +516,13 @@ Another interesting usage of at-notation is, that string values can be used in p
 {## Expressions and Statements
  # - A piece of Đ code is just a sequence of statements
 
-Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated. An expression may or may not have side-effects when evaluated.
+Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated. Note that an expression may or may not have side-effects when evaluated.
 
-Expressions can be combined together (e.g. by an infix, binary operator), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarchy.
+Expressions can be combined together (e.g. by an infix, binary operator, among other forms), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarchy.
 
-For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it induces useful side-effects.
+For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it produces desriable side-effects.
 
-Đ is _strict_ in evaluation of statements, an Đ interpreter program evaluates a statement immediately upon one is encountered. (The contrary is _lazy_ wrt evaluation, in which sense the actually evaluation can be postponed until absolutely necessary.)
+Đ is _strict_ in evaluation of statements, an Đ interpreter program evaluates a statement immediately upon one is encountered. The contrary is _lazy_ evaluation, in which sense the actually evaluation can be postponed until absolutely necessary.
 
  #} {; import * '../refs'
   {## Expressions and Statements #}
@@ -533,7 +533,6 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
    #} {;
     {## Typical Examples #}
     export edh'expr'stmt'examples = bookmark()
-
 
     # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
     let (a, b, c,) = (3, 2, 7,)
@@ -549,7 +548,7 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
   {## Operators
    # - Fully customizable infix operators with a few intrinsic prefix and postfix operators
 
-Each infix operator has its own precedence and associativity (fixity) as so defined respectively, but in Đ, infix operators are not defined intrinsicly by the language,
+There are a few prefix and postfix operators intrinsic to the Đ language, while all infix operators are customizable operator procedures. A set of infix operator procedures come with the default batteries bundled with the bare interpreter package, more Đ packages would possibly add their own operator implementations and/or overrides, along with other artifacts such as classes, methods, symbols etc.
 
    #} {;
     {## Operators #}
@@ -559,10 +558,122 @@ Each infix operator has its own precedence and associativity (fixity) as so defi
     {## Intrinsic Prefix Operators
      # - All unary
 
+All prefix operators are intrinsic to the language, they can only be right-associative, but their precedences decide how nested operators parse, thus the semantics.
+
+Especially note that a semicolon (or comma according to the context) may be usually needed immediately before a prefix operator which can also be an infix operator (namely `+`, `-`, and `|`), for disambiguation purpose.
+
      #} {;
       {## Intrinsic Prefix Operators #}
-      export edh'prefix'ops = bookmark
+      export edh'prefix'ops = bookmark()
 
+
+      {## The prefix plus (+) operator has a precedence of 9.
+
+It is technically no-op, but is idiomatic to be written out explicitly in certain cases, e.g. as in `+inf` when contrasted with negative infinity `-inf`.
+
+       #} export edh'prefix'plus'op = bookmark()
+      # %% # It's technically no difference with or without a prefix +
+      ; +inf is inf
+      # %# See above is true.
+
+
+      {## The prefix minus (-) operator has a precedence of 9.
+
+It is used to negate a decimal value, and will err out for other type of values at runtime.
+
+       #} export edh'prefix'minus'op = bookmark()
+      # %%
+      ; -3.5
+      # %%
+      ; - ( 5 / -11 )
+      # %%
+      ; -inf
+      # %#
+
+
+      {## The prefix (not) operator has a precedence of 4.
+
+It is used to negate a boolean value, and will err out for other type of values at runtime.
+
+       #} export edh'prefix'not'op = bookmark()
+      # %%
+      not true
+      # %%
+      not 3 > 2
+      # %%
+      not 3*7 == 22
+      # %#
+
+
+      {## The prefix guard (|) operator has a precedence of 1.
+
+It is used to explicitly mandate a conditional match for a branch, regardless of the contextual matching target value.
+
+       #} export edh'prefix'guard'op = bookmark()
+      # %% #
+      ; | 3*7 is 21 -> "That's so true."
+      # %% #
+      ; | 3 < 2 -> "No way this get shown!"
+      # %# Note that branches are described later in this chapter
+      ; () => edh'branching # <- follow this bookmark to that section
+
+
+      {## The prefix (void) operator has a precedence of -10.
+
+It is used to technically cease the result (to be always replaced with `nil`) of its operand expression, as well as to formally declare the no-result semantics as an expression.
+
+       #} export edh'prefix'void'op = bookmark()
+      # %% # It is idiomatic for a procedure to have a `void` body, when no meaningful result is meant to be returned. Compare this (deprecated) implementation:
+      method die() {
+        that.some'method'with'meaningful'result()
+        return nil
+      }
+      # %% # to the idiomatic implementation:
+      method die() void {
+        that.some'method'with'meaningful'result()
+      }
+      # %# See the later is both more concise and more pragmatic.
+
+
+      {## The prefix (ai) operator has a precedence of -10.
+
+It is used to perform its operand expression (usually consists of multiple steps) to be evaluated in a single STM transaction.
+
+Note an STM transaction will retry automatically, and prone to no-progressing under heavy concurrent contention. And IO actions are not permitted during an STM transaction. Carefully reasoning is reqired to use this operator properly.
+
+       #} export edh'prefix'ai'op = bookmark()
+      # %% # A correct (but not performant) implementation of simple concurrent counter can be:
+      data ConcCounter(cnt= 0) {
+        method inc() ai this.cnt += 1
+        method dec() ai this.cnt -= 1
+      }
+      # %# Note that data classes are described later in this chapter
+      ; () => edh'data'classes # <- follow this bookmark to that section
+
+
+      {## The prefix (default) operator has a precedence of -10.
+
+It is used to create a default expression with its operand expression.
+
+       #} export edh'prefix'default'op = bookmark()
+      # Defaulting semantics is an advanced topic explained in another chapter:
+      ; () => import (
+        edh'defaulting, # <- follow this bookmark to the relevant section there
+        **_
+      ) '../advanced/dflt'
+
+
+      {## The prefix (new) operator has a precedence of -10.
+
+It is technically no-op, and used for source-level compatibility with other scripting languages like JavaScript, where scripting based RPC (Remote Procedure Call) would take place.
+
+       #} export edh'prefix'new'op = bookmark()
+      # %% # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
+      that.jsRPC(js!expr{
+          console.log( 'The time now is ' + new Date());
+      })
+      # %# Note that expression values are described later in this chapter
+      ; () => edh'expr'expr # <- follow this bookmark to that section
 
     }
 
