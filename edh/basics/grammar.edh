@@ -633,12 +633,12 @@ It is used to technically cease the result (to be always replaced with `nil`) of
 
        #} {; export edh'prefix'void'op = bookmark()
         # %% # It is idiomatic for a procedure to have a `void` body, when no meaningful result is meant to be returned. Compare this (deprecated) implementation:
-        method die() {
+        method do'sth() {
           that.some'method'with'meaningful'result()
           return nil
         }
         # %% # to the idiomatic implementation:
-        method die() void {
+        method do'sth() void {
           that.some'method'with'meaningful'result()
         }
         # %# See the later is both more concise and more pragmatic.
@@ -749,7 +749,7 @@ There are currently only two postfix operators, namely indexing `[]` and calling
     {## Customizable Infix Operators
      # - In spirit of Haskell / C++
 
-All infix operators are defined as operator procedures, many of them are intrinsic, host procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing.
+All infix operators are defined as operator procedures, many of them are intrinsic (host) procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing at particular scopes.
 
 Custom operators must be named with one or more valid operator characters, which is one of "=~!@#$%^&|:<>?*+-/" plus various Unicode characters in the following general categories:
 
@@ -774,11 +774,15 @@ However, there are a few hard-coded exceptions, namely the following operators:
       export edh'infix'ops = bookmark()
 
 
-      # %% #
+      # %%
       namespace custom'infix'ops () {
+
+        # You must specify the precedence as well as the desired fixity (use one of the keywords: `infixl` / `infixr` / `infix`) when defining fresh new operators
 
         infixl 7 (×) (lhv, rhv) lhv * rhv
         infixl 7 (÷) (lhv, rhv) lhv / rhv
+
+        # You can use just the `operator` keyword to override an existing operator
 
         operator (and) (lhv, rhv) lhv ++ ' & ' ++ rhv
 
@@ -800,16 +804,22 @@ However, there are a few hard-coded exceptions, namely the following operators:
 
       # %% # Operator procedures can be referenced with its symbol quoted in a pair of parenthese
       show$ (*)
+      # %%
+      show$ (is not)
+      # %%
+      show$ (or)
       # %% #
       scope(custom'infix'ops).eval(expr
         show$ (×)
       )
-      # %% # But dot-notation won't work for operators, it is designed to work with magic methods instead, so this is error:
+      # But dot-notation won't work for operators, it is designed to work with magic methods instead. The crucial fact to know is: the parenthese is part of the name used to identify a magic method, but never so for names identifying operators.
+      # %% # This is error:
       show$ custom'infix'ops.(×)
       # %# Magic methods are described later in this chapter
       ; () => edh'magic'mths # <- follow this bookmark to that section
 
-
+      # Checkout the meta definition for operators come with default batteries
+      import * 'batteries/meta/ops' into Nothing
     }
 
   }
