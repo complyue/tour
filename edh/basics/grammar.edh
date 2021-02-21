@@ -397,9 +397,6 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
           }
         }
 
-        infixl 7 (×) (lhv, rhv) lhv * rhv
-        infixl 7 (÷) (lhv, rhv) lhv / rhv
-
       }
       dir$ alphanum'named'arts
 
@@ -410,13 +407,6 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
       # %# Procedures and dot-notation are described later in this chapter
       ; () => edh'procs # <- follow this bookmark to that section
       ; () => edh'dot'notation # <- follow this bookmark to that section
-
-      # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
-      scope(alphanum'named'arts).eval(expr
-        3 × 7 ÷ 35
-      )
-      # %# Expression values and scope wrappers are described later in this chapter
-      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
 
 
       # Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole wrt scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
@@ -596,11 +586,67 @@ Each infix operator has its own precedence and associativity (fixity) as so defi
 
 
     {## Customizable Infix Operators
-     # - All infix operators are custom defined, with precedence & associativity/fixity
+     # - In spirit of Haskell / C++
+
+All infix operators are defined as operator procedures, many of them are intrinsic, host procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing.
+
+Custom operators must be named with one or more valid operator characters, which is one of "=~!@#$%^&|:<>?*+-/" plus various Unicode characters in the following general categories:
+
+  * MathSymbol
+  * CurrencySymbol
+  * ModifierSymbol
+  * OtherSymbol
+  * DashPunctuation
+  * OtherPunctuation
+
+Especially note that dot (.) and square brackets ([]) are not valid operator characters, they work with magic methods instead.
+
+However, there are a few hard-coded exceptions, namely the following operators:
+
+  * is
+  * is not
+  * and
+  * or
 
      #} {;
       {## Customizable Infix Operators #}
-      export edh'infix'ops = bookmark
+      export edh'infix'ops = bookmark()
+
+
+      # %% #
+      namespace custom'infix'ops () {
+
+        infixl 7 (×) (lhv, rhv) lhv * rhv
+        infixl 7 (÷) (lhv, rhv) lhv / rhv
+
+        operator (and) (lhv, rhv) lhv ++ ' & ' ++ rhv
+
+      }
+      dir$ custom'infix'ops
+      # %#
+
+      # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
+      scope(custom'infix'ops).eval(expr
+        3 × 7 ÷ 35
+      )
+      # %%
+      scope(custom'infix'ops).eval(expr
+        'You' and 'me'
+      )
+      # %# Expression values and scope wrappers are described later in this chapter
+      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+
+
+      # %% # Operator procedures can be referenced with its symbol quoted in a pair of parenthese
+      show$ (*)
+      # %% #
+      scope(custom'infix'ops).eval(expr
+        show$ (×)
+      )
+      # %% # But dot-notation won't work for operators, it is designed to work with magic methods instead, so this is error:
+      show$ custom'infix'ops.(×)
+      # %# Magic methods are described later in this chapter
+      ; () => edh'magic'mths # <- follow this bookmark to that section
 
 
     }
@@ -813,11 +859,11 @@ Dynamically compute a value, with it being the matching target, evaluate a block
 export edh'pragmatics = bookmark()
 
 
-{## Classes
+{## Classes & Objects
  # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
  #} {; import * '../advanced/objs'
-  {## Đ Classes #}
-  export edh'classes = bookmark()
+  {## Classes & Objects #}
+  export edh'classes'objs = bookmark()
 
 
   {## Data Classes
@@ -857,6 +903,18 @@ The `class` keyword defines a usual class.
     dir$ o
 
     # %#
+  }
+
+
+  {## Magic Methods
+   # - Customize object behaviors in cooperation with infix operators
+
+
+   #} {;
+    {## Magic Methods #}
+    export edh'magic'mths = bookmark()
+
+
   }
 
 }
