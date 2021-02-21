@@ -567,133 +567,180 @@ Especially note that a semicolon (or comma according to the context) may be usua
       export edh'prefix'ops = bookmark()
 
 
-      {## The prefix plus (+) operator has a precedence of 9.
+      {## The prefix plus (+) operator
+       # - With precedence 9
 
 It is technically no-op, but is idiomatic to be written out explicitly in certain cases, e.g. as in `+inf` when contrasted with negative infinity `-inf`.
 
-       #} export edh'prefix'plus'op = bookmark()
-      # %% # It's technically no difference with or without a prefix +
-      ; +inf is inf
-      # %# See above is true.
+       #} {; export edh'prefix'plus'op = bookmark()
+        # %% # It's technically no difference with or without a prefix +
+        ; +inf is inf
+        # %# See above is true.
+      }
 
 
-      {## The prefix minus (-) operator has a precedence of 9.
+      {## The prefix minus (-) operator
+       # - With precedence 9
 
 It is used to negate a decimal value, and will err out for other type of values at runtime.
 
-       #} export edh'prefix'minus'op = bookmark()
-      # %%
-      ; -3.5
-      # %%
-      ; - ( 5 / -11 )
-      # %%
-      ; -inf
-      # %#
+       #} {; export edh'prefix'minus'op = bookmark()
+        # %%
+        ; -3.5
+        # %%
+        ; - ( 5 / -11 )
+        # %%
+        ; -inf
+        # %#
+      }
 
 
-      {## The prefix (not) operator has a precedence of 4.
+      {## The prefix (not) operator
+       # - With precedence 4
 
 It is used to negate a boolean value, and will err out for other type of values at runtime.
 
-       #} export edh'prefix'not'op = bookmark()
-      # %%
-      not true
-      # %%
-      not 3 > 2
-      # %%
-      not 3*7 == 22
-      # %#
+       #} {; export edh'prefix'not'op = bookmark()
+        # %%
+        not true
+        # %%
+        not 3 > 2
+        # %%
+        not 3*7 == 22
+        # %#
+      }
 
 
-      {## The prefix guard (|) operator has a precedence of 1.
+      {## The prefix guard (|) operator
+       # - With precedence 1
 
 It is used to explicitly mandate a conditional match for a branch, regardless of the contextual matching target value.
 
-       #} export edh'prefix'guard'op = bookmark()
-      # %% #
-      ; | 3*7 is 21 -> "That's so true."
-      # %% #
-      ; | 3 < 2 -> "No way this get shown!"
-      # %# Note that branches are described later in this chapter
-      ; () => edh'branching # <- follow this bookmark to that section
+       #} {; export edh'prefix'guard'op = bookmark()
+        # %% #
+        ; | 3*7 is 21 -> "That's so true."
+        # %% #
+        ; | 3 < 2 -> "No way this get shown!"
+        # %# Note that branches are described later in this chapter
+        ; () => edh'branching # <- follow this bookmark to that section
+      }
 
 
-      {## The prefix (void) operator has a precedence of -10.
+      {## The prefix (void) operator
+       # - With precedence -10
 
 It is used to technically cease the result (to be always replaced with `nil`) of its operand expression, as well as to formally declare the no-result semantics as an expression.
 
-       #} export edh'prefix'void'op = bookmark()
-      # %% # It is idiomatic for a procedure to have a `void` body, when no meaningful result is meant to be returned. Compare this (deprecated) implementation:
-      method die() {
-        that.some'method'with'meaningful'result()
-        return nil
+       #} {; export edh'prefix'void'op = bookmark()
+        # %% # It is idiomatic for a procedure to have a `void` body, when no meaningful result is meant to be returned. Compare this (deprecated) implementation:
+        method die() {
+          that.some'method'with'meaningful'result()
+          return nil
+        }
+        # %% # to the idiomatic implementation:
+        method die() void {
+          that.some'method'with'meaningful'result()
+        }
+        # %# See the later is both more concise and more pragmatic.
       }
-      # %% # to the idiomatic implementation:
-      method die() void {
-        that.some'method'with'meaningful'result()
-      }
-      # %# See the later is both more concise and more pragmatic.
 
 
-      {## The prefix (ai) operator has a precedence of -10.
+      {## The prefix (ai) operator
+       # - With precedence -10
 
 It is used to perform its operand expression (usually consists of multiple steps) to be evaluated in a single STM transaction.
 
 Note an STM transaction will retry automatically, and prone to no-progressing under heavy concurrent contention. And IO actions are not permitted during an STM transaction. Carefully reasoning is reqired to use this operator properly.
 
-       #} export edh'prefix'ai'op = bookmark()
-      # %% # A correct (but not performant) implementation of simple concurrent counter can be:
-      data ConcCounter(cnt= 0) {
-        method inc() ai this.cnt += 1
-        method dec() ai this.cnt -= 1
+       #} {; export edh'prefix'ai'op = bookmark()
+        # %% # A correct (but not performant) implementation of simple concurrent counter can be:
+        data ConcCounter(cnt= 0) {
+          method inc() ai this.cnt += 1
+          method dec() ai this.cnt -= 1
+        }
+        # %# Note that data classes are described later in this chapter
+        ; () => edh'data'classes # <- follow this bookmark to that section
       }
-      # %# Note that data classes are described later in this chapter
-      ; () => edh'data'classes # <- follow this bookmark to that section
 
 
-      {## The prefix (default) operator has a precedence of -10.
+      {## The prefix (default) operator
+       # - With precedence -10
 
 It is used to create a default expression with its operand expression.
 
-       #} export edh'prefix'default'op = bookmark()
-      # Defaulting semantics is an advanced topic explained in another chapter:
-      ; () => import (
-        edh'defaulting, # <- follow this bookmark to the relevant section there
-        **_
-      ) '../advanced/dflt'
+       #} {; export edh'prefix'default'op = bookmark()
+        # Defaulting semantics is an advanced topic explained in another chapter:
+        ; () => import (
+          edh'defaulting, # <- follow this bookmark to the relevant section there
+          **_
+        ) '../advanced/dflt'
+      }
 
 
-      {## The prefix (new) operator has a precedence of -10.
+      {## The prefix (new) operator
+       # - With precedence -10
 
 It is technically no-op, and used for source-level compatibility with other scripting languages like JavaScript, where scripting based RPC (Remote Procedure Call) would take place.
 
-       #} export edh'prefix'new'op = bookmark()
-      # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
-      false and that.jsRPC(js!expr{
-          console.log( 'The time now is ' + new Date());
-      })
-      # %# Note that expression values are described later in this chapter
-      ; () => edh'expr'expr # <- follow this bookmark to that section
+       #} {; export edh'prefix'new'op = bookmark()
+        # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
+        false and that.jsRPC(js!expr{
+            console.log( 'The time now is ' + new Date());
+        })
+        # %# Note that expression values are described later in this chapter
+        ; () => edh'expr'expr # <- follow this bookmark to that section
+      }
 
     }
 
 
     {## Intrinsic Postfix Operators
-     # - All unary
+     # - Currently just indexing and calling
+
+All postfix operators are intrinsic to the language, they can only be left-associative.
+
+There are currently only two postfix operators, namely indexing `[]` and calling `()`. They both have the highest possible precedence.
 
      #} {;
       {## Intrinsic Postfix Operators #}
       export edh'postfix'ops = bookmark
 
 
-      {## Indexing & Calling
-       # - Intrinsic postfix operators
+      {## Indexing
+       # - For element extraction & assignment
 
        #} {;
-        {## Indexing & Calling #}
-        export edh'indexing'calling = bookmark()
+        {## Indexing #}
+        export edh'indexing = bookmark()
+
+        # %% # You can obtain positional arguments from an ArgsPack with positive integer index
+        apk = (3, 2, 5,)
+        apk[ 1 ] # Đ index is zero based (i.e. offset semantics as in C family languages)
+        # %% # You can obtain values from a dict with the key as index
+        d = {
+          'name': 'Compl',
+          'year': 2021,
+        }
+        d[ 'name']
+        # %% # A dict can be modified via indexed assignment
+        d[ 'year' ] = 2030
+        d
+        # %#
+      }
 
 
+      {## Calling
+       # - Making procedure calls
+
+       #} {;
+        {## Calling #}
+        export edh'calling = bookmark()
+
+        # %% # You've just seen plenty usage of it
+        console.print(
+          'Calling a procedure is actually the application of the postfix () operator.'
+        )
+        # %#
       }
 
     }
