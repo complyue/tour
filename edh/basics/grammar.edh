@@ -333,14 +333,31 @@ Entity is the logical unit of information that organized in an Đ world. Entitie
   export edh'ent'attr'naming = bookmark()
 
 
+  {## Mutable Entities
+   # - Dynamic means mutability
+
+All program states of an Đ program pertain to certain entities at the run. Be it a scope, or an object, its backing entity can always be mutated, at any time, as within an Đ world. The modifications usually come from the software component managing program states, but it's fairly common for some monitoring UIs, or interactive REPLs over stdio or network (SSH, WebSocket, etc.) to observe/change the program states for diagnostics / troubleshooting purposes.
+
+   #} {;
+    {## Mutable Entities #}
+    export edh'entities = bookmark()
+  }
+
+
   {## Attribute Identifiers
    # - About naming attributes
 
-Each attribute of an entity has to be uniquely identified. In Đ, the usual alphanumeric "variable" identifiers (like in other programming languages) can be used.
+Each attribute of an entity has to be uniquely identified within scope of this entity. In Đ, the usual alphanumeric "variable" identifiers (like in other programming languages) can be used.
 
 In addition, symbolic identifiers are also supported and recommended for cross-component scenarios.
 
 And technically, any string (even the empty string) can serve as an attribute identifier in Đ, with at-notation.
+
+Note that the "variable" concept in conventional programming languages is misleading/conflicting when you could possibly have mathematical concepts in the domain model of your business, to avoid such conceptional conflicts, Đ the language does not use the concept "variable", leaving it for the domain model.
+
+FYI, traditonal "variable" more properly should be called "assignable" as suggested in:
+  https://existentialtype.wordpress.com/2013/07/22/there-is-such-a-thing-as-a-declarative-language
+Attributes of entities in Đ are inherently meant to be assigned (as well as to be observed), so the concept of "assignable" is neither needed.
 
    #} {;
     {## Attribute Identifiers #}
@@ -408,12 +425,29 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
       ; () => edh'procs # <- follow this bookmark to that section
       ; () => edh'dot'notation # <- follow this bookmark to that section
 
+      # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
+      scope(alphanum'named'arts).eval(expr
+        𝛴( 3, 7, 9, )
+      )
+      # %# Expression values and scope wrappers are described later in this chapter
+      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
 
-      # Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole wrt scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
-      # %% % Assigning to `_` will not create an attribute named `_` in current scope, though all side-effects by evaluating the right-hand-side expression will apply.
-      _ = 3 * 7 # TODO a better example with desirable side-effects
-      dir
-      # %# See there is no attribute named `_` appeared.
+
+      {## The Underscore (_) Attribute Key
+       # - A blackhole wrt assignment
+
+Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole wrt scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
+
+       #} {;
+        {## The Underscore (_) Attribute Key #}
+        export edh'underscore'attr = bookmark()
+
+        # %% % Assigning to `_` will not create an attribute named `_` in current scope, though all side-effects by evaluating the right-hand-side expression will apply.
+        _ = 3 * 7 # TODO a better example with desirable side-effects
+        dir
+        # %# See there is no attribute named `_` appeared.
+
+      }
 
     }
 
