@@ -453,14 +453,16 @@ Special note about the single character identifier with a mere underscore, it is
 
 
     {## Symbolic Names and At-Notation
-     # - To avoid name clashing across software components
+     # - To avoid name clashing across indenpendant software components
 
 Symbol is a special type of values solely for identification purpose, they are defined and used via at-notations.
+
+FYI the other mainstream programming language having symbols is JavaScript, though there is no dedicated syntax in JavaScript as in Đ.
 
      #} {;
       {## Symbolic Names and At-Notation #}
       export edh'symbolic'names = bookmark()
-      export edh'at'notations = bookmark()
+      export edh'at'notation = bookmark()
 
       # A symbol is a value of special type, can only be created with a special syntax, where an alphanumeric name for the attribute in current scope to receive the symbol value is specified.
       # %% # Define a symbol named `secret`
@@ -544,6 +546,109 @@ Another interesting usage of at-notation is, that string values can be used in p
 
   }
 
+
+  {## Namespacing and Dot-Notation
+   # - Every entity is a namespace (in general sense)
+
+As every attribute is uniquely identified by a name within an entity, it naturally becomes a namespace, where the identifiers form the set of names. Though the set is highly dynamic, in the sense that an attribute value after a new name can be added at any time, as well as existing names deleted thereof.
+
+Dot-notation is the norm with imperative programming languages, the reason probably lies in the better ergonomics when mutable data structures are manipulated, as the syntactic sugar for field read/write, that exactly the same syntax is used for the target.
+
+FYI in functional programming languages (such as Haskell), the dot (.) is already used as the operator for function composition, there are alternative means of namespacing (such as "lenses") are used instead of dot-notation.
+
+   #} {;
+    {## Namespacing and Dot-Notation #}
+    export edh'dot'notation = bookmark()
+
+
+    {## The Special Namespace Class
+     # - Namespace is also a special class in Đ, with dedicated syntax
+     #} {;
+      {## The Special Namespace Class #}
+      export edh'ns'special = bookmark()
+
+      # Namespaces are further described later in this chapter
+      ; () => edh'namespaces # <- follow this bookmark to that section
+
+      # %% # Namespace objects are created with a special syntax, e.g.:
+      symbol @ns'secret
+      namespace ns(a= 3, b= 2,, @ns'secret= 37256, ) {
+        c = a - b / 5
+      }
+      dir$ ns
+      # %# Following the `namespace` keyword, first comes name of the namespace, it can be any valid attribute identifier, and will be used as the attribute name for current scope to receive the new namespace object.
+      # Then there is an arguments pack, but no positional argument is expected there, just named arguments to come, they'll be the namespace's attributes as you'd intuit.
+      # Finally there's the namespace procedure body, all sorts of statements can go there, they'll be evaluated in a scope with the backing entity being exactly the namespace object's backing entity, so as to further initialize attributes in that entity.
+    }
+
+
+    {## Obtaining Attribute Value
+     # - Read out an attribute value
+     #} {;
+      {## Obtaining Attribute Value #}
+      export edh'attr'read = bookmark()
+
+      # %% # At left-hand-side of the dot (.) is the expression evaluates to some value backed by an entity (usually an object), at right-hand-side of the dot (.) is the attribute name (alphanumeric, symbolic, or quaint, as descibed earlier)
+      ns.b
+      # %%
+      ns.@ns'secret
+      # %%
+      ns.@'b'
+      # %#
+
+
+      {## Virtual Attributes
+       # - Syntatic sugar appearing as dot-notation
+
+There is special syntactic sugar for non-object values (usually not backed by entities) to be dot-notation addressable.
+
+Special note that virtual attributes are readonly, i.e. can not be assigned as described in the following section.
+
+       #} {;
+        {## Virtual Attributes #}
+        export edh'virtual'attrs = bookmark()
+
+        # %% # Let's have dict value, remind its type is `DictType`
+        d = { 'name': 'Yue', 'city': 'Chongqing', }
+        type(d)
+        # %% # Then obtain number of items in it as if there's a `size` attribute on it
+        d.size
+        # %% # This is possible because Đ does the translation under the hood, to something like:
+        __DictType_size__(d)
+        # %% # See the result is the same? Then checkout there really is such a method procedure:
+        show$ __DictType_size__
+        # %% # Also be noted that
+        d.push( 'year', 2021, )
+        # %% # is translated to
+        __DictType_push__(d)( 'year', 2021, )
+        # %% # Now you see the dict can be actually updated this way
+        d
+        # %# How convenient.
+
+      }
+
+    }
+
+
+    {## Assigning Attribute Value
+     # - Update value of an existing atttribute, create a new attriburte, delete an existing attribute
+     #} {;
+      {## Assigning Attribute Value #}
+      export edh'attr'assign = bookmark()
+
+      # %% # Call the whole expression you use to obtain an attribute value be an *Attribute Addressor*, then at left-hand-side of the equal sign (=), i.e. the infix assign operator, put an Attribute Addressor, at right-hand-side of the (=) put the expression evaluates to the value to be assigned
+      ns.b = 9
+      # %% # New attributes can be assigned freely (unless there is an object property descriptor guarding it, more about that later)
+      ns.d = 29
+      dir$ ns
+      # %% # Deletion of attributes is accomplished by assigning the special value `nil`
+      ns.a = nil
+      dir$ ns
+      # %#
+    }
+
+  }
+
 }
 
 
@@ -576,6 +681,48 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
     a + b * c - 5
     # %# See the result?
     # Note `*` is the multiplication operator (while in everywhere else other than a programming language, it is `×`)
+  }
+
+
+  {## Arguments Packing & Unpacking
+   # - Positional & named formal arguments to be packed and unpacked
+
+Đ has a unique immutable data structure - ArgsPack, usually abbreviated as apk. An apk is created by a pair of parenthese quoting a list of positonal or named argument expressions.
+
+   #} {;
+    {## Arguments Packing & Unpacking #}
+    export edh'args'un'packing = bookmark()
+
+    # %% # Positional-only apk is roughly equivalent to what's called "tuple" in other programming languages having it (e.g. Python), both semantically and syntatically.
+    type( (1,2,3,) )
+    # %% # A single argument pack needs to be disambiguated with one or more extra commas (leading, trailing or unusually - both)
+    type( (,1,) )
+    # %% # While only trailing commas are idiomatic in Đ
+    ; (1,)
+    # %% # Or it'll be parsed as parenthese-quoted expression for precedence override purpose
+    type( (1) )
+    # %#
+
+    # %% # Named arguments can be put anywhere in the list, but an apk value will be canonicalized to have all positional arguments separated from named arguments, with their respective order of appearance reserved:
+    apk = ( name= 'Compl', 1, 2, year= 2021, )
+    # %#
+
+    # %% # Asterisks can be used to unpack apk/list/dict into apks
+    l = [ 3, 5, ]
+    d = { 'name': 'Yue', 'city': 'Chongqing', }
+    ; ( 7, ***apk, **d, *l, year= 2030, city= 'Shanghai', *apk, )
+    # %# As you can see:
+    #
+    #   Unpacking and direct argument specifications can be arbitrarily mixed
+    #
+    #   *** triple asterisks unpack both positional & named arguments
+    #    ** double asterisks unpack only named arguments
+    #     * single asterisks unpack only positional arguments
+    #
+    #   The order of appearance are always reserved
+    #
+    #   A repeated named argument replaces the value, but doesn't change where it sppears
+
   }
 
 
@@ -855,17 +1002,6 @@ However, there are a few hard-coded exceptions, namely the following operators:
       # Checkout the meta definition for operators come with default batteries
       import * 'batteries/meta/ops' into Nothing
     }
-
-  }
-
-
-  {## Dot Notation
-   # - The Object-Oriented way of namespacing
-
-   #} {;
-    {## Dot Notation #}
-    export edh'dot'notation = bookmark()
-
 
   }
 
