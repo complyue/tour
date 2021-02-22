@@ -132,7 +132,7 @@ Try remove the leading # of the line above, then adjust its indentation level, y
          #      * A class
          #      * An attribute
          #}
-        edh'documented'attr'example'π = 3.14
+        edh'documented'attr'example'𝛑 = 3.14
       }
 
     }
@@ -398,7 +398,7 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
         a= 3, _b3= 2, a'= 5,
         x= 9, y_5= 1, x''= 6,
         name= 'Compl', city= 'Chongqing', year= 2021,
-        π= 3.141592653589793238462643383279502884197169399375105820974944592307,
+        𝛑= 3.141592653589793238462643383279502884197169399375105820974944592307,
         Ω= 0.567143290409783872999968662210,
         Ð= 'A language with great tooling',
       ) {
@@ -993,9 +993,9 @@ However, there are a few hard-coded exceptions, namely the following operators:
       scope(custom'infix'ops).eval(expr
         show$ (×)
       )
-      # But dot-notation won't work for operators, it is designed to work with magic methods instead. The crucial fact to know is: the parenthese is part of the name used to identify a magic method, but never so for names identifying operators.
-      # %% # This is error:
-      show$ custom'infix'ops.(×)
+      # Especially note that, dot-notation won't work for operators, it is designed to work with magic methods instead. The crucial fact to know is: the parenthese is part of the name used to identify a magic method, but never so for names identifying operators.
+      # %% # This is an error:
+      custom'infix'ops.(×)
       # %# Magic methods are described later in this chapter
       ; () => edh'magic'mths # <- follow this bookmark to that section
 
@@ -1039,85 +1039,132 @@ For example:
 }
 
 
-{## Values, Naming, Equality
+{## Values, and Really Special Ones
  # - Everything is a value in Đ
 
+Some values are both syntatically and semantically special, with respect to topics of Terminology, Equality, and Nothingness.
+
  #} {; import * '../advanced/vals' # <- details of Đ Value System
+  {## Values, and Really Special Ones #}
+  export edh'values'with'speciality = bookmark()
 
-  {## Values, Naming, Equality #}
-  export edh'val'equality = bookmark()
-
-  everything'is'a'value # <- follow this to see how & why everything is a value
+  # How and why everything is a value
+  everything'is'a'value # <- follow this bookmark to that section in Đ Value System
 
 
   {## Named Values / Term Definitions
    # - The named is the mother of ten thousand things
 
+A value in Đ can have an alphanumeric name assigned to it, forming a named value, or so called term definition.
+
+Note the named version of a value may or may not "equal" to the original version of the value, with respect to which definition of "equality" is used. Multiple criteria of "equality" are described in later sections of this chapter.
+
    #} {;
 
-    # %% # make sure to run this cell before the ones following it
-    π := 3.14
+    # %% # In Đ code, a named value is defined by evaluation of the (:=) operator
+    𝛑 := 3.14
+    # %# The (:=) operator has a side-effect to define an attribute into current scope, using the term name as attribute name, with the named version of the value.
+    # Note this side-effect is ceased in a pure context, which is described later in this chapter
+    ; () => edh'pure'ctx # <- follow this bookmark to that section
 
-    # %% # this prints its name, not value
-    repr( π )
+    # %% # A term's name is its usual representation
+    repr$ 𝛑
 
-    # %% # after arithmetics, it is no more a term,
-    repr( π * 1 ) # just an immutable numeric value
+    # %% # After some manipulation (e.g. arithmetics), it may no longer be a term, even the ultimate value are identical to the original value
+    repr$ 𝛑 * 1 # Now just an immutable value of DecimalType
 
-    # %% # while type of a term comes from its value
-    type( π )
+    # %% # Type of a term comes from its original value
+    type( 𝛑 )
 
-    # %% # and Đ knows it being a term, and can show that accordingly
-    show( π )
+    # %% # Đ knows it being a term, and can show that accordingly
+    show( 𝛑 )
 
-    # %% # otherwise it's can be used just like an attribute
+    # %% # Otherwise it's can be used just like the original value
     r = 1.58
-    C = 2 * π * r
-
+    C = 2 * 𝛑 * r
     # %#
+  }
+
+  {## Equalities
+   # - Some values can be more "equal" than others
+   #} {;
+    {## Equalities #}
+    export edh'equalities = bookmark()
+
+
+    {## Identity Equality
+     # - All values are assumed to have identities
+
+Đ assumes the uniqueness of all values to some degree that every value can be tested for a certain conclusion of whether it poses the same identity of another value, thus identity equality can always be tested for any two given values.
+
+     #} {;
+      {## Identity Equality #}
+      export edh'id'eq = bookmark()
+
+      # %% # Identity equality is tested with the (is) operator:
+      true is true
+      # %% # The negated (is not) operator gives proper English feeling:
+      true is not false
+      # %% # while being equivalent to:
+      not ( true is false )
+      # %#
+
+
+      # Immutable values can be uniquely identified by its unchangable value, regardless of its original source.
+      # %% # E.g.
+      3 * 7 is 21
+      # %% # The complex ArgsPackType is immutable after all, though the order of arguments is siganificant in identity test. Especially note named arguments are ordered by original occurrence, not by sort order of the names or any otherwise.
+      ( a= 2, 3, 5, b= 7, ) is ( 3, a= 2, b= 7, 5, )
+      # %% # Difference in arg order, either that of positional args or named args, change an apk's identity
+      ( a= 2, 3, 5, b= 7, ) is ( 3, b= 7, 5, a= 2, )
+      # %#
+
+
+      # Mutable values need other means of identity, that usually can be the (imagined) location of the block in memory, to where overwriting goes when the value is to be changed. The reference semantics is a useful intuition for this, that two reference values are identical when they point to the same memory location, thus changes through one of the reference will be visible to the other reference.
+      # %% % Two separate lists can never be identical
+      [ 3, 2, ] is [ 3, 2, ]
+      # %% # Only references copied from existing ones can
+      l = [ 3, 2, ]
+      l' = l
+      l is l'
+      # %#
+
+      # Dicts, objects etc. are in similar cases wrt identity equality.
+
+    }
+
+
+    {## Instant Equality
+     # - The common sense of "equality"
+
+     #} {;
+      {## Instant Equality #}
+      export edh'value'eq = bookmark()
+
+
+    }
+
+
+    {## Namely Equality
+     # - Equality values can be differently named
+
+     #} {;
+      {## Namely Equality #}
+      export edh'namely'eq = bookmark()
+
+
+    }
+
   }
 
 
   {## Null Test
-   # - Nullability
+   # - The observable nothingness
 
 
    #} {;
     {## Null Test #}
     export edh'null'test = bookmark()
-
-
-  }
-
-
-  {## Identity Equal
-   # - Being identical
-
-   #} {;
-    {## Identity Equal #}
-    export edh'id'eq = bookmark()
-
-
-  }
-
-
-  {## Value Equal
-   # - The usual _equality_
-
-   #} {;
-    {## Value Equal #}
-    export edh'value'eq = bookmark()
-
-
-  }
-
-
-  {## Namely Equal
-   # - Equal values can be differently named
-
-   #} {;
-    {## Namely Equal #}
-    export edh'namely'eq = bookmark()
 
 
   }
@@ -1441,6 +1488,41 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
 
   }
+
+}
+
+
+{## Pure Context
+ # - For attribute defining side-effect to be suppressed
+
+There are cases it's desirable to cease the side-effect of attribute creation into current scope, for some artifact-defining statements/expressions. E.g. an ad-hoc named value as an argument passed to some API. Some contextes are considered "pure" in Đ code, for this to happen automatically.
+
+ #} {;
+  {## Pure Context #}
+  export edh'pure'ctx = bookmark()
+
+  # %% # First make sure `x` is not in scope
+  x = nil
+  # %% # A parenthese quoted expression (no matter how complex it is), is evaluated in a pure context
+  ; ( x := 5 )
+  # %% # A standalone arguments packer expression is evaluated in a pure context
+  ; ( x := 5, )
+  # %% # Expressions for arguments within a call expression are evaluated in a pure context, you can intuit that there is just an arguments packer expression there
+  show( x := 5, )
+  # %% # The ($) and (|) operator, they all make calls, would pack the arguments likely, i.e. in a pure context
+  show$ x := 5
+  # %% # Finally assert no `x` is ever defined
+  this?x is nil
+  # %#
+
+  # %% # Likely method definition expressions work the same way
+  f = nil
+  ; ( method f(x) x+1 )
+  ; ( method f(x) x+1, )
+  show( method f(x) x+1 )
+  show$ method f(x) x+1
+  this?f is nil
+  # %#
 
 }
 
