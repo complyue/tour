@@ -1556,8 +1556,9 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 {## Control Flows
  # - Handling varity of input
 
-A computer makes no sense if every distinct input has to be processed by a unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient varity. So some level of abstraction has to be there, this calls for polymorphism.
+A computer makes no sense if every distinct input has to be processed by another unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient varity. So some level of abstraction has to be there, this calls for polymorphism.
 
+That means a program would need to go different execution branches wrt the input data, and in practices, such conditional branchings can be seen allover the source code of computer programs. In this section, you'll see what mechanisms for this purpose are supported by Đ.
 
  #} {;
   {## Control Flows #}
@@ -1567,11 +1568,34 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
   {## `if-then-else` - Boolean Branching
    # - Conditionally branching
 
+`if <conditional> then <consequence> else <alternative>` as a whole is an expression, meaning it's supposed to give out some meaningful result value when evaluated. The `else` part can be omitted, and the whole expression evaluates to `nil` if the condition doesn't hold.
 
    #} {;
     {## `if-then-else` - Boolean Branching #}
     export edh'if'then'else = bookmark()
 
+    # %% # Idiomatic short forms
+    if 3 < 2
+    then "No way this get shown!"
+    else "Of course!"
+    # %#
+
+    # %% # Idiomatic long forms
+    if 3*7 is 21 then {
+      console.print$ "That's so true!"
+    } else {
+      console.print$ "No way arithmetics fail!"
+    }
+    # %#
+
+    # %% # Without an `else` part:
+    case (
+      if 3*7 > 22 then "You'd never see this!"
+    ) of {
+      nil -> "Yeah!"
+      _ -> "No way!"
+    }
+    # %#
 
   }
 
@@ -1579,6 +1603,17 @@ A computer makes no sense if every distinct input has to be processed by a uniqu
   {## Blocks, Matching Branches, Fallthrough
    # - Forming a hierarchy of control elements
 
+A block is any number of statements enclosed by a pair of curly braces, it is an expression, and evaluates to the result value of last statement executed in it, in case that statement is an expression statement, or just `nil` will be the execution result.
+
+Branches defined by the arrow (->) operator can appear in a block, to jump out of the block without evaluation of subsequent statements following it, iif the left-hand-side expression of the branch is concluded as a match, in which case the right-hand-side expression of the branch becomes the last statement of the block execution, thus giving out the block's evaluation result value as it is evaluated. There is a special case though, if such a right-hand-side expression evaluates to the value of `fallthrough` statement, subsequent statements following the branch will continue to be executed as if the branch has not been a match. While non-match branches won't have their right-hand-side expression evaluated/executed at all.
+
+The left-hand-side expression is concluded to be a match or not in 3 different ways, with different syntax to manifest the desired handling:
+
+ * A valid pattern matching the contextual matching target value
+ * A guard condition with truethful result
+ * A value as evaluated, that namely-equals to the contextual matching target value
+
+Blocks can be nested, as well as for blocks being body parts of other control flow mechanisms, arbitrary hierarchy of control flow structures can be composited.
 
    #} {;
     {## Blocks, Matching Branches, Fallthrough #}
@@ -1593,6 +1628,50 @@ Dynamically compute a value, with it being the matching target, evaluate a block
      #} {;
       {## `case-of` - Nested Matching Context #}
       export edh'case'of = bookmark()
+
+      # %% #
+      case 3*7 of {
+        21 -> "Pretty that!"
+      }
+      # %#
+
+    }
+
+
+    {## Pattern Matching
+     # - With a pattern expression at left-hand-side of a branch
+
+Pattern expressions all have an outer-most pair of curly braces, though some may have more inner layers of curly braces.
+
+     #} {;
+      {## Pattern Matching #}
+      export edh'pattern'matching = bookmark()
+
+
+    }
+
+
+    {## Guard Condition Matching
+     # - With a guarded expression at left-hand-side of a branch
+
+Guard condition is defined with the prefix guard (|) operator.
+
+     #} {;
+      {## Guard Condition Matching #}
+      export edh'guard'cond'matching = bookmark()
+
+
+    }
+
+
+    {## Value Matching
+     # - With a vanilla expression at left-hand-side of a branch
+
+Other forms of expression at left-hand-side of a branch are all considered a value expression, the result value evaluated from such a LHS expression is compared to the contextual matching target value with namewise equality semantics.
+
+     #} {;
+      {## Value Matching #}
+      export edh'value'matching = bookmark()
 
 
     }
