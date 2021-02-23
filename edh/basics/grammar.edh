@@ -563,7 +563,7 @@ FYI in functional programming languages (such as Haskell), the dot (.) is alread
 
    #} {;
     {## Namespacing and Dot-Notation #}
-    export edh'dot'notation = bookmark()
+    export edh'ns'dot'notation = bookmark()
 
 
     {## The Special Namespace Class
@@ -577,8 +577,9 @@ FYI in functional programming languages (such as Haskell), the dot (.) is alread
 
       # %% # Namespace objects are created with a special syntax, e.g.:
       symbol @ns'secret
-      namespace ns(a= 3, b= 2,, @ns'secret= 37256, ) {
+      namespace ns(a= 3, b= 2, @ns'secret= 37256, ) {
         c = a - b / 5
+        ; @'full-time' = false
       }
       dir$ ns
       # %# Following the `namespace` keyword, first comes name of the namespace, it can be any valid attribute identifier, and will be used as the attribute name for current scope to receive the new namespace object.
@@ -593,42 +594,123 @@ FYI in functional programming languages (such as Haskell), the dot (.) is alread
       {## Obtaining Attribute Value #}
       export edh'attr'read = bookmark()
 
-      # %% # At left-hand-side of the dot (.) is the expression evaluates to some value backed by an entity (usually an object), at right-hand-side of the dot (.) is the attribute name (alphanumeric, symbolic, or quaint, as descibed earlier)
-      ns.b
-      # %%
-      ns.@ns'secret
-      # %%
-      ns.@'b'
-      # %#
+
+      {## From Current Scope
+
+A standalone attribute name as an _attribute expression_, just reads such named attribute from current scope (or the first lexical outer scope having it, in case all inner scopes don't have it).
+
+       #} {;
+        {## From Current Scope #}
+        export edh'scope'attr'read = bookmark()
+
+        # Scoped attribute reading is subject to lexical scoping rules, which is described later in this chapter
+        ; () => edh'lexi'scoping # <- follow this bookmark to that section
+
+        # %% # A `scope` wrapper object can be used to evaluate expressions with the wrapped object's backing entity as their current scope:
+        scope(ns).eval(expr
+          @ns'secret * 2 - c / b
+        )
+        # %# Expression values and scope wrappers are described later in this chapter
+        ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+
+        # %% # Using alphanumeric name
+        scope(ns).eval(expr
+          b
+        )
+        # %% # Using symbolic name
+        scope(ns).eval(expr
+          @ns'secret
+        )
+        # %% # Using quaint name
+        scope(ns).eval(expr
+          @'full-time'
+        )
+        # %#
+      }
+
+      {## Dot-Notation
+       # - To address an attribute off a left-hand-side value
+
+At left-hand-side of the dot (.) is the expression evaluates to some value backed by an entity (usually an object), at right-hand-side of the dot (.) is the attribute name (alphanumeric, symbolic, or quaint, as descibed earlier)
+
+       #} {;
+        {## Dot-Notation #}
+        export edh'dot'notation = bookmark()
+
+        # %% # Using alphanumeric name
+        ns.b
+        # %% # Using symbolic name
+        ns.@ns'secret
+        # %% # Using quaint name
+        ns.@'full-time'
+        # %#
+
+        {## Tentative Form
+         # - Allowing absence of the target attribute
+
+It is runtime error if the target attribute doesn't exist in the usual dot-notation, there is a tentative form using the infix (?) and (?@) operator to avoid such errors, but evaluates to `nil` instead.
+
+Especially note that you don't want to directly assign the result of tentative attribute read to a local attribute for later use, because when absent, the resulted `nil` will actually trigger deletion semantics for your local attribute, thus later read will err out.
+
+         #} {;
+          {## Tentative Form #}
+          export edh'tentative'attr'read = bookmark()
+
+          # Not so different when the target attribute does exist
+          # %% #
+          ns?b
+          # %% # Tentative at-notation
+          ns?@ns'secret
+          # %% # (?) operator working with a symbolic attribute name
+          ns? @ns'secret
+          # %% # Tentative quaint name
+          ns?@'full-time'
+          # %#
+
+          # `nil` will be given out for non-exiting attributes
+          # %% # Using an alphanumeric name
+          ns?no'such'thing is nil
+          # %% # Tentative at-notation
+          symbol @never'assign'me
+          ns?@never'assign'me is nil
+          # %% # (?) operator working with a symbolic attribute name
+          ns? @never'assign'me is nil
+          # %% # Tentative quaint name
+          ns?@'no-such-key' is nil
+          # %#
+
+        }
 
 
-      {## Virtual Attributes
-       # - Syntatic sugar appearing as dot-notation
+        {## Virtual Attributes
+         # - Syntatic sugar appearing as dot-notation
 
 There is special syntactic sugar for non-object values (usually not backed by entities) to be dot-notation addressable.
 
 Special note that virtual attributes are readonly, i.e. can not be assigned as described in the following section.
 
-       #} {;
-        {## Virtual Attributes #}
-        export edh'virtual'attrs = bookmark()
+         #} {;
+          {## Virtual Attributes #}
+          export edh'virtual'attrs = bookmark()
 
-        # %% # Let's have dict value, remind its type is `DictType`
-        d = { 'name': 'Yue', 'city': 'Chongqing', }
-        type(d)
-        # %% # Then obtain number of items in it as if there's a `size` attribute on it
-        d.size
-        # %% # This is possible because Đ does the translation under the hood, to something like:
-        __DictType_size__(d)
-        # %% # See the result is the same? Then checkout there really is such a method procedure:
-        show$ __DictType_size__
-        # %% # Also be noted that
-        d.push( 'year', 2021, )
-        # %% # is translated to
-        __DictType_push__(d)( 'year', 2021, )
-        # %% # Now you see the dict can be actually updated this way
-        d
-        # %# How convenient.
+          # %% # Let's have dict value, remind its type is `DictType`
+          d = { 'name': 'Yue', 'city': 'Chongqing', }
+          type(d)
+          # %% # Then obtain number of items in it as if there's a `size` attribute on it
+          d.size
+          # %% # This is possible because Đ does the translation under the hood, to something like:
+          __DictType_size__(d)
+          # %% # See the result is the same? Then checkout there really is such a method procedure:
+          show$ __DictType_size__
+          # %% # Also be noted that
+          d.push( 'year', 2021, )
+          # %% # is translated to
+          __DictType_push__(d)( 'year', 2021, )
+          # %% # Now you see the dict can be actually updated this way
+          d
+          # %# How convenient.
+
+        }
 
       }
 
@@ -636,20 +718,119 @@ Special note that virtual attributes are readonly, i.e. can not be assigned as d
 
 
     {## Assigning Attribute Value
-     # - Update value of an existing atttribute, create a new attriburte, delete an existing attribute
+     # - Creation/Update/Deletion of attributes
      #} {;
       {## Assigning Attribute Value #}
       export edh'attr'assign = bookmark()
 
-      # %% # Call the whole expression you use to obtain an attribute value be an *Attribute Addressor*, then at left-hand-side of the equal sign (=), i.e. the infix assign operator, put an Attribute Addressor, at right-hand-side of the (=) put the expression evaluates to the value to be assigned
-      ns.b = 9
-      # %% # New attributes can be assigned freely (unless there is an object property descriptor guarding it, more about that later)
-      ns.d = 29
-      dir$ ns
-      # %% # Deletion of attributes is accomplished by assigning the special value `nil`
-      ns.a = nil
-      dir$ ns
-      # %#
+      {## Into Current Scope
+
+Using a standalone attribute name as the assignment target, will create or update the so named attribute of current scope.
+
+       #} {;
+        {## Into Current Scope #}
+        export edh'scoped'attr'assign = bookmark()
+
+        # Note that scoped attribute assignment can never write to outer scopes, as described in the lexical scoping rules later in this chapter
+        ; () => edh'lexi'scoping # <- follow this bookmark to that section
+
+        # %% # A `scope` wrapper object can be used to evaluate expressions with the wrapped object's backing entity as their current scope:
+        scope(ns).eval(expr
+          @ns'secret * 2 - c / b
+        )
+        # %# Expression values and scope wrappers are described later in this chapter
+        ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+
+        # %% # Using alphanumeric name
+        scope(ns).eval(expr{; # use a block to enclose multiple statements
+            e = 2.7 # creation
+            b = 5
+            e = nil # deletion
+        })
+        # %% # Using symbolic name
+        scope(ns).eval(expr
+          @ns'secret = 23323
+        )
+        # %% # Using quaint name
+        scope(ns).eval(expr
+          @'full-time' = true
+        )
+        # %#
+      }
+
+
+      {## Via Dot-Notation
+       # - Assign to an attribute of some left-hand-side value
+
+The left-hand-side expression of the assignment operator (=) can be of dot-notation, i.e. the assignment target is so specified as to be the designated attribute by the dot-notation. In this sense, such a dot-notation can be called an *Attribute Addressor*, in both cases it is used for atribute read and attribute assignment.
+
+       #} {;
+        {## Via Dot-Notation #}
+        export edh'dot'notation'assign = bookmark()
+
+        # %% # Using alphanumeric name
+        ns.e = 2.7 # creation
+        ns.b = 5 # update
+        ns.e = nil # deletion
+        # %% # Using symbolic name
+        ns.@ns'secret = 23323
+        # %% # Using quaint name
+        ns.@'full-time' = true
+        # %#
+      }
+
+
+      {## Tentative Form
+       # - Do assign only when absent
+
+Sometimes you just want to make sure a certain attribute is in scope, and would rather not overwrite what's already there.
+
+Also at times you know an attribute is certain to be there, but the Đ source code around can not tell the IDE (or linter etc.) about its existence (or type for intellisense completion etc.), then you can write a pseudo assignment in the tentative form, just for informative purpose.
+
+Note that tentative assignment doesn't work via dot-notation.
+
+       #} {;
+        {## Tentative Form #}
+        export edh'tentative'assign = bookmark()
+
+        # %% # It evaluates to the existing value if the target attribute already exists
+        scope(ns).eval(expr
+          b ?= 37
+        )
+        # %% # See it's not changed
+        ns.b
+        # %% # Will be created as a new attribute of current scope if does not exist already
+        scope(ns).eval(expr
+          e ?= 2.7
+        )
+        # %% # See it's not changed
+        ns.e
+        # %#
+
+        # %% # Note that in cases a possibly absent attribute is read just occasionally, you may really want to write the code in this pattern:
+        ns.e = nil # delete it for sure absence
+        v = 9.8 * (ns?e or 2.7)
+        # %#
+      }
+
+
+      {## Syntactic Sugar in Assignment
+       # - Shorthands for updating assignments
+       #} {;
+        {## Syntactic Sugar in Assignment #}
+        export edh'assign'sugar = bookmark()
+
+        # %% # This expression:
+        ns.b += 1
+        # %% # is translated to
+        ns.b = ns.b+1
+        # %% # This expression:
+        ns.b /= 3
+        # %% # is translated to
+        ns.b = ns.b/3
+        # %# and et cetera
+      }
+
     }
 
   }
