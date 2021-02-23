@@ -1508,9 +1508,18 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
     assassinate'signal <- 'shoot'
     # %# Remind that the publishing can be repeated, try run the "stab" cell again.
 
-    # Events can be *perceive*d by any thread, if the perceiver evaluates to value of a `break` statement, that thread will be terminated.
+    # Events can be *perceive*d by any thread, the perceiver body is executed with the published event as matching target
+    # %% #
+    perceive assassinate'signal { act } -> {
+      console.info<| "I'm assassinated via " ++ act
+    }
+    # %# Then run the publishing cells above again, to see more messages logged.
+    # Branches with pattern/value matching are described later in this chapter
+    ; () => edh'branching # <- follow this bookmark to that section
 
-    # %{ # Before such a termination, some actions can be *defer*ed to execute:
+    # If the perceiver evaluates to value of a `break` statement, that thread will be terminated.
+
+    # %{ # Upon termination of a thread, some actions can be *defer*ed to execute:
     defer {
       # %%
       console.print$ "Here's my last words ..."
@@ -1531,9 +1540,10 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
     }
     # %}
 
-    # %% # Be prepared to loss your Đ terminal session after running this cell, for the main thread will be terminated, thus the program will halt.
-    perceive assassinate'signal.subseq { act } -> {
-      console.fatal<| "I'm assassinated via " ++ act
+    # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
+    # %% # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
+    perceive assassinate'signal.subseq 'shoot' -> {
+      console.fatal<| "I'm hit!"
       break # this being the final result, would terminate the thread installed this perceiver
     }
     # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
