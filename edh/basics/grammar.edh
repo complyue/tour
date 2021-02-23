@@ -1025,7 +1025,7 @@ Note an STM transaction will retry automatically, and prone to no-progressing un
           method inc() ai this.cnt += 1
           method dec() ai this.cnt -= 1
         }
-        # %# Note that data classes are described later in this chapter
+        # %# Data classes are described later in this chapter
         ; () => edh'data'classes # <- follow this bookmark to that section
       }
 
@@ -1397,11 +1397,127 @@ Some instantly equal values can be differently named, in the sense of original v
   {## Null Test
    # - The observable nothingness
 
+All values are assumed to be able to tell if it is truthful, or on the contrary, falsy, that eternally for immutable values, and instantly for mutable values. There are a few control flow mechanisms relying on this ability to carry out conditional executions, e.g.:
+
+ * if <conditional> then <consequence> else <alternative>
+ * while <conditional> <keep-doing>
+ * <prefered-result> or <alternative-replacement>
+ * <prerequisite> and <proceeds>
+
+`null()` is used to explicitly perform _null_ tests and give out true/false accordingly, while the control flows above would perform _null_ tests implicitly.
 
    #} {;
     {## Null Test #}
     export edh'null'test = bookmark()
 
+    # %% #
+    null$ 3
+    # %%
+    null$ 0
+    # %%
+    null$ 'Hello'
+    # %%
+    null$ ''
+    # %%
+    null$ true
+    # %%
+    null$ false
+    # %#
+
+    # %% #
+    data Blocker(letgo= false) {
+      method __null__() not this.letgo
+    }
+    blocker = Blocker(true)
+    # %# Data classes are described later in this chapter
+    ; () => edh'data'classes # <- follow this bookmark to that section
+
+    # %% # Repeat this cell after toggled blocker's status
+    if blocker
+    then "You've been blocked!"
+    else "Proceed!"
+
+    # %% # Toggle the blocked state
+    blocker.letgo = not blocker.letgo
+    # %#
+
+  }
+
+
+  {## Special Values
+   # - Some special values
+   #} {;
+    {## Special Values #}
+    export edh'special'values = bookmark()
+
+    # %% # `nil` is the ultimate nothingness
+    nil
+    # %% # It deletes attributes when assigned as the value
+    a = nil # to delete attribute named `a` from current scope
+
+    # %% # `None` is just `nil` named "None"
+    show$ None
+    # %% # `Nothing` is just `nil` named "Nothing"
+    show$ Nothing
+
+    # %% # `true` is the boolean value indicating truthful result
+    show$ true
+    # %% # `false` is the boolean value indicating falsy result
+    show$ false
+
+    # %% # `nan` means Not-A-Number, but of DecimalType, which is a numeric type
+    show$ nan
+    # %% # `nan` is the result of 0 divided by 0
+    0/0 is nan
+    # %% # `inf` is infinity
+    show$ inf
+    # %% # Negate it by the prefix minus (-) operator to get negative infinity
+    show$ -inf
+
+    # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
+    show$ NA
+    # %# Applicability & defaulting semantics are described in another chapter
+    import * '../advanced/appl' # <- navigate to there for elaboration
+    edh'na'semantics # <- follow this bookmark to the specific section there
+
+    # %% # `LT` means less-than, indicating the result of comparision
+    show$ LT
+    # %% # `GT` means greater-than, indicating the result of comparision
+    show$ GT
+    # %% # `EQ` means equal, indicating the result of comparision
+    show$ EQ
+    # %#
+
+    # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
+    assassinate'signal = sink
+    show$ assassinate'signal
+    # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
+    assassinate'signal <- 'stab'
+    # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
+    go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
+    # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
+    # %% # Let's publish another event there:
+    assassinate'signal <- 'shoot'
+    # %# Remind that the publishing can be repeated, try run the "stab" cell again.
+
+    # Events can be *perceive*d by any thread, if the perceiver evaluates to value of a `break` statement, that thread will be terminated.
+
+    # %% # Before such a termination, some actions can be *defer*ed to execute:
+    defer {
+      console.info<| "Here's my last words ..."
+      secRemains = 10
+      for _ from console.everySeconds(1) do {
+        console.print$ secRemains
+        if (secRemains -= 1) < 0 then break
+      }
+    }
+
+    # %% # Be prepared to loss your Đ terminal session after running this cell, for the main thread will be terminated, thus the program will halt.
+    perceive assassinate'signal.subseq { act } -> {
+      console.fatal<| "I'm assassinated via " ++ act
+      break # this being the final result, would terminate the thread installed this perceiver
+    }
+    # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
 
   }
 
@@ -1411,7 +1527,7 @@ Some instantly equal values can be differently named, in the sense of original v
 {## Control Flows
  # - Handling varity of input
 
-A computer makes no sense if every distinct input has to be processed by a unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient varity. So some level of abstraction has to be there, this leads to polymorphism.
+A computer makes no sense if every distinct input has to be processed by a unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient varity. So some level of abstraction has to be there, this calls for polymorphism.
 
 
  #} {;
