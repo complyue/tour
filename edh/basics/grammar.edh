@@ -99,13 +99,13 @@ Whitespace sensitivity has become outdated today, brackets (curly, square or rou
       {## Đ is Whitespace Insensitive #}
       export edh'sps'insensitivity = bookmark()
 
-      {## Comments are Indented as well
+      {## Comments are Indented
        # - Both line comment and block comment
 
 As you may have noticed, block comments (started with `{#`) are indented, also a line of comments are indented when it starts with #, whether it is a standalone line comment, or part of a block comment.
 
        #} {;
-        {## Comments are Indented as well #}
+        {## Comments are Indented #}
         export edh'cmt'indent = bookmark()
 
         # This is a standalone comment line, will always be indented by the formatter. Try adjust the indentation level of any line in this section, then save or do [Format Document] to see how the formatter corrects your mistakes.
@@ -220,49 +220,54 @@ Which means, leading ones, trailing ones, as well as middle ones, all can be omi
       {## Disambiguation Needs #}
       export edh'disambiguation'needs = bookmark()
 
-      {## Disambiguate Unintended Indexing / Calling #}
-      export edh'disambig'idx'call = bookmark()
+      {## Unintended Indexing / Calling
+       #} {; export edh'disambig'idx'call = bookmark()
+        # There usually need a semicolon before a pair of square/round brackets, when you don't mean to do indexing or calling against artifact before it.
+        # %% # A list literal
+        ; [ 3, 2, 5, ]
+        # %% # An apk literal
+        ; ( 3, 2, 5, x= 7, y= 23, )
+        # %#
+      }
 
-      # Noticed the semicolons before each pair of square/round brackets? Why are they there?
+      {## Block instead of Dict
+       #} {; export edh'disambig'blk'dict = bookmark()
+        # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
 
-      # The answer is: There usually need a semicolon before a pair of square/round brackets, when you don't mean to do indexing or calling against artifact before it.
+        # %% # Well, check out this:
+        type( {; } )
+        # %% # Then this:
+        type( {} )
+        # %#
 
+        # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
 
-      {## Disambiguate Block from Dict #}
-      export edh'disambig'blk'dict = bookmark()
+        # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exceptin of branches' early break, though, about that later)
+        # %% # And an empty block evals to `nil`, check this to be true
+        {; } is nil
+        # %#
 
-      # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
+        # Though you don't need a semicolon when there is at least 1 statement in a block, e.g.
+        # %% # This is a block with a single assignment expression statement
+        { a=1 }
+        # %% # But this is the idiomatic form, which is preferable for foolproof modifications in later code maintenance:
+        {; a=1 }
+        # %#
+      }
 
-      # %% # Well, check out this:
-      type( {; } )
-      # %% # Then this:
-      type( {} )
-      # %#
-
-      # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
-
-      # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exceptin of branches' early break, though, about that later)
-      # %% # And an empty block evals to `nil`, check this to be true
-      {; } is nil
-      # %#
-
-      # Though you don't need a semicolon when there is at least 1 statement in a block, e.g.
-      # %% # This is a block with a single assignment expression statement
-      { a=1 }
-      # %% # But this is the idiomatic form, which is preferable for foolproof modifications in later code maintenance:
-      {; a=1 }
-      # %#
-
-      # Finally, a comma to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
-      # %% # A single argument pack
-      ; ( 3*7, )
-      # %% # A parenthese-quoted expression
-      ; ( 3*7 )
-      # %%
-      ; type( ( 3*7, ) )
-      # %%
-      ; type( ( 3*7 ) )
-      # %#
+      {## ArgsPack instead of Expression-in-Parenthese
+       #} {; export edh'disambig'apk'paren = bookmark()
+        # A comma is needed to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
+        # %% # A single apk
+        ; ( 3*7, )
+        # %% # A parenthese-quoted expression
+        ; ( 3*7 )
+        # %%
+        ; type( ( 3*7, ) )
+        # %%
+        ; type( ( 3*7 ) )
+        # %#
+      }
     }
 
     {## Idioms
@@ -1114,15 +1119,15 @@ Note the named version of a value may or may not "equal" to the original version
       # %% # E.g.
       3 * 7 is 21
       # %% # The complex ArgsPackType is immutable after all, though the order of arguments is siganificant in identity test. Especially note named arguments are ordered by original occurrence, not by sort order of the names or any otherwise.
-      ( a= 2, 3, 5, b= 7, ) is ( 3, a= 2, b= 7, 5, )
+      ; ( a= 2, 3, 5, b= 7, ) is ( 3, a= 2, b= 7, 5, )
       # %% # Difference in arg order, either that of positional args or named args, change an apk's identity
-      ( a= 2, 3, 5, b= 7, ) is ( 3, b= 7, 5, a= 2, )
+      ; ( a= 2, 3, 5, b= 7, ) is ( 3, b= 7, 5, a= 2, )
       # %#
 
 
       # Mutable values need other means of identity, that usually can be the (imagined) location of the block in memory, to where overwriting goes when the value is to be changed. The reference semantics is a useful intuition for this, that two reference values are identical when they point to the same memory location, thus changes through one of the reference will be visible to the other reference.
       # %% % Two separate lists can never be identical
-      [ 3, 2, ] is [ 3, 2, ]
+      ; [ 3, 2, ] is [ 3, 2, ]
       # %% # Only references copied from existing ones can
       l = [ 3, 2, ]
       l' = l
