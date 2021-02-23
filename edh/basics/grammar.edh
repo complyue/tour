@@ -988,7 +988,7 @@ It is used to explicitly mandate a conditional match for a branch, regardless of
         ; | 3*7 is 21 -> "That's so true."
         # %% #
         ; | 3 < 2 -> "No way this get shown!"
-        # %# Note that branches are described later in this chapter
+        # %# Branches are described later in this chapter
         ; () => edh'branching # <- follow this bookmark to that section
       }
 
@@ -1271,6 +1271,7 @@ Note the named version of a value may or may not "equal" to the original version
     # %#
   }
 
+
   {## Equalities
    # - Some values can be more "equal" than others
    #} {;
@@ -1317,27 +1318,76 @@ Note the named version of a value may or may not "equal" to the original version
 
       # Dicts, objects etc. are in similar cases wrt identity equality.
 
+
+      # A value serving as an immutable container, such as an apk or a pair, may contain mutable values as its items, the identity equality cascades into those items intuitively.
     }
 
 
     {## Instant Equality
      # - The common sense of "equality"
 
+The common sense of "equality" assumes snapshot semantics when comparing two mutable values, i.e. the equality test would happen as if time has stopped flowing, so the stored data of such values can be compared at the instant of time when the comparison is requested.
+
      #} {;
       {## Instant Equality #}
-      export edh'value'eq = bookmark()
+      export edh'instant'eq = bookmark()
 
+      # %% # Instant equality is tested with the (==) operator:
+      [ 3, 2, ] == [ 3, 2, ]
+      # %# See they are considered equal now?
 
+      # %% # Objects can override instant equality test via its `__eq__()` magic method implementation
+      class D {
+        method __init__(x as this.x, y as this.y) pass
+        method __eq__(other) case other of {
+          { D(x= otherX, y= otherY) } -> { # this uses a match pattern doing instance check with field extraction at the same time
+            this.x == otherX and this.y == otherY
+          }
+          _ -> false
+        }
+      }
+      # %% # So these two distint objects can be considered instantly equal
+      D(3, 2) == D(3, 2)
+      # %% # While they by no means can be identically equal
+      D(3, 2) is D(3, 2)
+      # %% # The data class syntax is sorta syntactic sugar with such purpose in mind:
+      data D'(x, y) pass
+      # %% # The `D'` class defined this way automatically implements a `__eq__()` method, so:
+      D'(3, 2) == D'(3, 2)
+      # %# Actually there're more with a data class, e.g. a automatic `__repr__()` implementation.
+
+      # Note that identity equality always implies instant equality, but not vice versa.
     }
 
 
-    {## Namely Equality
-     # - Equality values can be differently named
+    {## Namewise Equality
+     # - Equality wrt how values are named
+
+Some instantly equal values can be differently named, in the sense of original value, they are considered instantly equal too.
 
      #} {;
-      {## Namely Equality #}
+      {## Namewise Equality #}
       export edh'namely'eq = bookmark()
 
+      # %% # Take this example:
+      PhoneNo := 35925
+      AccountNo := 35925
+      # %% # They are not identical because named differently:
+      AccountNo is PhoneNo
+      # %% # But surprisingly:
+      AccountNo == PhoneNo
+      # %# See they are considered instantly equal? That's a pitty rendering the (==) operator less meaningful in certain cases.
+
+      # %% # Fortunatelly for value matching branches, the name of values would make differences, so they are said to be namely equal, iif they have the same name, and share an instantly equal original value.
+      case AccountNo of {
+        35925 -> "No way, original version of a value won't match any named version!"
+        PhoneNo -> "No way, the value names don't match!"
+        ; (AccountNo := 35925) -> "Yeah, this should work!"
+      }
+      # %# Branches are described later in this chapter
+      ; () => edh'branching # <- follow this bookmark to that section
+
+      # TODO add named mutable values as example, to demonstrate the necessarity of namely equal semantics.
 
     }
 
