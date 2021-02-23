@@ -1467,18 +1467,26 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 
     # %% # `nan` means Not-A-Number, but of DecimalType, which is a numeric type
     show$ nan
-    # %% # `nan` is the result of 0 divided by 0
+    # %% # `nan` is technically the result of 0 divided by 0
     0/0 is nan
+    # %% # Except for identity equality, a nan value never equals to any value, including itself
+    nan == nan
+    # %# See nan is unequal to itself?
+
     # %% # `inf` is infinity
     show$ inf
     # %% # Negate it by the prefix minus (-) operator to get negative infinity
     show$ -inf
+    # %% # Divided by 0, a finite number will produce infinitity
+    ; -5 / 0
+    # %#
 
     # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
     show$ NA
     # %# Applicability & defaulting semantics are described in another chapter
-    import * '../advanced/appl' # <- navigate to there for elaboration
-    edh'na'semantics # <- follow this bookmark to the specific section there
+    ; () => {; import * '../advanced/appl' # <- navigate to there for elaboration
+      edh'na'semantics # <- follow this bookmark to the specific section there
+    }
 
     # %% # `LT` means less-than, indicating the result of comparision
     show$ LT
@@ -1504,11 +1512,19 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 
     # %% # Before such a termination, some actions can be *defer*ed to execute:
     defer {
-      console.info<| "Here's my last words ..."
+      console.print$ "Here's my last words ...\n"
       secRemains = 10
       for _ from console.everySeconds(1) do {
-        console.print$ secRemains
-        if (secRemains -= 1) < 0 then break
+        case secRemains -= 1 of {
+          7 -> console.print( "\27[A\rPlease let me die a good death.\n" )
+          5 -> console.print( "\27[A\rThat's all I want.\n" )
+          4 -> console.print( "\27[A\rGood bye!\n" )
+          0 -> {
+            console.print( "\27[A\27[2K" )
+            break
+          }
+          _ -> console.print( '\27[A\27[2K\r' ++ secRemains )
+        }
       }
     }
 
