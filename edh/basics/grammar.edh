@@ -1510,23 +1510,26 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 
     # Events can be *perceive*d by any thread, if the perceiver evaluates to value of a `break` statement, that thread will be terminated.
 
-    # %% # Before such a termination, some actions can be *defer*ed to execute:
+    # %{ # Before such a termination, some actions can be *defer*ed to execute:
     defer {
-      console.print$ "Here's my last words ...\n"
+      # %%
+      console.print$ "Here's my last words ..."
       secRemains = 10
       for _ from console.everySeconds(1) do {
         case secRemains -= 1 of {
-          7 -> console.print( "\27[A\rPlease let me die a good death.\n" )
-          5 -> console.print( "\27[A\rThat's all I want.\n" )
-          4 -> console.print( "\27[A\rGood bye!\n" )
+          7 -> console.print( "\rPlease let me die a good death." )
+          5 -> console.print( "\rThat's all I want." )
+          4 -> console.print( "\rFarewell!" )
           0 -> {
-            console.print( "\27[A\27[2K" )
+            console.print( "\27[A")
             break
           }
-          _ -> console.print( '\27[A\27[2K\r' ++ secRemains )
+          _ -> console.print( '\r...' ++ secRemains, eol= '\r', )
         }
       }
+      # %#
     }
+    # %}
 
     # %% # Be prepared to loss your Đ terminal session after running this cell, for the main thread will be terminated, thus the program will halt.
     perceive assassinate'signal.subseq { act } -> {
