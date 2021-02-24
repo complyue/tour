@@ -1587,13 +1587,13 @@ That means a program would need to go different execution branches wrt the input
   export edh'ctrl'flows = bookmark()
 
 
-  {## `if-then-else` - Boolean Branching
+  {## if-then-else Boolean Branching
    # - Conditionally branching
 
-`if <conditional> then <consequence> else <alternative>` as a whole is an expression, meaning it's supposed to give out some meaningful result value when evaluated. The `else` part can be omitted, and the whole expression evaluates to `nil` if the condition doesn't hold.
+"if <conditional> then <consequence> else <alternative>" as a whole is an expression, meaning it's supposed to give out some meaningful result value when evaluated. The `else` part can be omitted, then the whole expression evaluates to `nil` if the condition doesn't hold.
 
    #} {;
-    {## `if-then-else` - Boolean Branching #}
+    {## if-then-else Boolean Branching #}
     export edh'if'then'else = bookmark()
 
     # %% # Idiomatic short forms
@@ -1611,12 +1611,9 @@ That means a program would need to go different execution branches wrt the input
     # %#
 
     # %% # Without an `else` part:
-    case (
+    nil is (
       if 3*7 > 22 then "You'd never see this!"
-    ) of {
-      nil -> "Yeah!"
-      _ -> "No way!"
-    }
+    )
     # %#
 
   }
@@ -1763,12 +1760,91 @@ Pattern expressions all have an outer-most pair of curly braces, though some may
         c = 'b'
         # %% #
         c = 'f'
+
         # %% #
         case c of {
           { [ 'a', 'b', 'c', ] } -> 'Early coming.'
           _ -> 'Late coming.'
         }
         # %#
+      }
+
+
+      {## Tuple Pattern
+       # - Expect a fixed number of positional arguments
+       #} {;
+        {## Tuple Pattern #}
+        export edh'tuple'pattern = bookmark()
+
+        # %% #
+        p = ( 3, 2, 5, )
+        # %% #
+        p = ( 3, 7, )
+
+        # %% #
+        case p of {
+          { (x,y,z,) } -> "3D coordiante: x= " ++ x ++ " y= " ++ y ++ " z= " ++ z
+          { (x,y,) } -> "2D coordinate: x= " ++ x ++ " y= " ++ y
+        }
+        # %#
+      }
+
+
+      {## Data Object Pattern
+       # - Extract fields from data objects
+       #} {;
+        {## Data Object Pattern #}
+        export edh'data'obj'pattern = bookmark()
+
+        # %% #
+        data Point(x, y) pass
+        data Circle( r, c= Point(0,0), ) pass
+        data Rectangle(w, h, o= Point(0,0), ) pass
+        # %% #
+        shape = Circle(5)
+        # %% #
+        shape = Rectangle( 7, 2, Point(3, 1), )
+        # %#
+
+        # %% #
+        case shape of {
+          { Circle( r, c = center, )}
+          -> "Circle at " ++ center ++ " w/ radius " ++ r
+
+          { Rectangle( w= width, h= height, ) = rect }
+          -> "Rectangle covering area " ++ width*height ++ " - " ++ rect
+        }
+        # %#
+      }
+
+
+      {## String Cut Pattern
+       # - Extract prefix and/or suffix from string with matched counter part
+       #} {;
+        {## String Cut Pattern #}
+        export edh'str'cut'pattern = bookmark()
+
+        # %% #
+        url = "https://www.haskell.org/platform/mac.html"
+        # %% #
+        case url of { scheme @< '://' >@ host'and'path }
+        -> "The page is over " ++ scheme
+        # %% #
+        case host'and'path of { authority @< '/' >@ path }
+        -> "The host is " ++ authority ++ ", the path is " ++ path
+        # %% #
+        case path of { 'platform/' >@ page'name }
+        -> case page'name of { platform @< '.html' }
+        -> "The platform is " ++ platform
+        # %#
+
+        # Actually, there is a URI class comes with the default batteries
+        # %%#
+        case url of { URI(scheme, authority, path,) }
+        -> "Over " ++ scheme ++ ", the site " ++ authority ++ " provides " ++ path
+        # %#
+
+        URI.__match__ # <- goto its definition for a comprehensive example
       }
 
     }
@@ -1779,11 +1855,26 @@ Pattern expressions all have an outer-most pair of curly braces, though some may
 
 Guard condition is defined with the prefix guard (|) operator.
 
+Note it is idiomatic to always place a semiclone before the (|), to disambiguate it from an infix (|) operator, even it has no preceeding statement, it may be moved or copied to after some statement in the future.
+
      #} {;
       {## Guard Condition Matching #}
       export edh'guard'cond'matching = bookmark()
 
+      # %% #
+      n = 6
+      # %% #
+      n = 7
+      # %% #
+      n = 8
 
+      # %% #
+      case n - 5 of {
+        3 -> "It's the right number!"
+        ; | n % 2 is 1 -> "Got a wrong odd number!"
+        _ -> "Got a wrong even number!"
+      }
+      # %#
     }
 
 
@@ -1796,7 +1887,50 @@ Other forms of expression at left-hand-side of a branch are all considered a val
       {## Value Matching #}
       export edh'value'matching = bookmark()
 
+      # %% #
+      case 3*7 of 15+6 -> "Coincidence? No."
+      # %#
 
+      # %% #
+      PhoneNo := 35925
+      AccountNo := 35925
+
+      # %% #
+      the'no = AccountNo
+      # %% #
+      the'no = PhoneNo
+      # %#
+
+      # %% #
+      case the'no of {
+        35925 -> "No, this is unnamed."
+        PhoneNo -> "Dial phone " ++ the'no
+        AccountNo -> "Ban account " ++ the'no
+      }
+      # %#
+    }
+
+
+    {## Falling Through
+     # - Cancel the conclusion of match
+
+Put a `fallthrough` as the last statement of a branch, this branch will be assumed un-matched, though its right-hand-side expression has been executed.
+
+     #} {;
+      {## Falling Through #}
+      export edh'fallthrough = bookmark()
+
+      # %% %
+      case 3*7 of {
+        21 -> {
+          console.print$ 'We know that it is, but more can be done with it.'
+          fallthrough
+        }
+        _ -> {
+          "This can match."
+        }
+      }
+      # %#
     }
 
 
@@ -1805,7 +1939,7 @@ Other forms of expression at left-hand-side of a branch are all considered a val
 
 A usual block doesn't create a new scope, that means, statements inside it will put artifacts into the "current scope" shared with statements outside of the block, as side-effects they'd produce. This behavior is not desirable at times, when some intermediate result need to be stored as attributes during some computation, but better discarded afterwards, or they'd be felt as polution to the shared scope.
 
-A scoped block can help in such situations.
+A scoped block can help in such situations, it is just a drop-in replacement for a usual block, except with a dedicated scope created, to be used as the "current scope" for the statements inside it to be executed.
 
      #} {;
       {## Scoped Blocks #}
@@ -1826,23 +1960,55 @@ A scoped block can help in such situations.
   }
 
 
-  {## `for-from-do` Loop
+  {## For Loop
    # - Looping against some undeterminisic source
-
-
    #} {;
-    {## `for-from-do` Loop #}
+    {## For Loop #}
     export edh'for'loop = bookmark()
 
+    {## Calling Generators
+     # - For loop is the only way to call a generator procedure
+
+A for loop is essentially a synchronous callback, in calling a generator procedure, the `yield` expression in the generator can be intuited as calling back the loop body, with the loop arguments passed back.
+
+     #} {;
+      {## Calling Generators #}
+      export edh'call'generator = bookmark()
+
+      # Generator procedure is further described later in this chapter
+      ; () => edh'generator'procs # <- follow this bookmark to that section
+
+    }
+
+
+    {## Observing Event Streams
+     # - Iterate over the event stream through an event sink
+     #} {;
+      {## Observing Event Streams #}
+      export edh'iter'events = bookmark()
+
+
+    }
+
+
+    {## Scanning Items in Containers
+     # - Iterate over all items of a container
+
+     #} {;
+      {## Scanning Items in Containers #}
+      export edh'iter'items = bookmark()
+
+
+    }
 
   }
 
 
-  {## `while` Loop
+  {## While Loop
    # - Checked iterations
 
    #} {;
-    {## `while` Loop #}
+    {## While Loop #}
     export edh'while'loop = bookmark()
 
 
@@ -1991,40 +2157,123 @@ The `class` keyword defines a usual class.
 {## Procedures
  # - Đ is functional to such an extent
 
-Several type of procedures, the lambda forms (arrow procedures), and expression being 1st class as well
-
+There are several types of procedure, including the lambda forms (arrow procedures), and expression being 1st class as well.
 
  #} {;
   {## Procedures #}
   export edh'procs = bookmark()
 
 
-  {## Methods, Bound and Unbound
-   # - Procedures owned by some object
+  {## Vanilla Procedures
+   # - Defined with the `method` keyword
+   #} {;
+    {## Vanilla Procedures #}
+    export edh'vanilla'procs = bookmark()
 
-All procedures are methods of some object, but a particular method doesn't have to be bound
+
+  }
+
+
+  {## Interpreter Procedures
+   # - Defined with the `interpreter` keyword
+   #} {;
+    {## Interpreter Procedures #}
+    export edh'interpreter'procs = bookmark()
+
+
+  }
+
+
+  {## Generator Procedures
+   # - Defined with the `generator` keyword
+   #} {;
+    {## Generator Procedures #}
+    export edh'generator'procs = bookmark()
+
+
+  }
+
+
+  {## Producer Procedures
+   # - Defined with the `producer` keyword
+   #} {;
+    {## Producer Procedures #}
+    export edh'producer'procs = bookmark()
+
+
+  }
+
+
+  {## Arrow Procedures
+   # - Defined with the (=>) operator
+
+It'll be a generator procedure if the body contains at least 1 `yield` expression, otherwise it'll be a vanilla procedure.
+
+   #} {;
+    {## Arrow Procedures #}
+    export edh'arrow'procs = bookmark()
+
+
+  }
+
+
+  {## Producer Arrow Procedures
+   # - Defined with the (=>*) operator
+
+No `yield` can appear in the procedure body.
+
+   #} {;
+    {## Producer Arrow Procedures #}
+    export edh'arrow'procs = bookmark()
+
+
+  }
+
+
+  {## Operator Procedures
+   # - The implementation of infix operators
+   #} {;
+    {## Operator Procedures #}
+    export edh'op'procs = bookmark()
+
+
+  }
+
+
+  {## Definition Procedures
+   # - To initialize a module, a namespace, or a class
+
+   #} {;
+    {## Definition Procedures #}
+    export edh'defi'procs = bookmark()
+
+
+  }
+
+
+  {## Methods, Bound and Unbound
+   # - Responsibility for objects
+
+Procedures are always called with responsibility for some object(s), in this sense they are said to be "methods" of those objects.
+
+A procedure will be bound when obtained via dot-notation before called.
+
+When calling an unbound procedure, the owning objects are infered from the context.
 
    #} {;
     {## Methods, Bound and Unbound #}
     export edh'mths'bound'unbound = bookmark()
 
 
-  }
+    {## This/That/Super Reference
+     # - Compositional object structure
+
+     #} {;
+      {## This/That/Super Reference #}
+      export edh'this'that'super'ref = bookmark()
 
 
-  {## This/That/Super Reference
-   # - A class of multiple inheritance creates composite objects
-
-Đ follows JavaScript/Java/C++ to use `this` keyword, instead of Python's `self`, however this is not a simple choice end here.
-
-
-`that` reference solves a problem akin to the slicing problem of C++
-  https://en.wikipedia.org/wiki/Object_slicing
-
-
-   #} {;
-    {## This/That/Super Reference #}
-    export edh'this'that'super'ref = bookmark()
+    }
 
 
   }

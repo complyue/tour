@@ -686,6 +686,24 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
 
  #} {; import * '../advanced/objs' # <- navigate to elaboration of Đ Value System
 
+  {## Beyond `this` Reference
+   # - Compositional object structure
+
+Đ follows JavaScript/Java/C++ to use `this` keyword, instead of Python's `self`, however this is not a simple choice end here.
+
+
+`that` reference solves a problem akin to the slicing problem of C++
+  https://en.wikipedia.org/wiki/Object_slicing
+
+
+   #} {;
+    {## Beyond `this` Reference #}
+    export edh'compositional'objs = bookmark()
+
+
+  }
+
+
   {## Identity Test Corrected
    # - Object identity has some flaws, value semantics can fix that
 
