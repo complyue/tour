@@ -1698,6 +1698,30 @@ Other forms of expression at left-hand-side of a branch are all considered a val
 
     }
 
+
+    {## Scoped Blocks
+     # - Nested block scopes
+
+A usual block doesn't create a new scope, that means, statements inside it will put artifacts into the "current scope" shared with statements outside of the block, as side-effects they'd produce. This behavior is not desirable at times, when some intermediate result need to be stored as attributes during some computation, but better discarded afterwards, or they'd be felt as polution to the shared scope.
+
+A scoped block can help in such situations.
+
+     #} {;
+      {## Scoped Blocks #}
+      export edh'scoped'blocks = bookmark()
+
+      # %% # A scoped block is statements enclosed in a pair of `@` augmented curly braces, i.e. `{@` and `@}`
+      x = 'outer-value'
+      {@
+        # Within a scoped block, attributes are defined locally, since the "current scope" becomes a separate one (backed by a separate entity) than the outer scope. And an attribute present in an inner scope shadows all ones with the same name from outer scopes.
+        x = 'inner-value'
+        console.print$ 'Inside, x is: ' ++ x
+      @}
+      console.print$ 'Outside, x is: ' ++ x
+      # %# Out of a scoped block, all artifacts ever defined inside are discarded
+
+    }
+
   }
 
 
