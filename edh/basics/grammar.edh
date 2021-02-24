@@ -1701,6 +1701,55 @@ Other forms of expression at left-hand-side of a branch are all considered a val
 
   }
 
+
+  {## Go Routines with Defered Cleanups
+   # - Spawning many concurrent threads
+
+
+   #} {;
+    {## Go Routines with Defered Cleanups #}
+    export edh'go'routines = bookmark()
+
+
+  }
+
+
+  {## Exception Handling
+   # - Using the catch ($=>) and finally (@=>) operator
+
+The catch ($=>) operator ...
+
+The finally (@=>) operator ...
+
+   #} {;
+    {## Exception Handling #}
+    export edh'exception'handling = bookmark()
+
+
+  }
+
+
+  {## Event Perceiving
+   # - To perceive events while doing other things
+
+
+   #} {;
+    {## Event Perceiving #}
+    export edh'event'perceiving = bookmark()
+
+
+  }
+
+
+  {## Structured Concurrency
+   # - Taming the concurrent "goto"
+   #} {; () => {
+      # There is an advanced topic describing why & how to implement structured concurrency with the mechanisms described above
+      import * '../advanced/concur'
+      edh'structured'concurrency # <- follow this bookmark to the section there
+    }
+  }
+
 }
 
 

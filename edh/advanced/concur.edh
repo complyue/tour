@@ -81,3 +81,18 @@ export method concur(* tasks, c= 6, dbgLogger= 0 ) void {
     ++ ' still running.'
   }
 }
+
+
+{## Structured Concurrency
+ # - Taming the concurrent "goto"
+
+All threads (go routines) of an Đ program terminate with the main thread, both `defer`ed execution and the `ThreadTerminate` exception can be used to react to thread termination, suiting different use cases.
+
+A forker thread can handle exceptions occurred within its forkee threads, unless the throwing thread handles by itself, uncaught exceptions will ultimately propagate to the root forker thread, thus never esacpe an Đ program. Monitoring a forkee thread is as simple as to `defer` a notification to the forker thread (publishing an event to a sink the forker observes e.g.), or do that in a finally (@=>) block wrapping the forked code block.
+
+ #} {;
+  {## Structured Concurrency #}
+  export edh'structured'concurrency = bookmark()
+
+
+}
