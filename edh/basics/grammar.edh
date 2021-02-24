@@ -1627,35 +1627,56 @@ That means a program would need to go different execution branches wrt the input
 
 A block is any number of statements enclosed by a pair of curly braces, it is an expression, and evaluates to the result value of last statement executed in it, in case that statement is an expression statement, or just `nil` will be the execution result.
 
-Branches defined by the arrow (->) operator can appear in a block, to jump out of the block without evaluation of subsequent statements following it, iif the left-hand-side expression of the branch is concluded as a match, in which case the right-hand-side expression of the branch becomes the last statement of the block execution, thus giving out the block's evaluation result value as it is evaluated. There is a special case though, if such a right-hand-side expression evaluates to the value of `fallthrough` statement, subsequent statements following the branch will continue to be executed as if the branch has not been a match. While non-match branches won't have their right-hand-side expression evaluated/executed at all.
+Branch expressions defined by the arrow (->) operator can appear in a block, to jump out of the block without evaluation of subsequent statements following it, iif the left-hand-side expression of the branch is concluded as a match, in which case the right-hand-side expression of the branch becomes the last statement of the block execution, thus giving out the block's evaluation result value as it is evaluated. There is a special case though, if such a right-hand-side expression evaluates to the value of `fallthrough` statement, subsequent statements following the branch will continue to be executed as if the branch has not been a match. While non-match branches won't have their right-hand-side expression evaluated/executed at all.
 
 The left-hand-side expression is concluded to be a match or not in 3 different ways, with different syntax to manifest the desired handling:
 
  * A valid pattern matching the contextual matching target value
- * A guard condition with truethful result
- * A value as evaluated, that namely-equals to the contextual matching target value
+ * A guard condition with truethful or falsy result
+ * A value as evaluated, whether it namely-equals to the contextual matching target value
 
-Blocks can be nested, as well as for blocks being body parts of other control flow mechanisms, arbitrary hierarchy of control flow structures can be composited.
+Blocks can be nested, as well as for blocks to be body parts of other control flow constructs, arbitrary hierarchy of control flow structures can be composited.
 
    #} {;
     {## Blocks, Matching Branches, Fallthrough #}
     export edh'branching = bookmark()
 
+    {## case-of Targeting
+     # - Setting the target to match
 
-    {## `case-of` - Nested Matching Context
-     # - With a local matching target
-
-Dynamically compute a value, with it being the matching target, evaluate a block of expressions (or a single expression in rare cases)
+The case-of expression computes a value from the specified target expression, then with the result value being the contextual matching target, evaluate the specified block of expressions (or a single expression in rare cases), as to become the result of the whole case-of expression. Note that after the case-of expression is evaluated, the contextual matching target is restored, for evaluation of subsequent statements following the case-of expression.
 
      #} {;
-      {## `case-of` - Nested Matching Context #}
+      {## case-of Targeting #}
       export edh'case'of = bookmark()
 
       # %% #
       case 3*7 of {
         21 -> "Pretty that!"
+        _ -> "Is arithmetics dead?"
       }
       # %#
+
+      {## `case true of { }`
+       # - Freeform conditional branches
+
+Matching against `true` has a desirable property that logical conditional expressions can be used right away at left-hand-side of the branches.
+
+Technically, `true` is the initial matching target, unless overridden by an outer case-of. But it is idiomatic to explicitly quote around freeform branches, with a `case true of { }` block, because that's foolproof to later copy/cut & paste the code segment to somewhere within some other case-of block.
+
+       #} {;
+        {## `case true of { }` #}
+        export edh'freeform'cond'branches = bookmark()
+
+        # %% #
+        case true of {
+          3 < 2 -> 'No way!'
+          console.logLevel <= console.debug -> 'We are debugging!'
+          _ -> "Nop, all good."
+        }
+        # %#
+
+      }
 
     }
 
@@ -1669,6 +1690,86 @@ Pattern expressions all have an outer-most pair of curly braces, though some may
       {## Pattern Matching #}
       export edh'pattern'matching = bookmark()
 
+      # There is an advanced topic describing various matching patterns in another chapter
+      ; () => {; import * '../advanced/patterns'
+        edh'matching'patterns # <- follow this bookmark to the section there
+      }
+
+      # Let's briefly show some useful examples here
+
+      {## Wild Match Pattern
+       # - Always match
+       #} {;
+        {## Wild Match Pattern #}
+        export edh'wild'pattern = bookmark()
+
+        # %% #
+        case 3*7 of {
+          { n } | n > inf -> 'No way! Bigger than infinity??'
+          _ -> 'This branch always match!'
+        }
+        # %% # Technically there is no need of such a pattern:
+        case 3*7 of {
+          { n } | n > inf -> 'No way! Bigger than infinity??'
+          "It doesn't have to be a branch anyway!"
+        }
+        # %# But it is just idiomatic to write a last branch like that.
+        # It feels familiar to Haskell btw.
+      }
+
+      {## Wild Capture Pattern
+       # - Capture a non-nil matching target as attribute
+       #} {;
+        {## Wild Capture Pattern #}
+        export edh'wild'cap'pattern = bookmark()
+
+        # %% # Suppose there's this procedure possibly returning nil result
+        method evil'amp(n) case true of {
+          n < 5 -> nil
+          n * 10
+        }
+        # %# Note it is really bad to have nil as a possible result among other return values, don't do this in realworld!
+
+        # %% # Prepare a input that would result in nil
+        n = 3
+        # %% # Or for non-nil result
+        n = 7
+        # %#
+
+        # %% # It is idiomatic to work with such a computation like this:
+        case evil'amp(n) of { result }
+        -> 'Amplified result is: ' ++ result
+        # %% # Instead of this safe but less optimal algorithm:
+        if evil'amp(n) is not nil
+        then 'Amplified result is: ' ++ evil'amp(n)
+        # %# The major problem with above cell is the computation will be performed twice when not nil, besides a bit more imperative (contrasting to declarative) feeling.
+
+        # %% # And this is a plain wrong solution:
+        result = evil'amp(n)
+        'Amplified result is: ' ++ result
+        # %# Can you figure out why? Set `n = 3` and try it, you'll see.
+
+        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there are way more complex expressions to have nil mixed into normal non-nil results, so the wild capture pattern is your best friend at all times.
+      }
+
+
+      {## Any-Of Pattern
+       # - Namely equal to any of the listed value
+       #} {;
+        {## Any-Of Pattern #}
+        export edh'any'of'pattern = bookmark()
+
+        # %% #
+        c = 'b'
+        # %% #
+        c = 'f'
+        # %% #
+        case c of {
+          { [ 'a', 'b', 'c', ] } -> 'Early coming.'
+          _ -> 'Late coming.'
+        }
+        # %#
+      }
 
     }
 
@@ -1700,7 +1801,7 @@ Other forms of expression at left-hand-side of a branch are all considered a val
 
 
     {## Scoped Blocks
-     # - Nested block scopes
+     # - Creating nested block scopes
 
 A usual block doesn't create a new scope, that means, statements inside it will put artifacts into the "current scope" shared with statements outside of the block, as side-effects they'd produce. This behavior is not desirable at times, when some intermediate result need to be stored as attributes during some computation, but better discarded afterwards, or they'd be felt as polution to the shared scope.
 

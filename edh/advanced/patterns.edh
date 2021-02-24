@@ -1,0 +1,28 @@
+{## Matching Patterns #}
+
+{## Đ Matching Patterns #}
+export edh'matching'patterns = bookmark()
+
+
+{## Object Patterns
+ # - Matching object by class etc.
+
+
+ #} {;
+  {## Object Patterns #}
+  export edh'obj'patterns = bookmark()
+
+
+}
+
+
+{## String Patterns
+ # - Matching strings
+
+
+ #} {;
+  {## String Patterns #}
+  export edh'str'patterns = bookmark()
+
+
+}
