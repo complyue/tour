@@ -1144,16 +1144,38 @@ However, there are a few hard-coded exceptions, namely the following operators:
       # %%
       namespace custom'infix'ops () {
 
-        # You must specify the precedence as well as the desired fixity (use one of the keywords: `infixl` / `infixr` / `infix`) when defining fresh new operators
+        {## Declare Fresh-New Operators
+         # - With precedence & fixity
 
-        infixl 7 (×) (lhv, rhv) lhv * rhv
-        infixl 7 (÷) (lhv, rhv) lhv / rhv
+You must specify the precedence as well as the desired fixity (use one of the keywords: `infixl` / `infixr` / `infix`) when defining fresh new operators
 
-        # You can use just the `operator` keyword to override an existing operator
+         #} {;
 
-        operator (and) (lhv, rhv) lhv ++ ' & ' ++ rhv
+          # Implement the operator with argument list and procedure body
+          infixl 7 (×) (lhv, rhv) lhv * rhv
+
+          # Use an existing operator as the operator implementation
+          infixl 7 (÷) () (/)
+
+        }
+
+        # With a conformant argument list, this method procedure can be re-declared as an operator
+        method stylish'and'concat(lhv, rhv) lhv ++ ' & ' ++ rhv
+
+        {## Override Existing Operators
+         # - With a new implementation, shadowing ones from outer scopes
+
+You can use just the `operator` keyword to override an existing operator
+
+         #} {;
+
+          # Use an existing procedure as the operator implementation
+          operator (and) () stylish'and'concat
+
+        }
 
       }
+
       dir$ custom'infix'ops
       # %#
 
@@ -1623,7 +1645,7 @@ Blocks can be nested, as well as for blocks being body parts of other control fl
     {## `case-of` - Nested Matching Context
      # - With a local matching target
 
-Dynamically compute a value, with it being the matching target, evaluate a block of expressions (or rarely a single expression)
+Dynamically compute a value, with it being the matching target, evaluate a block of expressions (or a single expression in rare cases)
 
      #} {;
       {## `case-of` - Nested Matching Context #}
