@@ -168,7 +168,15 @@ The rest contents in this module contain many links that can teleport you to var
 
  #} {;
 
-  # TODO some tricks to work with the REPL/IDE
+  {## Tricks with the REPL/IDE
+   # - Handful tools whenever you work with Đ stuff
+
+   #} {; import * './edh/basics/utils'
+    edh'utilities'details # <- follow this to details
+
+    # TODO briefs & short examples here
+
+  }
 
 }
 
@@ -180,16 +188,6 @@ The rest contents in this module contain many links that can teleport you to var
   {## Language Basics
    # - Useful utilities, grammar, and comparison to similar languages
    #} {; import * './edh/basics' # <- navigable for elaborate source
-
-
-    {## Utilities
-     # - Handful tools whenever you work with Đ stuff
-
-     #} {; edh'utilities # <- follow this to details
-
-      # TODO briefs & short examples here
-
-    }
 
 
     {## Compared to Similar Languages

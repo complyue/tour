@@ -1960,10 +1960,10 @@ A scoped block can help in such situations, it is just a drop-in replacement for
   }
 
 
-  {## For Loop
+  {## for-from-do Loop
    # - Looping against some undeterminisic source
    #} {;
-    {## For Loop #}
+    {## for-from-do Loop #}
     export edh'for'loop = bookmark()
 
     {## Calling Generators
@@ -2004,23 +2004,23 @@ A for loop is essentially a synchronous callback, in calling a generator procedu
   }
 
 
-  {## While Loop
+  {## while Loop
    # - Checked iterations
 
    #} {;
-    {## While Loop #}
+    {## while Loop #}
     export edh'while'loop = bookmark()
 
 
   }
 
 
-  {## Go Routines with Defered Cleanups
+  {## go Routines with Defered Cleanups
    # - Spawning many concurrent threads
 
 
    #} {;
-    {## Go Routines with Defered Cleanups #}
+    {## go Routines with Defered Cleanups #}
     export edh'go'routines = bookmark()
 
 
@@ -2042,13 +2042,13 @@ The finally (@=>) operator ...
   }
 
 
-  {## Event Perceiving
-   # - To perceive events while doing other things
+  {## perceive Events
+   # - Preemptive event handling
 
 
    #} {;
-    {## Event Perceiving #}
-    export edh'event'perceiving = bookmark()
+    {## perceive Events #}
+    export edh'perceive'events = bookmark()
 
 
   }
