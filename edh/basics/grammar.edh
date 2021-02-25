@@ -358,11 +358,10 @@ In addition, symbolic identifiers are also supported and recommended for cross-c
 
 And technically, any string (even the empty string) can serve as an attribute identifier in Đ, with at-notation.
 
-Note that the "variable" concept in conventional programming languages is misleading/conflicting when you could possibly have mathematical concepts in the domain model of your business, to avoid such conceptional conflicts, Đ the language does not use the concept "variable", leaving it for the domain model.
-
-FYI, traditonal "variable" more properly should be called "assignable" as suggested in:
+Note that in the Đ language there is no such a concept/term of "variable". The "variable" concept in conventional programming languages is misleading or conflicting when you could possibly have mathematical concepts in the domain model of your business. More properly it should be called "assignable" as suggested in:
   https://existentialtype.wordpress.com/2013/07/22/there-is-such-a-thing-as-a-declarative-language
-Attributes of entities in Đ are inherently meant to be assigned (as well as to be observed), so the concept of "assignable" is neither needed.
+
+Although attributes of entities in Đ are inherently meant to be assigned (as well as to be observed), they can not stand alone without a backing entity. Unlike in conventional programming languages, where a "variable" can be assigned individually.
 
    #} {;
     {## Attribute Identifiers #}
