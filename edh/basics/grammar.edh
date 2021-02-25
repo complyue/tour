@@ -1954,6 +1954,7 @@ A scoped block can help in such situations, it is just a drop-in replacement for
       console.print$ 'Outside, x is: ' ++ x
       # %# Out of a scoped block, all artifacts ever defined inside are discarded
 
+      # Note the shadowing of samely named attributes from outer scopes is an anti-pattern, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
     }
 
   }
@@ -1976,6 +1977,64 @@ A for loop is essentially a synchronous callback, in calling a generator procedu
 
       # Generator procedure is further described later in this chapter
       ; () => edh'generator'procs # <- follow this bookmark to that section
+
+      # %% #
+      # %# #
+
+      # %% # Technical details
+      generator g() {
+        # a `yield` expression in a generator procedure evals to:
+        #   *) `return {break}` on `break` from do block of the loop
+        #   *) `return {return val}` on `return val` from do block of the loop
+        #   *) exception from do block of the loop re-thrown from its position
+        {
+          case yield 'something' of {
+            { break } -> { # Note it should actually match `return {break}`
+              # but if the pattern is written as so, that technically matches
+              # `return nil` instead, so we just use the `{ break }` pattern
+              console.info<| 'the do block broke the for loop'
+              return nil # cooperate nicely,
+              # effectively same as `return {break}`
+              # or cast black magic if you wish
+            }
+            { return rtn } -> {
+              case rtn of {
+                { return _ } -> { pass }
+                error$ 'bug: plain return should never be result for yield'
+              }
+              console.info<| 'early returning from do block: ' ++ show(rtn)
+              return rtn # cooperate nicely,
+              # or cast black magic if you wish
+            }
+            { xchg'val } -> {
+              console.info<| 'the do block evaluated to '
+              ++ show(xchg'val) ++ " for generator's yield result"
+            }
+            console.info<| "the do block eval'ed to nil"
+          }
+        } $=> { exc } -> {
+          console.warn<| 'the do block throwed an exceptin: ' ++ show( exc )
+
+          # if we do rethrow, the exception will be propagated to outer of
+          # the calling for loop
+          # rethrow
+        }
+      }
+      # %#
+
+      # %%
+      'Loop result: ' ++ show( for _ from g() do pass )
+      # %%
+      'Loop result: ' ++ show( for _ from g() do continue )
+      # %%
+      'Loop result: ' ++ show( for _ from g() do break )
+      # %%
+      'Loop result: ' ++ show( for _ from g() do return 'otherthing' )
+      # %%
+      'Loop result: ' ++ show( for _ from g() do return nil )
+      # %%
+      'Loop result: ' ++ show( for _ from g() do throw 'stop it!' )
+      # %# #
 
     }
 
