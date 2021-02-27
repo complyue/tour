@@ -1978,7 +1978,15 @@ A for loop is essentially a synchronous callback, in calling a generator procedu
       # Generator procedure is further described later in this chapter
       ; () => edh'generator'procs # <- follow this bookmark to that section
 
-      # %% #
+      # %% # Simple Example
+      generator g() {
+        yield 3
+        yield 2
+        return 5
+      }
+      # %%
+      "Loop result= " ++
+      for i from g() do console.print( 'Item: ' ++ i)
       # %# #
 
       # %% # Technical details
