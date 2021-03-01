@@ -38,7 +38,7 @@ Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certa
 
  #} {;
   {## What's Đ #}
-  export what's'edh = bookmark
+  export what's'edh = bookmark()
 }
 
 
@@ -79,5 +79,15 @@ Before some more formal language specification is defined, this chapter is a clo
   export edh'grammar = bookmark()
 
   # TODO briefs & short examples here
+
+}
+
+
+{## Language Reference
+ # - The formal reference
+ #} {; export import * './refs'
+  {## Language Reference #}
+  export edh'lang'ref = bookmark()
+
 
 }

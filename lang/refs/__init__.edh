@@ -1,7 +1,7 @@
 {## Đ Language Reference #}
 
 {## Đ Language Reference #}
-export edh'lang'refs = bookmark()
+export edh'lang'refs'details = bookmark()
 
 
 {## Expressions

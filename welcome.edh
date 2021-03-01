@@ -127,11 +127,11 @@ And you'd better find the keyboard shortcut (usually F12 and Ctrl^- or Ctrl^Alt^
 
 Among usual references, an import in Đ can respond to "Go To Definition" requests too, so Cmd/Ctrl + Click can open its corresponding module file.
 
-You can make good use of this feature, e.g. point your mouse cursor at the string 'tour' after `import * ` below, then hold down Cmd (on macOS) or Ctrl (on Linux), you should see it underlined, then click left-mouse-button, there you go!
+You can make good use of this feature, e.g. point your mouse cursor at the string 'lang' after `import * ` below, then hold down Cmd (on macOS) or Ctrl (on Linux), you should see it underlined, then click left-mouse-button, there you go!
 
-Note you can also place your keyboard cursor into 'tour' below, by either arrow keys or mouse click, then press the shortcut key (usually F12), that works the same way.
+Note you can also place your keyboard cursor into 'lang' below, by either arrow keys or mouse click, then press the shortcut key (usually F12), that works the same way.
 
-   #} {; import * 'tour'
+   #} {; import * 'lang'
 
     # `bookmark` is a special type of artifact (a `Command` per se) that dedicated to anchor a particular location in some codebase, linkable from anywhere by code navigation.
 
@@ -171,7 +171,7 @@ The rest contents in this module contain many links that can teleport you to var
   {## Tricks with the REPL/IDE
    # - Handful tools whenever you work with Đ stuff
 
-   #} {; import * './edh/basics/utils'
+   #} {;
     edh'utilities'details # <- follow this to details
 
     # TODO briefs & short examples here
@@ -183,11 +183,11 @@ The rest contents in this module contain many links that can teleport you to var
 
 {## Đ the Language
  # - A Business Integration language, as well as a User Interface language
- #} {; import * 'tour'
+ #} {;
 
   {## Language Basics
    # - Useful utilities, grammar, and comparison to similar languages
-   #} {; import * './edh/basics' # <- navigable for elaborate source
+   #} {;
 
 
     {## Compared to Similar Languages
@@ -213,7 +213,7 @@ The rest contents in this module contain many links that can teleport you to var
   {## Advanced Topics
    # - Make the best out of Đ
 
-   #} {;
+   #} {; import * './advanced'
     {## Advanced Topics #}
     export edh'advanced = bookmark()
 
@@ -224,7 +224,7 @@ The rest contents in this module contain many links that can teleport you to var
   {## Becoming a Veteran
    # - Distinguished Đ developers doing sophisticated things
 
-   #} {;
+   #} {;import * './veteran'
     {## Becoming a Veteran #}
     export edh'veteran = bookmark()
 
@@ -234,12 +234,8 @@ The rest contents in this module contain many links that can teleport you to var
 
   {## Language Reference
    # - The boring list of all things
-
    #} {;
-    {## Language Reference #}
-    export edh'lang'refs = bookmark()
-
-
+    edh'lang'refs'details # <- follow this bookmark to there
   }
 
 }
