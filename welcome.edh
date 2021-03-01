@@ -185,27 +185,20 @@ The rest contents in this module contain many links that can teleport you to var
  # - A Business Integration language, as well as a User Interface language
  #} {;
 
-  {## Language Basics
-   # - Useful utilities, grammar, and comparison to similar languages
-   #} {;
+  {## Compared to Similar Languages
+   # - Đ Compared to Similar Languages
+   #} {; edh'lang'cmp # <- follow this to details
+
+    # TODO briefs & short examples here
+
+  }
 
 
-    {## Compared to Similar Languages
-     # - Đ Compared to Similar Languages
-     #} {; edh'lang'cmp # <- follow this to details
+  {## Grammar
+   # - Syntax, Semantics, and Pragmatics
+   #} {; edh'grammar # <- follow this to details
 
-      # TODO briefs & short examples here
-
-    }
-
-
-    {## Grammar
-     # - Syntax, Semantics, and Pragmatics
-     #} {; edh'grammar # <- follow this to details
-
-      # TODO briefs & short examples here
-
-    }
+    # TODO briefs & short examples here
 
   }
 
@@ -213,7 +206,7 @@ The rest contents in this module contain many links that can teleport you to var
   {## Advanced Topics
    # - Make the best out of Đ
 
-   #} {; import * './advanced'
+   #} {; import * 'lang/advanced'
     {## Advanced Topics #}
     export edh'advanced = bookmark()
 
@@ -224,7 +217,7 @@ The rest contents in this module contain many links that can teleport you to var
   {## Becoming a Veteran
    # - Distinguished Đ developers doing sophisticated things
 
-   #} {;import * './veteran'
+   #} {;import * 'lang/veteran'
     {## Becoming a Veteran #}
     export edh'veteran = bookmark()
 

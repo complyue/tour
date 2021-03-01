@@ -2051,10 +2051,9 @@ A scoped block can help in such situations, it is just a drop-in replacement for
       #  * `return xxx` can be used in the do-block (loop body) to early stop the for-loop, and further early return from the outer procedure. That's done technically by having the `yield` expression in the generator evaluates to a double-return structure like `return { return xxx }`, the generator in turn propagates the inner `return xxx` as its return value, thus becomes the result value of the for-loop expression, which gets interpreted as early returning `xxx` from the outer procedure body
 
 
-      # Synchronous Narration is an advanced topic described in the tour at:
-      #  https://github.com/e-wrks/tour/advanced/iter.edh
-      # which is more convenient to be browsed by Gitpod via:
-      #  https://gitpod.io/#https://github.com/e-wrks/tour/advanced/iter.edh
+      # Synchronous Narration is an advanced topic described at:
+      import * './advanced/iter'
+      ; () => edh'sync'narration
 
     }
 

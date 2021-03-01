@@ -83,6 +83,28 @@ Before some more formal language specification is defined, this chapter is a clo
 }
 
 
+{## Advanced Topics
+ # - Make the best out of Đ
+
+ #} {; import * './advanced'
+  {## Advanced Topics #}
+  export edh'advanced = bookmark()
+
+
+}
+
+
+{## Becoming a Veteran
+ # - Distinguished Đ developers doing sophisticated things
+
+ #} {;import * './veteran'
+  {## Becoming a Veteran #}
+  export edh'veteran = bookmark()
+
+
+}
+
+
 {## Language Reference
  # - The formal reference
  #} {; export import * './refs'
