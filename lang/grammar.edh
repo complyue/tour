@@ -848,7 +848,7 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
 
 Đ is _strict_ in evaluation of statements, an Đ interpreter program evaluates a statement immediately upon one is encountered. The contrary is _lazy_ evaluation, in which sense the actually evaluation can be postponed until absolutely necessary.
 
- #} {; import * '../refs'
+ #} {; import * './refs'
   {## Expressions and Statements #}
   export edh'exprs'stmts = bookmark()
 
@@ -874,6 +874,12 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
 
 Đ has a unique immutable data structure - ArgsPack, usually abbreviated as apk. An apk is created by a pair of parenthese quoting a list of positonal or named argument expressions.
 
+Arguments are packed into an apk in the following cases:
+ * In execution of a `let` statement, for right-hand-side to the `=` operator
+ * In evaluation of a call expression, i.e. an expression of callee followed by the postfix `()` operator
+ * In evaluation of an indexing expression, i.e. an expression of container followed by the postfix `[]` operator
+ * In evaluation of a standalone apk literal
+
    #} {;
     {## Arguments Packing & Unpacking #}
     export edh'args'un'packing = bookmark()
@@ -892,7 +898,7 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
     apk = ( name= 'Compl', 1, 2, year= 2021, )
     # %#
 
-    # %% # Asterisks can be used to unpack apk/list/dict into apks
+    # %% # Asterisks can be used to unpack apk/list/dict into current target apk
     l = [ 3, 5, ]
     d = { 'name': 'Yue', 'city': 'Chongqing', }
     ; ( 7, ***apk, **d, *l, year= 2030, city= 'Shanghai', *apk, )
@@ -907,6 +913,47 @@ For a statement of some type other than _expression_, when evaluated, it doesn't
     #   The order of appearance are always reserved
     #
     #   A repeated named argument replaces the value, but doesn't change where it sppears
+
+  }
+
+
+  {## Arguments Receiving
+   # - Receive arguments from an apk into current scope
+
+Arguments are received from an ArgsPack in the following cases:
+ * In execution of a `let` statement, according to specification at left-hand-side of the `=` operator
+ * In execution of a for-loop expression, according to the loop argument specification
+ * When a procedure is called, according to the argument specification in the definition of the procedure
+
+   #} {;
+    {## Arguments Receiving #}
+    export edh'args'receiving = bookmark()
+
+    # %% #
+    apk = ( name= 'Compl', 1, 2, 3, year= 2021, city= 'Choingqing' )
+    # Note a standalone apk is used at right-hand-side of the `=` operator in the let statement, it of course can be a literal apk instead
+    let ( name as nnn, x, *xs, optional'x= None, **kws, ) = apk
+    # %%
+    nnn
+    # %%
+    x
+    # %%
+    xs
+    # %%
+    optional'x
+    # %%
+    kws
+    # %#
+
+    # As you can see in above, single asterisks can be used to receive rest positional arguments as a specified attribute, while double asterisks can be used to receive rest keyword arguments
+
+    # %% # Triple asterisks can be used to receive rest positional + keyword arguments as a new apk attribute with the specified name
+    let ( x, ***apk', ) = apk
+    # %%
+    apk'
+    # %%
+    x
+    # %#
 
   }
 
@@ -1240,7 +1287,7 @@ For example:
     {## More Expressions and Statements #}
     export more'exprs'stmts = bookmark()
 
-    edh'lang'refs # <- follow this to Đ langauge reference for a detailed list of statements (including expressions) Đ code can have
+    edh'lang'refs'details # <- follow this to Đ langauge reference for a detailed list of statements (including expressions) Đ code can have
   }
 
 }
@@ -1961,30 +2008,53 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
 
   {## for-from-do Loop
-   # - Looping against some undeterminisic source
+   # - Looping against some nondeterministic source
    #} {;
     {## for-from-do Loop #}
     export edh'for'loop = bookmark()
 
-    {## Calling Generators
+    {## Calling a Generator
      # - For loop is the only way to call a generator procedure
      #} {;
-      {## Calling Generators #}
+      {## Calling a Generator #}
       export edh'call'generator = bookmark()
 
       # Generator procedure is further described later in this chapter
       ; () => edh'generator'procs # <- follow this bookmark to that section
 
-      # %% # Simple Example
-      generator g() {
-        yield 3
-        yield 2
-        return 5
+
+      # Here is a simple example, you're supposed to observe:
+      #  * The generator procedure can take arbitrary arguments
+      #  * `yield` is used from within the generator procedure to give out one item at a time, the item can go as a freeform ArgsPack. Note that the apk is packed with arguments packing semantics, which is described at:
+      ; () => edh'args'un'packing # <- follow this bookmark to that section
+      #  * Loop arguments go as attributes of the current scope of the loop expression, and get overwritten on every loop iteration. Note that they are updated with arguments receiving semantics, which is described at:
+      ; () => edh'args'receiving # <- follow this bookmark to that section
+      #  * The return value of the generator procedure will become the result value of the for-loop expression, as the loop is evaluated
+      #  * The do-block of the loop, a.k.a. the loop body, can reference the loop arguments. Note that they are simply read as lexical attributes in scope. Lexical scoping rules are described at:
+      ; () => edh'lexi'scoping # <- follow this bookmark to that section
+
+      # %% # Define a generator procedure
+      generator g( base, hint7= None, ) {
+        yield ( 1, 3 * base, memo= '3 as the factor', )
+        yield ( 2, 7 * base, memo= hint7 or nil, )
+        return 5 * base
       }
-      # %%
+      # %% # Call the generator procedure with a for-loop
       "Loop result= " ++
-      for i from g() do console.print( 'Item: ' ++ i)
+      for ( i, n, memo= 'no comments', ) from g( 11, )
+      do console.print( 'Item #' ++ i ++ ': ' ++ n ++ ' with ' ++ memo )
       # %# #
+
+      # Also note that:
+      #  * `continue` can be used in the do-block (loop body) to skip subsequent statements in the block, thus jump to next iteration
+      #  * `break` can be used in the do-block (loop body) to early stop the for-loop, making it evaluates to `nil`
+      #  * `return xxx` can be used in the do-block (loop body) to early stop the for-loop, and further early return from the outer procedure. That's done technically by having the `yield` expression in the generator evaluates to a double-return structure like `return { return xxx }`, the generator in turn propagates the inner `return xxx` as its return value, thus becomes the result value of the for-loop expression, which gets interpreted as early returning `xxx` from the outer procedure body
+
+
+      # Synchronous Narration is an advanced topic described in the tour at:
+      #  https://github.com/e-wrks/tour/advanced/iter.edh
+      # which is more convenient to be browsed by Gitpod via:
+      #  https://gitpod.io/#https://github.com/e-wrks/tour/advanced/iter.edh
 
     }
 
