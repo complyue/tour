@@ -25,7 +25,7 @@ Greetings! TL;DR - Just click:
 
 ## What's Đ (Edh)
 
-**Đ (Edh)** it is an _Object-Oriented_, _Scripting_ (_Dynamic_) programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
+**Đ (Edh)** is an _Object-Oriented_, _Dynamic_ _Scripting_ programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
 
 Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
 

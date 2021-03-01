@@ -1,0 +1,122 @@
+{## Iteration #}
+
+{## Iteration #}
+export edh'iteration'details = bookmark()
+
+
+{## Synchronous Narration with Generator and For-Loop
+ # - Yield to call a multi-shot do-bock
+
+The do-block of a for-loop is essentially a synchronous callback, when the loop is calling a generator procedure. The `yield` expression in the generator can be intuited as calling back the loop body, with the loop arguments passed back.
+
+A slight difference with a closure as a real callback is, the loop arguments live within the for-loop's current scope, no extra scope is created as for calling a real callback procedure.
+
+ #} {;
+  {## Synchronous Narration with Generator and For-Loop #}
+  export edh'sync'narration = bookmark()
+
+  # %% # Technical showcase
+  generator g() {
+    # a `yield` expression in a generator procedure evals to:
+    #   *) `return {break}` on `break` from do block of the loop
+    #   *) `return {return val}` on `return val` from do block of the loop
+    #   *) exception from do block of the loop re-thrown from its position
+    {
+      case yield 'something' of {
+        { break } -> { # Note it should actually match `return { break }`
+          # but if the pattern is written as so, that technically matches
+          # `return nil` instead, so we just use the `{ break }` pattern
+          console.info<| 'the do block broke the for loop'
+          return { break } # cooperate nicely,
+          # `return { break }` effectively evaluates to `return nil`,
+          # not exactly the same as not casing the result from yield,
+          # but the calling for-loop will stop and evaluates to `nil`,
+          # that ultimately is the same semantics as not casing the result
+          # from yield
+        }
+        { return rtn } -> {
+          case rtn of { # It should always be double wrapped return,
+            # not plain return should ever be the result of yield expression
+            { return _ } -> { pass }
+            error$ 'bug: plain return should never be result from yield'
+          }
+          console.info<| 'early returning from do block: ' ++ show(rtn)
+          return rtn # cooperate nicely,
+          # verbatimly the same as not casing the result from yield
+        }
+        { xchg'val } -> {
+          console.info<| 'the do block evaluated to '
+          ++ show(xchg'val) ++ " for result of generator's yield expr"
+        }
+        console.info<| "the do block eval'ed to nil"
+      }
+    } $=> { exc } -> {
+      console.warn<| 'the do block throwed an exceptin: ' ++ show( exc )
+
+      # if we do rethrow, the exception will be propagated to outer of
+      # the calling for loop
+      # rethrow
+    }
+  }
+  # %#
+
+  # %%
+  'Loop result: ' ++ show( for _ from g() do pass )
+  # %%
+  'Loop result: ' ++ show( for _ from g() do continue )
+  # %%
+  'Loop result: ' ++ show( for _ from g() do break )
+  # %%
+  'Loop result: ' ++ show( for _ from g() do return 'otherthing' )
+  # %%
+  'Loop result: ' ++ show( for _ from g() do return nil )
+  # %%
+  'Loop result: ' ++ show( for _ from g() do throw 'stop it!' )
+  # %# #
+
+}
+
+
+{## Asynchronous Narration with Producer and Event Sink
+ # - Publish events to trigger distributed reactions
+
+
+ #} {;
+  {## Asynchronous Narration with Producer and Event Sink #}
+  export edh'async'narration = bookmark()
+
+  {## The Asynchronous Producer
+   # - Concurrently start event producing
+
+
+   #} {;
+    {## The Asynchronous Producer #}
+    export edh'async'producing = bookmark()
+
+
+  }
+
+
+  {## Synchronous Reaction with For-Loop
+   # - Iterate against the event stream from a sink
+
+
+   #} {;
+    {## Synchronous Reaction with For-Loop #}
+    export edh'sync'react = bookmark()
+
+
+  }
+
+  {## Asynchronous Reaction with Perceiver
+   # - Preemptively react to each event from a sink
+
+
+   #} {;
+    {## Asynchronous Reaction with Perceiver #}
+    export edh'async'react = bookmark()
+
+
+  }
+
+}
