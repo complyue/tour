@@ -2237,14 +2237,62 @@ The `while` loop can be used to repeat execution of its loop body again and agai
   }
 
 
-  {## go Routines with Defered Cleanups
+  {## go Routines with defer'ed Cleanups
    # - Spawning many concurrent threads
 
+`go` routines are lightweight threads run concurrently, the GHC Haskell RTS (runtime system) can control how many heavyweight (os) threads are used to run all Đ threads in parallel.
+
+All the lexical scopes are shared among forker and forkee threads, when race conditions present in updating the attributes of those scopes, `ai` (Atomically Isolatedly) blocks should be used to preserve data consistency. Under the hood, an `ai` block is executed with an atomic STM (Software Transactional Memory) transaction, which will be forever automatically retried, upon inconsistent conditions detected, before it committed successfuly.
 
    #} {;
-    {## go Routines with Defered Cleanups #}
+    {## go Routines with defer'ed Cleanups #}
     export edh'go'routines = bookmark()
 
+
+    # %% #
+    c = 0
+    for _ from range(100) do go {
+      ai c += 1 # With the `ai` keyword, it is race free
+    }
+    # %% # Observe after a second, see its always 100 as expected
+    console.print$ "Count is now " ++ c
+    # %#
+
+    # %% #
+    c = 0
+    for _ from range(100) do go {
+      c += 1 # Without the `ai` keyword here, some increments can be overwritten by others
+    }
+    # %% # Observe after a second, it'll probably be less than 100 if you have multiple CPU cores
+    console.print$ "Count is now " ++ c
+    # %#
+
+
+    # Whenever a go/defer action is a procedure call, the arguments are prepared immediately upon the action is scheduled, not when it is actually executed (which can be rather late esp. in case of defer).
+
+    # %% #
+    go {
+      cycle = 'tic'
+
+      defer console.log(
+        'Deferred procedure call see the cycle being: ' ++ cycle,
+        level= console.warn,
+      )
+
+      defer console.warn
+      <| "Deferred freeform expression see the cycle being: " ++ cycle
+
+      for _ from console.everySeconds(1) do {
+        console.info<| cycle
+        case cycle of {
+          'tic' -> cycle = 'tac'
+          'tac' -> cycle = 'toe'
+          'toe' -> cycle = 'fin'
+          'fin' -> { break }
+        }
+      }
+    }
+    # %# Wait a few seconds and see the difference?
 
   }
 
