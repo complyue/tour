@@ -2073,7 +2073,14 @@ A scoped block can help in such situations, it is just a drop-in replacement for
       ; () => edh'generator'procs # <- follow this bookmark to that section
 
 
-      # Here is a simple example, you're supposed to observe:
+      # The simplest example is to iterate through a range of numbers:
+      # %% # Note that `range()` below is a generator procedure, you can go to its definition to see how it's implemented
+      for i from range( 3:9 )
+      do console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
+      # %#
+
+
+      # Here is a slightly more complex example, you're supposed to observe:
       #  * The generator procedure can take arbitrary arguments
       #  * `yield` is used from within the generator procedure to give out one item at a time, the item can go as a freeform ArgsPack. Note that the apk is packed with arguments packing semantics, which is described at:
       ; () => edh'args'un'packing # <- follow this bookmark to that section
@@ -2165,6 +2172,18 @@ A scoped block can help in such situations, it is just a drop-in replacement for
       {## Scanning Items in Containers #}
       export edh'iter'items = bookmark()
 
+      # %% # Iterate through a single level of positional arguments
+      for i from ( 3, 2, 5, ) do console.print( 'Item: ' ++ i )
+      # %% # Iterate through a sequence of 2-at-a-time positional arguments
+      for ( i, n, ) from ( ( 1, 'x', ), ( 2, 'y', ), )
+      do console.print( 'Item #' ++ i ++ ': ' ++ n )
+      # %% # The top level container can be a list as well
+      for ( i, n, ) from [ ( 1, 'x', ), ( 2, 'y', ), ]
+      do console.print( 'Item #' ++ i ++ ': ' ++ n )
+      # %% # Iterate through entries of a dict
+      for (k, v) from { 'b': 5, 'a': 3, 'c': 9, }
+      do console.print( 'Key ' ++ k ++ '= ' ++ v )
+      # %#
 
     }
 
@@ -2172,12 +2191,27 @@ A scoped block can help in such situations, it is just a drop-in replacement for
     {## Arguments/List/Dict Comprehension
      # - Comprehend items into containers
 
+The comprehension (=<) operator can be used to pump iterated result values from a for-loop into a result container.
 
      #} {;
       {## Arguments/List/Dict Comprehension #}
       export edh'loop'comprehension = bookmark()
 
+      # %% # Positional args comprehension
+      ; () =< for i from range(3:9) do i*i
 
+      # %% # Keyword args comphrehension
+      ; () =< for i from range(3:9) do {
+        key= "square'of'" ++ i
+        ; ( @key= i*i, )
+      }
+
+      # %% # List comprehension
+      ; [] =< for i from range(3:9) do i*i
+
+      # %% # Dict comprehension
+      {} =< for i from range(3:9) do ( "square-of-" ++ i): i*i
+      # %#
     }
 
   }
@@ -2186,10 +2220,19 @@ A scoped block can help in such situations, it is just a drop-in replacement for
   {## while Loop
    # - Checked iterations
 
+The `while` loop can be used to repeat execution of its loop body again and again, so long as its condition hold, i.e. null test being false for the result as the condition expression evaluated each time.
+
    #} {;
     {## while Loop #}
     export edh'while'loop = bookmark()
 
+    # %% #
+    i = 3
+    while i < 9 {
+      console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
+      i += 1
+    }
+    # %#
 
   }
 
