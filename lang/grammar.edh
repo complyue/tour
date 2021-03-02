@@ -1518,103 +1518,148 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
     {## Special Values #}
     export edh'special'values = bookmark()
 
-    # %% # `nil` is the ultimate nothingness
-    nil
-    # %% # It deletes attributes when assigned as the value
-    a = nil # to delete attribute named `a` from current scope
+    {## Nothingness
+     # - Special nullabilities
+     #} {;
+      {## Nothingness #}
+      export edh'nullable'values = bookmark()
 
-    # %% # `None` is just `nil` named "None"
-    show$ None
-    # %% # `Nothing` is just `nil` named "Nothing"
-    show$ Nothing
+      # %% # `nil` is the ultimate nothingness
+      nil
+      # %% # It deletes attributes when assigned as the value
+      a = nil # to delete attribute named `a` from current scope
 
-    # %% # `true` is the boolean value indicating truthful result
-    show$ true
-    # %% # `false` is the boolean value indicating falsy result
-    show$ false
-
-    # %% # `nan` means Not-A-Number, but of DecimalType, which is a numeric type
-    show$ nan
-    # %% # `nan` is technically the result of 0 divided by 0
-    0/0 is nan
-    # %% # Except for identity equality, a nan value never equals to any value, including itself
-    nan == nan
-    # %# See nan is unequal to itself?
-
-    # %% # `inf` is infinity
-    show$ inf
-    # %% # Negate it by the prefix minus (-) operator to get negative infinity
-    show$ -inf
-    # %% # Divided by 0, a finite number will produce infinitity
-    ; -5 / 0
-    # %#
-
-    # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
-    show$ NA
-    # %# Applicability & defaulting semantics are described in another chapter
-    ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
-      edh'na'semantics # <- follow this bookmark to the specific section there
-    }
-
-    # %% # `LT` means less-than, indicating the result of comparision
-    show$ LT
-    # %% # `GT` means greater-than, indicating the result of comparision
-    show$ GT
-    # %% # `EQ` means equal, indicating the result of comparision
-    show$ EQ
-    # %#
-
-    # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
-    assassinate'signal = sink
-    show$ assassinate'signal
-    # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
-    assassinate'signal <- 'stab'
-    # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
-    go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
-    # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
-    # %% # Let's publish another event there:
-    assassinate'signal <- 'shoot'
-    # %# Remind that the publishing can be repeated, try run the "stab" cell again.
-
-    # Events can be *perceive*d by any thread, the perceiver body is executed with the published event as matching target
-    # %% #
-    perceive assassinate'signal { act } -> {
-      console.info<| "I'm assassinated via " ++ act
-    }
-    # %# Then run the publishing cells above again, to see more messages logged.
-    # Branches with pattern/value matching are described later in this chapter
-    ; () => edh'branching # <- follow this bookmark to that section
-
-    # If the perceiver evaluates to value of a `break` statement, that thread will be terminated.
-
-    # %{ # Upon termination of a thread, some actions can be *defer*ed to execute:
-    defer {
-      # %%
-      console.print$ "Here's my last words ..."
-      secRemains = 10
-      for _ from console.everySeconds(1) do {
-        case secRemains -= 1 of {
-          7 -> console.print( "\rPlease let me die a good death." )
-          5 -> console.print( "\rThat's all I want." )
-          4 -> console.print( "\rFarewell!" )
-          0 -> {
-            console.print( "\27[A")
-            break
-          }
-          _ -> console.print( '\r...' ++ secRemains, eol= '\r', )
-        }
-      }
+      # %% # `None` is just `nil` named "None"
+      show$ None
+      # %% # `Nothing` is just `nil` named "Nothing"
+      show$ Nothing
       # %#
     }
-    # %}
 
-    # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
-    # %% # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
-    perceive assassinate'signal.subseq 'shoot' -> {
-      console.fatal<| "I'm hit!"
-      break # this being the final result, would terminate the thread installed this perceiver
+    {## Boolean Values
+     # - To be or not to be
+     #} {;
+      {## Boolean Values #}
+      export edh'bool'values = bookmark()
+
+      # %% # `true` is the boolean value indicating truthful result
+      show$ true
+      # %% # `false` is the boolean value indicating falsy result
+      show$ false
+      # %#
     }
-    # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
+
+    {## Numeric Values
+     # - Decimal as you've been familar with
+     #} {;
+      {## Numeric Values #}
+      export edh'numeric'values = bookmark()
+
+      # %% # `nan` means Not-A-Number, but of DecimalType, which is a numeric type
+      show$ nan
+      # %% # `nan` is technically the result of 0 divided by 0
+      0/0 is nan
+      # %% # Except for identity equality, a nan value never equals to any value, including itself
+      nan == nan
+      # %# See nan is unequal to itself?
+
+      # %% # `inf` is infinity
+      show$ inf
+      # %% # Negate it by the prefix minus (-) operator to get negative infinity
+      show$ -inf
+      # %% # Divided by 0, a finite number will produce infinitity
+      ; -5 / 0
+      # %#
+    }
+
+    {## Defaulting Values
+     # - Not/Applicable is 1st class value
+     #} {;
+      {## Defaulting Values #}
+      export edh'defaulting'values = bookmark()
+
+      # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
+      show$ NA
+      # %# Applicability & defaulting semantics are described in another chapter
+      ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
+        edh'na'semantics # <- follow this bookmark to the specific section there
+      }
+    }
+
+    {## Ordering Values
+     # - Result of comparison
+     #} {;
+      {## Ordering Values #}
+      export edh'ord'values = bookmark()
+
+      # %% # `LT` means less-than, indicating the result of comparision
+      show$ LT
+      # %% # `GT` means greater-than, indicating the result of comparision
+      show$ GT
+      # %% # `EQ` means equal, indicating the result of comparision
+      show$ EQ
+      # %#
+    }
+
+    {## Event Sink
+     # - Rendezvous point of events
+     #} {;
+      {## Event Sink #}
+      export edh'event'sink'values = bookmark()
+
+      # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
+      assassinate'signal = sink
+      show$ assassinate'signal
+      # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
+      assassinate'signal <- 'stab'
+      # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
+      go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
+      # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
+      # %% # Let's publish another event there:
+      assassinate'signal <- 'shoot'
+      # %# Remind that the publishing can be repeated, try run the "stab" cell again.
+
+      # Events can be *perceive*d by any thread, the perceiver body is executed with the published event as matching target
+      # %% #
+      perceive assassinate'signal { act } -> {
+        console.info<| "I'm assassinated via " ++ act
+      }
+      # %# Then run the publishing cells above again, to see more messages logged.
+      # Branches with pattern/value matching are described later in this chapter
+      ; () => edh'branching # <- follow this bookmark to that section
+
+      # If the perceiver evaluates to value of a `break` statement, that thread will be terminated.
+
+      # %{ # Upon termination of a thread, some actions can be *defer*ed to execute:
+      defer {
+        # %%
+        console.print$ "Here's my last words ..."
+        secRemains = 10
+        for _ from console.everySeconds(1) do {
+          case secRemains -= 1 of {
+            7 -> console.print( "\rPlease let me die a good death." )
+            5 -> console.print( "\rThat's all I want." )
+            4 -> console.print( "\rFarewell!" )
+            0 -> {
+              console.print( "\27[A")
+              break
+            }
+            _ -> console.print( '\r...' ++ secRemains, eol= '\r', )
+          }
+        }
+        # %#
+      }
+      # %}
+
+      # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
+      # %% # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
+      perceive assassinate'signal.subseq 'shoot' -> {
+        console.fatal<| "I'm hit!"
+        break # this being the final result, would terminate the thread installed this perceiver
+      }
+      # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
+
+    }
 
   }
 
@@ -2057,18 +2102,58 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
 
       # Synchronous Narration is an advanced topic described at:
-      import * './advanced/iter'
-      ; () => edh'sync'narration
+      ; () => {; import * './advanced/iter'
+        edh'sync'narration # <- follow this bookmark to that section
+      }
 
     }
 
 
-    {## Observing Event Streams
+    {## Observing an Event Stream
      # - Iterate over the event stream through an event sink
      #} {;
-      {## Observing Event Streams #}
+      {## Observing an Event Stream #}
       export edh'iter'events = bookmark()
 
+      # The event sink value is described earlier in this chapter
+      edh'event'sink'values # <- follow this bookmark to that section
+
+      # Here is a simple example, you're supposed to observe:
+      #  * The (<-) operator is used to publish arbitrary event values into an event sink
+      #  * Loop arguments go as attributes of the current scope of the loop expression, and get overwritten on every event arrival. Note that they are updated with arguments receiving semantics, which is described at:
+      ; () => edh'args'receiving # <- follow this bookmark to that section
+      #  * The do-block of the loop, a.k.a. the loop body, can reference the loop arguments. Note that they are simply read as lexical attributes in scope. Lexical scoping rules are described at:
+      ; () => edh'lexi'scoping # <- follow this bookmark to that section
+
+
+      # %% # Construct an event sink value
+      es = sink
+      # %% # Work with the event sink on a separate thread
+      go {
+        for (***evt) from es do console.info<| 'Got event= ' ++ evt
+        console.info <| 'Reached end of event stream.'
+      }
+      # %% # Publish a single value
+      es <- 3
+      # %% # Publish an apk
+      es <- ( 3, 2, c= 5, a= 2, )
+      # %% # Mark end-of-stream for the event stream
+      es <- nil
+      # %#
+
+      # Also note that:
+      #  * `continue` can be used in the do-block (loop body) to skip subsequent statements in the block, thus jump to wait for next event
+      #  * `break` can be used in the do-block (loop body) to early stop the for-loop, making it evaluates to `nil`, subsequent events will not be observed after then
+      #  * `return xxx` can be used in the do-block (loop body) to early stop the for-loop, and further early return from the outer procedure. That's done technically by having the result value of the for-loop expression evaluates to `return xxx`, manifesting early return from the outer procedure body
+
+
+      # The event sink value can come from evaluation of a producer procedure call
+      # Producer procedure is described later in this chapter
+      ; () => edh'producer'procs # <- follow this bookmark to that section
+      # Asynchronous Narration is an advanced topic described at:
+      ; () => {; import * './advanced/iter'
+        edh'async'narration # <- follow this bookmark to that section
+      }
 
     }
 
