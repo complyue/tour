@@ -1086,7 +1086,7 @@ It is used to create a default expression with its operand expression.
         ; () => import (
           edh'defaulting, # <- follow this bookmark to the relevant section there
           **_
-        ) '../advanced/dflt'
+        ) './advanced/dflt'
       }
 
 
@@ -1298,7 +1298,7 @@ For example:
 
 Some values are both syntatically and semantically special, with respect to topics of Terminology, Equality, and Nothingness.
 
- #} {; import * '../advanced/vals' # <- details of Đ Value System
+ #} {; import * './advanced/vals' # <- details of Đ Value System
   {## Values, and Really Special Ones #}
   export edh'values'with'speciality = bookmark()
 
@@ -1552,7 +1552,7 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
     # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
     show$ NA
     # %# Applicability & defaulting semantics are described in another chapter
-    ; () => {; import * '../advanced/appl' # <- navigate to there for elaboration
+    ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
       edh'na'semantics # <- follow this bookmark to the specific section there
     }
 
@@ -1734,7 +1734,7 @@ Pattern expressions all have an outer-most pair of curly braces, though some may
       export edh'pattern'matching = bookmark()
 
       # There is an advanced topic describing various matching patterns in another chapter
-      ; () => {; import * '../advanced/patterns'
+      ; () => {; import * './advanced/patterns'
         edh'matching'patterns # <- follow this bookmark to the section there
       }
 
@@ -1792,7 +1792,12 @@ Pattern expressions all have an outer-most pair of curly braces, though some may
         'Amplified result is: ' ++ result
         # %# Can you figure out why? Set `n = 3` and try it, you'll see.
 
-        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there are way more complex expressions to have nil mixed into normal non-nil results, so the wild capture pattern is your best friend at all times.
+        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there will definitely be expressions to have nil mixed into normal non-nil results (e.g. `.mrv` of an event sink), so the wild capture pattern is your best friend at all times.
+
+        # %% # Here is an alternative, correct solution, but less elegant:
+        result = evil'amp(n) or nan
+        'Amplified result is: ' ++ result
+        # %# Also you'll need larger change (as well with tendency of probably unexpected double-evaluation without enough care taken), when later the nil case needs to be handled
       }
 
 
@@ -2078,6 +2083,18 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
     }
 
+
+    {## Arguments/List/Dict Comprehension
+     # - Comprehend items into containers
+
+
+     #} {;
+      {## Arguments/List/Dict Comprehension #}
+      export edh'loop'comprehension = bookmark()
+
+
+    }
+
   }
 
 
@@ -2135,7 +2152,7 @@ The finally (@=>) operator ...
    # - Taming the concurrent "goto"
    #} {; () => {
       # There is an advanced topic describing why & how to implement structured concurrency with the mechanisms described above
-      import * '../advanced/concur'
+      import * './advanced/concur'
       edh'structured'concurrency # <- follow this bookmark to the section there
     }
   }
@@ -2148,7 +2165,7 @@ export edh'pragmatics = bookmark()
 
 {## Classes & Objects
  # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
- #} {; import * '../advanced/objs'
+ #} {; import * './advanced/objs'
   {## Classes & Objects #}
   export edh'classes'objs = bookmark()
 
