@@ -438,9 +438,9 @@ Note the single-quote character is allowed to mean the prime symbol as in mathem
 
 
       {## The Underscore (_) Attribute Key
-       # - A blackhole wrt assignment
+       # - A blackhole w.r.t. assignment
 
-Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole wrt scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
+Special note about the single character identifier with a mere underscore, it is a valid identifier but acts as a blackhole w.r.t. scope attribute assignment. It is idiomatic to explicitly discard the direct result value this way, when only side-effects are desired from some expression with a meaningful return value.
 
        #} {;
         {## The Underscore (_) Attribute Key #}
@@ -1384,7 +1384,7 @@ Note the named version of a value may or may not "equal" to the original version
       l is l'
       # %#
 
-      # Dicts, objects etc. are in similar cases wrt identity equality.
+      # Dicts, objects etc. are in similar cases w.r.t. identity equality.
 
 
       # A value serving as an immutable container, such as an apk or a pair, may contain mutable values as its items, the identity equality cascades into those items intuitively.
@@ -1429,7 +1429,7 @@ The common sense of "equality" assumes snapshot semantics when comparing two mut
 
 
     {## Namewise Equality
-     # - Equality wrt how values are named
+     # - Equality w.r.t. how values are named
 
 Some instantly equal values can be differently named, in the sense of original value, they are considered instantly equal too.
 
@@ -1610,11 +1610,14 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
       assassinate'signal = sink
       show$ assassinate'signal
+
       # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
       assassinate'signal <- 'stab'
+
       # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
       go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
       # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
+
       # %% # Let's publish another event there:
       assassinate'signal <- 'shoot'
       # %# Remind that the publishing can be repeated, try run the "stab" cell again.
@@ -1667,24 +1670,30 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 
 
 {## Control Flows
- # - Handling varity of input
+ # - Handling variety of input
 
-A computer makes no sense if every distinct input has to be processed by another unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient varity. So some level of abstraction has to be there, this calls for polymorphism.
+A computer makes no sense if every distinct input has to be processed by an associated unique program. To be actually useful, a computer (at times, even a single program on a computer), needs to accept input data of sufficient variety. So some level of abstraction has to be there, this calls for polymorphism.
 
-That means a program would need to go different execution branches wrt the input data, and in practices, such conditional branchings can be seen allover the source code of computer programs. In this section, you'll see what mechanisms for this purpose are supported by Đ.
+That means a program would need to go different execution branches w.r.t. the input data, and in practices, such conditional branchings can be seen allover the source code of computer programs. In this section, you'll see what mechanisms for this purpose are supported by Đ.
 
  #} {;
   {## Control Flows #}
   export edh'ctrl'flows = bookmark()
 
 
-  {## if-then-else Boolean Branching
-   # - Conditionally branching
+  {## if-then-else Binary Branching
+   # - Two choices per one condition test
 
-"if <conditional> then <consequence> else <alternative>" as a whole is an expression, meaning it's supposed to give out some meaningful result value when evaluated. The `else` part can be omitted, then the whole expression evaluates to `nil` if the condition doesn't hold.
+The general syntax is:
+
+  if <conditional> then <consequence> else <alternative>
+
+Being an expression as a whole, it's supposed to give out a single result value when evaluated. The `else` part can be omitted, then the whole expression evaluates to `nil` if the condition doesn't hold.
+
+Side effects are very well expected in many cases, while in other cases only a pure result is expected.
 
    #} {;
-    {## if-then-else Boolean Branching #}
+    {## if-then-else Binary Branching #}
     export edh'if'then'else = bookmark()
 
     # %% # Idiomatic short forms
@@ -2255,76 +2264,170 @@ The `while` loop can be used to repeat execution of its loop body again and agai
 
 
   {## go Routines with defer'ed Cleanups
-   # - Spawning many concurrent threads
+   # - Toward structured concurrency
+   #} {;
+    {## go Routines with defer'ed Cleanups #}
+    export edh'go'routines = bookmark()
+
+    {## Spawn Threads to Run Concurrently
+     # - Go routines a.k.a. lightweight threads
 
 `go` routines are lightweight threads run concurrently, the GHC Haskell RTS (runtime system) can control how many heavyweight (os) threads are used to run all Đ threads in parallel.
 
 All the lexical scopes are shared among forker and forkee threads, when race conditions present in updating the attributes of those scopes, `ai` (Atomically Isolatedly) blocks should be used to preserve data consistency. Under the hood, an `ai` block is executed within an atomic STM (Software Transactional Memory) transaction, which will be forever automatically retried, upon inconsistent conditions detected, before it can commit successfuly.
 
-   #} {;
-    {## go Routines with defer'ed Cleanups #}
-    export edh'go'routines = bookmark()
+     #} {;
+      {## Spawn Threads to Run Concurrently #}
+      export edh'spawn'threads = bookmark()
 
+      # %% #
+      c = 0
+      for _ from range(100) do go {
+        ai c += 1 # With the `ai` keyword, it is race free
+      }
+      # %% # Observe after a second, see its always 100 as expected
+      console.print$ "Count is now " ++ c
+      # %#
 
-    # %% #
-    c = 0
-    for _ from range(100) do go {
-      ai c += 1 # With the `ai` keyword, it is race free
+      # %% #
+      c = 0
+      for _ from range(100) do go {
+        c += 1 # Without the `ai` keyword here, some increments can be overwritten by others
+      }
+      # %% # Observe after a second, it'll probably be less than 100 if you have multiple CPU cores
+      console.print$ "Count is now " ++ c
+      # %#
     }
-    # %% # Observe after a second, see its always 100 as expected
-    console.print$ "Count is now " ++ c
-    # %#
-
-    # %% #
-    c = 0
-    for _ from range(100) do go {
-      c += 1 # Without the `ai` keyword here, some increments can be overwritten by others
-    }
-    # %% # Observe after a second, it'll probably be less than 100 if you have multiple CPU cores
-    console.print$ "Count is now " ++ c
-    # %#
 
 
-    # Whenever a procedure call or a for-loop is directly involved in a go/defer action, the call-arguments or loop-source are prepared immediately upon the action is scheduled, not until it is actually executed. The execution can be rather later after it is scheduled, especially in case of `defer`.
-    # The cases for direct involvement can be:
-    #  * The action is a direct procedure call
-    #  * The action is a for-loop against a generator procedure call
-    # You can postpone the arguments preparation to execution time, by putting the whole action into a pair of curly braces, i.e. technically making the action a block expression instead, so as to not prepared at schedule time.
+    {## Cleanup on Thread Termination
+     # - `defer`ed actions are executed on thread termination
 
-    # %% #
-    go {
-      cycle = 'tic'
+Whenever a procedure call or a for-loop is directly involved in a go/defer action, the call-arguments or loop-source are prepared immediately upon the action is scheduled, not until it is actually executed. The execution can be rather later after it is scheduled, especially in case of `defer`.
 
-      # As it's the direct action to `defer`, the arguments preparation happens at schedule time
-      defer console.log(
-        'A deferred procedure call saw the cycle being: ' ++ cycle,
-        level= console.warn,
-      )
+The cases for direct involvement can be:
+  * The action is a direct procedure call
+  * The action is a for-loop against a generator procedure call
 
-      # As the direct action is a block expression, the arguments preparation happens at execution time
-      defer { console.log(
-          'A deferred block saw the cycle being: ' ++ cycle,
+You can postpone the arguments preparation to execution time, by putting the whole action into a pair of curly braces, i.e. technically making the action a block expression instead, so as to not prepared at schedule time.
+
+
+     #} {;
+      {## Cleanup on Thread Termination #}
+      export edh'defer'actions = bookmark()
+
+      # %% #
+      go {
+        cycle = 'tic'
+
+        # As it's the direct action to `defer`, the arguments preparation happens at schedule time
+        defer console.log(
+          'A deferred procedure call saw the cycle being: ' ++ cycle,
           level= console.warn,
-      ) }
+        )
 
-      # As the direct action is a freeform expression (application of an infix operator) here, nothing is prepared at schedule time, it's just evaluated until execution time
-      defer console.warn
-      <| "A deferred freeform expression saw the cycle being: " ++ cycle
+        # As the direct action is a block expression, the arguments preparation happens at execution time
+        defer { console.log(
+            'A deferred block saw the cycle being: ' ++ cycle,
+            level= console.warn,
+        ) }
 
-      # Change cycle state every second
-      for _ from console.everySeconds(1) do {
-        console.info<| cycle
-        case cycle of {
-          'tic' -> cycle = 'tac'
-          'tac' -> cycle = 'toe'
-          'toe' -> cycle = 'fin'
-          'fin' -> { break }
+        # As the direct action is a freeform expression (application of an infix operator) here, nothing is prepared at schedule time, it's just evaluated until execution time
+        defer console.warn
+        <| "A deferred freeform expression saw the cycle being: " ++ cycle
+
+        # Change cycle state every second
+        for _ from console.everySeconds(1) do {
+          console.info<| cycle
+          case cycle of {
+            'tic' -> cycle = 'tac'
+            'tac' -> cycle = 'toe'
+            'toe' -> cycle = 'fin'
+            'fin' -> { break }
+          }
         }
       }
-    }
-    # %# Wait a few seconds and see the difference?
+      # %# Wait a few seconds and see the difference?
 
-    # `defer` is designed to do resource cleanup with structured concurrency in mind, though in many cases the cleanup action can also be performed by catching the `ThreadTermination` exception, it can be unpleasant at times to organize exception handlers with manual type checks as well as complex nestings.
+      # `defer` is designed to do resource cleanup with structured concurrency in mind, though in many cases the cleanup action can also be performed by catching the `ThreadTermination` exception, it can be unpleasant at times to organize exception handlers with manual type checks as well as complex nestings.
+    }
+
+    {## perceive Events
+     # - Preemptive event handling
+
+A single thread can handle multiple event streams at the same time, it can achieve so by installing an event perceivers per each event sink. It can keep the thread running by sleeping (i.e. looping against `console.everySeconds()` or friends), or choose to loop against one of the event sinks instead of perceiving it.
+
+     #} {;
+      {## perceive Events #}
+      export edh'perceive'events = bookmark()
+
+      # %% # Create some event sinks to convey the streams
+      book'to'read = sink
+      paper'to'review = sink
+      fight'to'pick = sink
+
+      # %% # Handle them
+      go {
+
+        perceive book'to'read { book } -> {
+          console.info<| 'I read the book [' ++ book ++ '] now.'
+        }
+
+        perceive paper'to'review { paper } -> {
+          console.info<| 'I review the paper [' ++ paper ++ '] now.'
+        }
+
+        defer console.info<| "No fight anymore, I'm done."
+
+        perceive fight'to'pick {
+          nil -> {
+            break # Terminate the thread when no more fights
+          }
+          { rival } -> console.warn<| 'I fight ' ++ rival ++ ' now.'
+        }
+
+        for _ from console.everySeconds( 10, wait1st= false, )
+        do console.info<| "I'm still living, need works to do!"
+
+        console.fatal<| 'This is sth you never supposed to see, is god dead?!'
+
+      }
+
+      #  Run the follow cells in arbitrary order, and repeatedly
+
+      # %% # Send a book to read
+      book'to'read <- 'An Actor Prepares (Рабо́та актёра над собо́й)'
+
+      # %% # Send a paper to review
+      paper'to'review
+      <- 'Monad Transformers and Modular Algebraic Effects:'
+      ++ ' What Binds Them Together'
+
+      # %% # Send a rival to fight
+      fight'to'pick <- 'the aliens'
+      # %# Note This can fail after it's marked eos
+
+      # %% # Send another rival to fight
+      fight'to'pick <- 'the zombies'
+      # %# Note This can fail after it's marked eos
+
+      # Run the following cell to terminate the thread spawned above
+
+      # %% # This cell will mark the eos of `fight'to'pick`
+      fight'to'pick <- nil
+      # %# Try send more books or papers after run this cell, to verify the thread is really dead.
+
+    }
+
+
+    {## Structured Concurrency
+     # - Taming the concurrent "goto"
+     #} {; () => {
+        # There is an advanced topic describing why & how to implement structured concurrency with the mechanisms described above
+        import * './advanced/concur'
+        edh'structured'concurrency # <- follow this bookmark to the section there
+      }
+    }
 
   }
 
@@ -2332,37 +2435,137 @@ All the lexical scopes are shared among forker and forkee threads, when race con
   {## Exception Handling
    # - Using the catch ($=>) and finally (@=>) operator
 
-The catch ($=>) operator ...
-
-The finally (@=>) operator ...
+Implemented as infix operators, the action to try with possibly exceptions thrown, the action to be taken upon exceptions, and the action to be taken anyway regardless of failure or success, all have to be some expression, and that usually would be a block expression for easy reading. Especially when the action consists of one or more statements, it has to be enclosed in a pair of curly braces to become a block expression.
 
    #} {;
     {## Exception Handling #}
     export edh'exception'handling = bookmark()
 
+    {## The catch ($=>) Operator
+     # - Catch & handle exceptions
 
-  }
+The left-hand-side expression of catch ($=>) operator is the action to try, if no exception occurred during its execution, the right-hand-side expression will not be evaluated/executed at all. In case an exception is thrown and not caught by any nested handler inner the call hierarchy, the right-hand-side expression will be evaluated, with the exception value as its current matching target.
 
+     #} {;
+      {## The catch ($=>) Operator #}
+      export edh'exc'catch = bookmark()
 
-  {## perceive Events
-   # - Preemptive event handling
+      # %% # It is left-associative, and with precedence -2
+      show$ ($=>)
 
+      # %% # Any value can be thrown
+      {
+        throw 3*7
+      } $=> { caught } -> {
+        console.info<| 'Caught: ' ++ show(caught)
+      }
 
-   #} {;
-    {## perceive Events #}
-    export edh'perceive'events = bookmark()
+      # %% # It's idiomatic to only throw object values, of class derived from one of the `Exception` classes, as they'll capture the contextual stack frames as backtrace, which is crucial to trackdown bugs in the code.
+      {
+        throw UsageError( "You'v got it wrong!" )
+      } $=> { caught } -> {
+        console.info<| 'Caught: ' ++ show(caught)
+      }
+      # %#
 
+      # For meta doc of common exception classes,
+      import * 'batteries/meta/exc' into Nothing # <- goto definition of this module
 
-  }
+      # It's very common for exceptions to be thrown from deeply nested call hierarchies, some inner procedure could handle some kind of exceptions while leaving the rest propagated outwards, and possibly caught by outer handlers.
 
+      # %% #
+      method f1(v) case v |type of {
+        DecimalType -> v*5
+        StringType -> {
+          throw IOError( "Can't open file " ++ v)
+        }
+        { bad'type } -> {
+          throw UsageError( 'Type not supported: ' ++ bad'type )
+        }
+      }
 
-  {## Structured Concurrency
-   # - Taming the concurrent "goto"
-   #} {; () => {
-      # There is an advanced topic describing why & how to implement structured concurrency with the mechanisms described above
-      import * './advanced/concur'
-      edh'structured'concurrency # <- follow this bookmark to the section there
+      method f2(n, v) {
+        console.print$ "You got " ++ n ++ ' to be ' ++ f1(v)
+      } $=> { UsageError() = exc } -> {
+        console.error<| "You got it wrong: " ++ desc(exc)
+      }
+
+      # %% #
+      f2( 'x', 3, )
+
+      # %% #
+      f2( 'y', (), )
+      # %# Note that the backtrace printed in the Đ session of a terminal window within an IDE (like VSCode), can be Ctrl+Clicked (on Linux) or Cmd+Clicked (on macOS), to bring you directly to each call frame's source location.
+
+      # %% # You can wild-capture any exception occurred
+      {
+        f2( 'z', 'disk.txt', )
+      } $=> { exc } -> {
+        console.fatal<| "Unexpected failure: " ++ show(exc)
+      }
+
+      # %% # Due to the operator's left-associativity, multiple exception handlers can be chained like this:
+      method f2'(n, v) {
+        console.print$ "You got " ++ n ++ ' to be ' ++ f1(v)
+      } $=> { UsageError() = exc } -> {
+        console.error<| "You got it wrong: " ++ desc(exc)
+      } $=> { IOError() = ioe } -> {
+        console.fatal<| "The os failed: " ++ show(ioe)
+      }
+
+      # %% # The semantics is equivalent to this:
+      method f2'(n, v) {
+        console.print$ "You got " ++ n ++ ' to be ' ++ f1(v)
+      } $=> {
+        { UsageError() = exc } -> {
+          console.error<| "You got it wrong: " ++ desc(exc)
+        }
+        { IOError() = ioe } -> {
+          console.fatal<| "The os failed: " ++ show(ioe)
+        }
+      }
+
+      # %% # It's only stylish difference for the 2 cells above, either one should work the same way.
+      f2'( 'z', 'disk.txt', )
+
+      # %#
+
     }
+
+
+    {## The finally (@=>) Operator
+     # - Success or failure, something has to be done
+
+The left-hand-side expression of finally (@=>) operator  is the action to try, regardless of whether it's evaluated successfully, or some exception occurred meanwhile, the right-hand-side expression will be evaluated/executed, before proceeding to the next statement, or propagate the exception outwards.
+
+     #} {;
+      {## The finally (@=>) Operator #}
+      export edh'exc'finally = bookmark()
+
+      # %% #
+      method f3( ***apk ) {
+        f2( ***apk )
+      } @=> {
+        console.info<| "I called f2() anyway!"
+      }
+
+      # %% #
+      f3( 'x', 3, )
+
+      # %% #
+      f3( 'y', (), )
+      # %#
+
+      # %% #
+      {
+        f3( 'z', 'disk.txt', )
+      } $=> {
+        pass # ignore any error
+      }
+
+      # %#
+    }
+
   }
 
 }
