@@ -1,11 +1,11 @@
-{## Iteration #}
+{## Modular Narratives #}
 
-{## Iteration #}
+{## Modular Narratives #}
 export edh'iteration'details = bookmark()
 
 
 {## Synchronous Narration with Generator and For-Loop
- # - Yield to call a multi-shot do-bock
+ # - Decouple synchronous iterations
 
 The do-block of a for-loop is essentially a synchronous callback, when the loop is calling a generator procedure. The `yield` expression in the generator can be intuited as calling back the loop body, with the loop arguments passed back.
 
@@ -77,46 +77,46 @@ A slight difference with a closure as a real callback is, the loop arguments liv
 }
 
 
-{## Asynchronous Narration with Producer and Event Sink
- # - Publish events to trigger distributed reactions
+{## Asynchronous Narration with Producer, Perceiver and Event Loop
+ # - Decouple asynchronous/parallel iterations
 
 
  #} {;
-  {## Asynchronous Narration with Producer and Event Sink #}
+  {## Asynchronous Narration with Producer, Perceiver and Event Loop #}
   export edh'async'narration = bookmark()
 
-  {## The Asynchronous Producer
-   # - Concurrently start event producing
+  {## Asynchronous Event Producing
+   # - Do event producing in a dedicated thread
 
 
    #} {;
-    {## The Asynchronous Producer #}
+    {## Asynchronous Event Producing #}
     export edh'async'producing = bookmark()
 
 
   }
 
+  {## Asynchronous Reacting with Perceiver
+   # - Preemptively react to each event from a sink
 
-  {## Synchronous Reaction with For-Loop
+
+   #} {;
+    {## Asynchronous Reacting with Perceiver #}
+    export edh'async'react = bookmark()
+
+
+  }
+
+  {## Synchronous Reacting with Event Loop
    # - Iterate against the event stream from a sink
 
 
    #} {;
-    {## Synchronous Reaction with For-Loop #}
+    {## Synchronous Reacting with Event Loop #}
     export edh'sync'react = bookmark()
 
 
   }
 
-  {## Asynchronous Reaction with Perceiver
-   # - Preemptively react to each event from a sink
-
-
-   #} {;
-    {## Asynchronous Reaction with Perceiver #}
-    export edh'async'react = bookmark()
-
-
-  }
 
 }

@@ -2059,12 +2059,20 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
   {## for-from-do Loop
    # - Looping against some nondeterministic source
+
+The general syntax is:
+
+  for <loop-arguments> from <loop-source> do <loop-body>
+
    #} {;
     {## for-from-do Loop #}
     export edh'for'loop = bookmark()
 
     {## Calling a Generator
      # - For loop is the only way to call a generator procedure
+
+The loop-source is a generator procedure call in this case
+
      #} {;
       {## Calling a Generator #}
       export edh'call'generator = bookmark()
@@ -2109,7 +2117,7 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
 
       # Synchronous Narration is an advanced topic described at:
-      ; () => {; import * './advanced/iter'
+      ; () => {; import * './advanced/modunarr'
         edh'sync'narration # <- follow this bookmark to that section
       }
 
@@ -2118,6 +2126,9 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
     {## Observing an Event Stream
      # - Iterate over the event stream through an event sink
+
+The loop-source evaluates to a event sink value in this case
+
      #} {;
       {## Observing an Event Stream #}
       export edh'iter'events = bookmark()
@@ -2157,8 +2168,9 @@ A scoped block can help in such situations, it is just a drop-in replacement for
       # The event sink value can come from evaluation of a producer procedure call
       # Producer procedure is described later in this chapter
       ; () => edh'producer'procs # <- follow this bookmark to that section
+
       # Asynchronous Narration is an advanced topic described at:
-      ; () => {; import * './advanced/iter'
+      ; () => {; import * './advanced/modunarr'
         edh'async'narration # <- follow this bookmark to that section
       }
 
@@ -2167,6 +2179,11 @@ A scoped block can help in such situations, it is just a drop-in replacement for
 
     {## Scanning Items in Containers
      # - Iterate over all items of a container
+
+The loop-source evaluates to some container in this case, it may be:
+ * An apk
+ * A list
+ * A dict
 
      #} {;
       {## Scanning Items in Containers #}
@@ -2210,7 +2227,7 @@ The comprehension (=<) operator can be used to pump iterated result values from 
       ; [] =< for i from range(3:9) do i*i
 
       # %% # Dict comprehension
-      {} =< for i from range(3:9) do ( "square-of-" ++ i): i*i
+      {} =< for i from range(3:9) do ( "square-of-" ++ i ): i*i
       # %#
     }
 
@@ -2242,7 +2259,7 @@ The `while` loop can be used to repeat execution of its loop body again and agai
 
 `go` routines are lightweight threads run concurrently, the GHC Haskell RTS (runtime system) can control how many heavyweight (os) threads are used to run all Đ threads in parallel.
 
-All the lexical scopes are shared among forker and forkee threads, when race conditions present in updating the attributes of those scopes, `ai` (Atomically Isolatedly) blocks should be used to preserve data consistency. Under the hood, an `ai` block is executed with an atomic STM (Software Transactional Memory) transaction, which will be forever automatically retried, upon inconsistent conditions detected, before it committed successfuly.
+All the lexical scopes are shared among forker and forkee threads, when race conditions present in updating the attributes of those scopes, `ai` (Atomically Isolatedly) blocks should be used to preserve data consistency. Under the hood, an `ai` block is executed within an atomic STM (Software Transactional Memory) transaction, which will be forever automatically retried, upon inconsistent conditions detected, before it can commit successfuly.
 
    #} {;
     {## go Routines with defer'ed Cleanups #}
@@ -2268,20 +2285,33 @@ All the lexical scopes are shared among forker and forkee threads, when race con
     # %#
 
 
-    # Whenever a go/defer action is a procedure call, the arguments are prepared immediately upon the action is scheduled, not when it is actually executed (which can be rather late esp. in case of defer).
+    # Whenever a procedure call or a for-loop is directly involved in a go/defer action, the call-arguments or loop-source are prepared immediately upon the action is scheduled, not until it is actually executed. The execution can be rather later after it is scheduled, especially in case of `defer`.
+    # The cases for direct involvement can be:
+    #  * The action is a direct procedure call
+    #  * The action is a for-loop against a generator procedure call
+    # You can postpone the arguments preparation to execution time, by putting the whole action into a pair of curly braces, i.e. technically making the action a block expression instead, so as to not prepared at schedule time.
 
     # %% #
     go {
       cycle = 'tic'
 
+      # As it's the direct action to `defer`, the arguments preparation happens at schedule time
       defer console.log(
-        'Deferred procedure call see the cycle being: ' ++ cycle,
+        'A deferred procedure call saw the cycle being: ' ++ cycle,
         level= console.warn,
       )
 
-      defer console.warn
-      <| "Deferred freeform expression see the cycle being: " ++ cycle
+      # As the direct action is a block expression, the arguments preparation happens at execution time
+      defer { console.log(
+          'A deferred block saw the cycle being: ' ++ cycle,
+          level= console.warn,
+      ) }
 
+      # As the direct action is a freeform expression (application of an infix operator) here, nothing is prepared at schedule time, it's just evaluated until execution time
+      defer console.warn
+      <| "A deferred freeform expression saw the cycle being: " ++ cycle
+
+      # Change cycle state every second
       for _ from console.everySeconds(1) do {
         console.info<| cycle
         case cycle of {
@@ -2293,6 +2323,8 @@ All the lexical scopes are shared among forker and forkee threads, when race con
       }
     }
     # %# Wait a few seconds and see the difference?
+
+    # `defer` is designed to do resource cleanup with structured concurrency in mind, though in many cases the cleanup action can also be performed by catching the `ThreadTermination` exception, it can be unpleasant at times to organize exception handlers with manual type checks as well as complex nestings.
 
   }
 

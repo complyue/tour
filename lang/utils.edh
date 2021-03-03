@@ -197,6 +197,7 @@ JSON is particularly suitable as the encoding format of structural data, for mac
 
 }
 
+
 {## The Console
  # - _stdio_ of UNIX (as well POSIX compliant) programs
 
@@ -214,7 +215,116 @@ A REPL actually does the "Read" and "Print" via the console, there are well stan
   show$ console # <- go to its definition to learn more details
   # %#
 
-  # You'll need to work with the console to write REPL like programs / frameworks / libraries in Đ, nevertheless, there are plenty good examples to follow.
+
+  # You'll need to work with the console to write REPL like programs / frameworks / libraries in Đ, nevertheless, there are plenty good examples to follow, a simple one can be:
+  import * 'repl/__main__' into Nothing # <- goto its definition to see as an example
+
+
+  {## Output
+   # - Show result to the console through stdout
+   #} {;
+    {## Output #}
+    export edh'stdout = bookmark()
+
+    # %% # A single argument output
+    console.print$ 'Hello, world!'
+
+    # %% # A multi-arguments output
+    console.print(
+      'Line1: Hello,',
+      'Line2: World!',
+      my'wish= 'World Peace!',
+      eol= '\n\n',
+    )
+    # %#
+
+  }
+
+
+  {## Logging
+   # - Show log messages to the console through stderr
+
+Note that source location will be output together with the message when configured logging level is equal or above INFO.
+
+   #} {;
+    {## Logging #}
+    export edh'logging = bookmark()
+
+    {## The log procedure
+     # - Strict evaluation of the message
+
+console.log() is a vanilla (host) method procedure, it is strict in all of its arguments. That means, whether or not the message is output to the console, it is always evaluated.
+
+     #} {;
+      {## The log procedure #}
+      export edh'log'proc = bookmark()
+
+      # %% # A single argument log, the level defaults to `console.info`
+      console.log$ 'Hello, world!'
+
+      # %% # A multi-arguments log, at the fatal level
+      console.log(
+        'Everyone dies', 'ultimately',
+        level= console.fatal,
+      )
+
+      # %% # A multi-arguments log, at the warning level
+      console.log(
+        'The climate is changing',
+        'Someones are caring',
+        risk= 'Global Warming',
+        level= console.warn,
+      )
+
+      # %#
+    }
+
+    {## The Logging (<|) Operator
+     # - Conditional evaluation of the message
+
+The logging (<|) operator is strict in its left-hand-side expression (as for the log level) only, and as for the actual message to be output, its right-hand-side expression will only be evaluated when the target log level is no less than the configured logging level (usually via EDH_LOG_LEVEL environment variable).
+
+     #} {;
+      {## The Logging (<|) Operator #}
+      export edh'log'op = bookmark()
+
+      # %% # A single argument log, at the info level
+      console.info<| 'Hello, world!'
+
+      # %% # A multi-arguments log, at the fatal level
+      console.fatal<| (
+        'Everyone dies', 'ultimately',
+      )
+
+      # %% # A multi-arguments log, at the warning level
+      console.warn<| (
+        'The climate is changing',
+        'Someones are caring',
+        risk= 'Global Warming',
+      )
+
+      # %#
+    }
+
+
+    {## Debug Tracing
+     # - Use negative log level for ad-hoc debugging purpose
+
+Negative log level can be used to trace execution of the program. Messages with positive log levels are only output after their respective STM transaction successfully committed, while messages with a negative log level are output immediately. And the thread identifier, as well as the source location, will be output together with the log message, to help debugging concurrent code.
+
+     #} {;
+      {## Debug Tracing #}
+      export edh'debug'tracing = bookmark()
+
+      # %% #
+      console.log( 'xxx', level= -1, )
+
+      # %% # A semicolon is idiomatic to prefix the negative literal number as logging level, or it can parse as the infix minus (-) operator when following some expression
+      ; -1<| 'xxx'
+      # %#
+    }
+
+  }
 
 }
 
