@@ -1247,6 +1247,8 @@ You can use just the `operator` keyword to override an existing operator
       scope(custom'infix'ops).eval(expr
         show$ (×)
       )
+      # %#
+
       # Especially note that, dot-notation won't work for operators, it is designed to work with magic methods instead. The crucial fact to know is: the parenthese is part of the name used to identify a magic method, but never so for names identifying operators.
       # %% # This is an error:
       custom'infix'ops.(×)
@@ -1255,6 +1257,88 @@ You can use just the `operator` keyword to override an existing operator
 
       # Checkout the meta definition for operators come with default batteries
       import * 'batteries/meta/ops' into Nothing
+    }
+
+
+    {## Notable Infix Operators
+     # - Some important operators come with the default batteries
+     #} {;
+      {## Notable Infix Operators #}
+      export edh'notable'infix'ops = bookmark()
+
+      {## Logical Operators
+       # - Strict and short-circuiting, nullish versions
+
+
+       #} {;
+        {## Logical Operators #}
+        export edh'logical'opa = bookmark()
+
+        {## Strict Version
+         # - (&&) / (||)
+
+Both operands will be evaluated anyway, and it'll be runtime error if either left or right hand side expression evaluates to a value of type other than `BoolType`.
+
+         #} {;
+          {## Strict Version #}
+          export edh'strict'and'or'ops = bookmark()
+
+          # %% # Log a message to know it's called
+          method greater(x, y) {
+            console.info<| 'Comparing ' ++ x ++ ' vs ' ++ y ++ ' ...'
+            x > y
+          }
+
+          # %% # See no short-circuiting would happen
+          greater(3, 5) && greater(9, 2)
+          # %% #
+          greater(5, 3) || greater(2, 9)
+          # %#
+
+          # %% # This will be runtime error
+          5 > 3 && 'yes'
+          # %% # Contrusting to this correct implementation:
+          5 > 3 and 'yes'
+          # %#
+
+        }
+
+
+        {## Short-circuiting Nullish Version
+         # - (and) / (or)
+         #} {;
+          {## Short-circuiting Nullish Version #}
+          export edh'nullish'and'or'ops = bookmark()
+
+          # %% # The rhs expression is evaluated conditionally
+          debug and console.print( "We're debugging." )
+
+          debug or console.print( "We're in production." )
+          # %# Only one of the above 2 prints could have been executed
+
+
+          # %% # Provide some default value in stead of a nullish one
+          d = {} # Let it be an empty dict per se
+          # %% # An empty container is considered falsy
+          null(d) is true
+          # %% # Replace `d` with some default, only when it's empty
+          d or { 'name': 'Anonymous', 'from': 'Internet', }
+          # %% # Let it be non-empty, then run above cell again
+          d = { 'name': 'Compl', 'from': 'Chongqing', }
+          # %#
+
+
+          # %% # Simulation of the tenary operator
+          let abs' = n => n < 0 and -n or n
+          # %%
+          abs'(5)
+          # %%
+          abs'(-5)
+          # %#
+        }
+
+      }
+
     }
 
   }
