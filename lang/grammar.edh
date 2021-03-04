@@ -2657,6 +2657,25 @@ The left-hand-side expression of finally (@=>) operator is the action to try, re
       # %#
     }
 
+    {## Chained Together
+     # - catch and finally expressions can be chained together
+     #} {;
+      {## Chained Together #}
+      export edh'catch'chained'finally = bookmark()
+
+      # %% #
+      {
+        ; # Try sth.
+      } $=> { EvalError() } -> {
+        ; # Handle evaluation errors
+      } $=> { UsageError() } -> {
+        ; # Handle usage errors
+      } @=> {
+        ; # Do this anyway
+      }
+      # %# Note that it is technically valid for multiple finally constructs chained together, just makes no sense in practice
+
+    }
   }
 
 }
