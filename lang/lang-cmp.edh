@@ -684,7 +684,22 @@ A closure/procedure captures the full lexical scope hierarchy at the point it is
 
 Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Oriented* as Python, *NOT* everything is an object here, such as numbers, strings, and procedures. And there are a handful of special values.
 
- #} {; import * '../advanced/objs' # <- navigate to elaboration of Đ Value System
+Đ implements an object system with ompositional Multiple-Inheritance with Multiple-Prototype Chains.
+
+ #} {; import * './advanced/objs' # <- navigate to elaboration of Đ Object System
+
+  {## Data Classes
+   # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
+
+Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines in pattern matching use cases, closely mimics ADT, predating PEP-634 (which is upcoming in Python 3.10).
+
+   #} {;
+    {## Data Classes #}
+    export edh'data'classes = bookmark()
+
+
+  }
+
 
   {## Beyond `this` Reference
    # - Compositional object structure
@@ -729,7 +744,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
 
 {## Notable Aspects of Đ Value System
  # - Everything is a value in Đ, something is different
- #} {; import * '../advanced/vals'
+ #} {; import * './advanced/vals'
 
   {## Named Values / Term Definitions
    # - Got the familiar (:=) operator for definition
@@ -819,7 +834,7 @@ Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Ori
 
   {## Applicability Semantics
    # - We talk about the lack thereof, actually
-   #} { import * '../advanced/appl' # <- navigate to elaboration of Đ Applicability Semantics
+   #} { import * './advanced/appl' # <- navigate to elaboration of Đ Applicability Semantics
 
     edh'na'semantics # <- follow this bookmark to learn more details
 

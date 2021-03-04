@@ -2686,7 +2686,9 @@ export edh'pragmatics = bookmark()
 
 {## Classes & Objects
  # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
- #} {; import * './advanced/objs'
+
+
+ #} {; import * './advanced/objs' # <- details of Đ Object System
   {## Classes & Objects #}
   export edh'classes'objs = bookmark()
 
@@ -2732,7 +2734,7 @@ The `class` keyword defines a usual class.
 
 
   {## Magic Methods
-   # - Customize object behaviors in cooperation with infix operators
+   # - Customize object behaviors responding to infix operators and some common procedures
 
 
    #} {;
@@ -3047,11 +3049,10 @@ There are cases it's desirable to cease the side-effect of attribute creation in
 }
 
 
-{## Effect Tracking
- # - Vending & consuming effects with dynamic scoping
-
+{## Dynamic Effect Tracking
+ # - Tracking effects the dynamic and imperative way
  #} {;
-  {## Effect Tracking #}
+  {## Dynamic Effect Tracking #}
   export edh'eff'tracking = bookmark()
 
 
