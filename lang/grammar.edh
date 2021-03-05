@@ -564,15 +564,11 @@ FYI in functional programming languages (such as Haskell), the dot (.) is alread
     {## Namespacing and Dot-Notation #}
     export edh'ns'dot'notation = bookmark()
 
-
     {## The Special Namespace Class
      # - Namespace is also a special class in Đ, with dedicated syntax
      #} {;
       {## The Special Namespace Class #}
-      export edh'ns'special = bookmark()
-
-      # Namespaces are further described later in this chapter
-      ; () => edh'namespaces # <- follow this bookmark to that section
+      export edh'namespaces = bookmark()
 
       # %% # Namespace objects are created with a special syntax, e.g.:
       symbol @ns'secret
@@ -2684,36 +2680,32 @@ The left-hand-side expression of finally (@=>) operator is the action to try, re
 export edh'pragmatics = bookmark()
 
 
-{## Classes & Objects
- # - Compositional Multiple-Inheritance with Multiple-Prototype Chains
+{## Objects & Classes
+ # - Organizing behaviors with hierarchical classification
 
 
  #} {; import * './advanced/objs' # <- details of Đ Object System
-  {## Classes & Objects #}
-  export edh'classes'objs = bookmark()
+  {## Objects & Classes #}
+  export edh'objs'cls = bookmark()
 
-
-  {## Data Classes
-   # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
-
-Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines in pattern matching use cases, closely mimics ADT, predating PEP-634 (which is upcoming in Python 3.10).
-
+  {## Simple Data Classes
+   # - Shorthand class syntax for a simple list of data fields
    #} {;
-    {## Data Classes #}
+    {## Simple Data Classes #}
     export edh'data'classes = bookmark()
 
 
   }
 
 
-  {## Usual Classes
-   # - A data class is still a usual class under the hood
+  {## General Classes
+   # - A class is an object constructor
 
-The `class` keyword defines a usual class.
+A data class is still a general class under the hood, the `class` keyword can be used to define a general class.
 
    #} {;
-    {## Usual Classes #}
-    export edh'usual'classes = bookmark()
+    {## General Classes #}
+    export edh'gen'classes = bookmark()
 
 
     # %%
@@ -2743,30 +2735,6 @@ The `class` keyword defines a usual class.
 
 
   }
-
-}
-
-
-{## Modules
- # - Each module object is loaded from a particular `.edh` file
-
-
- #} {;
-  {## Modules #}
-  export edh'modules = bookmark()
-
-
-}
-
-
-{## Namespaces
- # - A namespace is a special object
-
-
- #} {;
-  {## Namespaces #}
-  export edh'namespaces = bookmark()
-
 
 }
 
@@ -2914,6 +2882,41 @@ When calling an unbound procedure, the owning objects are infered from the conte
    #} {;
     {## Closure #}
     export edh'closure = bookmark()
+
+
+  }
+
+}
+
+
+{## Modules
+ # - The modular way to share artifacts in the world
+
+ Usual module objects are loaded from `.edh` files from os filesystems. In a particular Đ world, one particular `.edh` file, can have only one module object created and initialized from the file content, later imports resolved to the same file will just use the initialized module object as the source, effectively making such modules globally shared.
+
+A module object can be created by calling the `module()` constructor, but rarely done.
+
+Note for security reasons, sandboxed code is prohibited from importing os file based modules, while it is allowed to import from arbitrary objects (including module objects) it knows about, i.e. having the reference to such an object.
+
+ #} {;
+  {## Modules #}
+  export edh'modules = bookmark()
+
+
+  {## Import & Export
+   # - Sharing & referencing
+
+All defining expressions can be prefixed with the `export` keyword for the result artifact to be listed as exported from contextual `this` object, unless evaluated in a _pure_ context. And it's possible for a block expression to be prefixed with the `export` keyword, so all artifacts defined within that block are exported. All objects can export artifacts for others to import.
+
+The general syntax for importing is:
+
+  import <args-receive-spec> <import-source> [into <receiver-object-reference>]
+
+Then exported artifacts from the source object are received as specified by the receive specification, usually into current scope, or into an object specified after the `into` keyword as the receiver.
+
+   #} {;
+    {## Import & Export #}
+    export edh'imp'exp = bookmark()
 
 
   }

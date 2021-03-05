@@ -684,7 +684,7 @@ A closure/procedure captures the full lexical scope hierarchy at the point it is
 
 Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Oriented* as Python, *NOT* everything is an object here, such as numbers, strings, and procedures. And there are a handful of special values.
 
-Đ implements an object system with ompositional Multiple-Inheritance with Multiple-Prototype Chains.
+Đ implements an object system with compositional Multiple-Inheritance with Multiple-Prototype Chains.
 
  #} {; import * './advanced/objs' # <- navigate to elaboration of Đ Object System
 
