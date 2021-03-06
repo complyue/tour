@@ -1,41 +1,88 @@
 {## Đ Object System #}
 
 
-{## Compositional
- # - Composition over Inheritance
-
-Coming from Go type embedding, and C++ object member layout ...
-
- #} {;
-  {## Compositional #}
-  export edh'obj'composition = bookmark()
-
-
-}
-
-
-{## Multiple Inheritance
- # - The classic OO
-
-C3 Linearization ...
-
- #} {;
-  {## Multiple Inheritance #}
-  export edh'multi'inheritance = bookmark()
-
-
-}
-
-
-{## Prototype Based Inheritance
+{## Prototype based Multiple Inheritance
  # - Classical OO popularized by JavaScript
 
-Super object chain, multiple of them ...
+Super object chain, we can have multiple of them here.
 
  #} {;
-  {## Prototype Based Inheritance #}
+  {## Prototype based Multiple Inheritance #}
   export edh'proto'oo = bookmark()
 
+
+}
+
+
+{## Class based Inheritance
+ # - The really popular classic Object Orientation
+
+Java, Smalltalk, Python, Dylan ...
+
+ #} {;
+  {## Class based Inheritance #}
+  export edh'cls'oo = bookmark()
+
+  {## Multiple Inheritance and Method Resolution Order
+   # - C3 linearization
+
+  https://en.wikipedia.org/wiki/C3_linearization
+
+   #} {;
+    {## Multiple Inheritance and Method Resolution Order #}
+    export edh'mro = bookmark()
+
+    # %%
+    class B pass
+    class C extends B
+    class D extends C
+    class E extends (D,B)
+
+    # %%
+    E.mro
+    # %%
+    e = E()
+    supers(e)
+    # %#
+
+  }
+
+}
+
+
+{## Relaxed Inheritance Semantics based on Composition
+ # - Say "Yes" to composition for implementation of inheritance
+
+[Composition over Inheritance]
+  https://en.wikipedia.org/wiki/Composition_over_inheritance
+
+  > ... In other words, it is better to compose what an object can do (HAS-A) than extend what it is (IS-A).
+
+  [HAS-A]
+    https://en.wikipedia.org/wiki/Has-a
+  [IS-A]
+    https://en.wikipedia.org/wiki/Is-a
+
+Well in Đ, object composition is used to implement inheritance in a less strict sense, so that syntactically, you can assume "IS-A" semantics so long as no method name clashing arises, or otherwise resort to "HAS-A" semantics with explicit super instance extraction.
+
+ #} {;
+  {## Relaxed Inheritance Semantics based on Composition  #}
+  export edh'inheritance'semantics = bookmark()
+
+  # An end object always holds the "HAS-A" relationship with each of its super object instances, the instance resolution pattern can be used to extract super object instance of a specific super class, from an end object:
+
+  # %% # For an object `o` of 2 level class based inheritance
+  class A pass
+  class B extends A
+  class C extends B
+  o = C()
+  # %% # The `B` instance can be extracted from `o` as `b`
+  case o of {{ B: b }} -> b
+  # %% # They are distinct instances
+  b is not o
+  # %% # And `b` is actually listed as one of `o`'s super object instances
+  b ?<= supers(o)
+  # %# Note the super instance of class `A` can be obtained similarly
 
 }
 
@@ -43,7 +90,7 @@ Super object chain, multiple of them ...
 {## Magic Methods
  # - How Python turns the gears spinning
 
-Advanced operator overriding/overloading ...
+Advanced infix operator overriding/overloading ...
 
  #} {;
   {## Magic Methods #}

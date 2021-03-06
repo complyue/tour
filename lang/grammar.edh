@@ -1335,6 +1335,34 @@ Both operands will be evaluated anyway, and it'll be runtime error if either lef
 
       }
 
+
+      {## Comparison Operatorrs
+       # - Doing equality and ordering comparisons
+       #} {;
+        {## Comparison Operatorrs #}
+        export edh'cmp'ops = bookmark()
+
+        # %% # Identity Equal
+        3*7 is 28
+        # %% # Identity Not Equal
+        3*7 is not 28
+
+        # %% # Instant Equal
+        3*7 == 28
+        # %% # Instant Not Equal
+        3*7 != 28
+
+        # %% # Greater Than
+        3*7 > 28
+        # %% # Greater or Equal
+        3*7 >= 28
+        # %% # Less Than
+        3*7 < 28
+        # %% # Less or Equal
+        3*7 <= 28
+        # %#
+
+      }
     }
 
   }
@@ -2657,7 +2685,7 @@ The left-hand-side expression of finally (@=>) operator is the action to try, re
       {## The finally (@=>) Operator #}
       export edh'exc'finally = bookmark()
 
-      # %% #
+      # %%s #
       method f3( ***apk ) {
         f2( ***apk )
       } @=> {
@@ -2711,10 +2739,22 @@ export edh'pragmatics = bookmark()
 {## Objects & Inheritance
  # - For data structures & behaviors to be reused
 
+Object is a special kind of values, it serves the basis of user defined data structures in Đ.
 
- #} {; import * './advanced/objs' # <- details of Đ Object System
+Two traditional Object Oriented infrastructure for inheritance are unified, i.e. prototype based and class based Object Orientation. Multiple-inheritance is natively supported as well.
+
+Inheritance in traditional Object Orientation is considered inferior to composition, see:
+  https://en.wikipedia.org/wiki/Composition_over_inheritance
+
+But Đ made it for composition to have the look & feel of inheritance, with boilerplate code in typical composition paradigm avoided. Multiple super (prototype) objects can be obtained with the `supers()` utility procedure, there is also an idiomatic match pattern for class-targeted super object instance extraction.
+
+ #} {;
   {## Objects & Inheritance #}
   export edh'objs'inheritance = bookmark()
+
+  # The Đ Object System is an advanced topic in another chapter
+  import * './advanced/objs' # <- details of Đ Object System
+
 
   {## Simple Data Classes
    # - Shorthand class syntax for simple data records
@@ -2725,6 +2765,32 @@ Simple data structures without inheritance can be simply defined as data classes
     {## Simple Data Classes #}
     export edh'data'classes = bookmark()
 
+    # %{
+
+    # %% # A simple class with 2 fields, x and y for a 2D point
+    data Point(x, y) pass
+
+    # %% # Data fields can store object values of course, and a default value can be supplied for a field in the constructor arguments receiver
+    data Circle( r, c= Point(0,0), ) pass
+    data Rectangle(w, h, o= Point(0,0), ) pass
+
+    # %}
+
+    # %% # The class name binds to the object constructor procedure, it can be called with arguments for data fields to construct new objects of the class
+    c1 = Circle(5)
+    c2 = Circle(5)
+    # %% # Two data objects are considered equal when all of their fields are equal respectively
+    c1 == c2
+    # %% # But they are distinct objects per se (having different identity)
+    c1 is not c2
+    # %% # And each object can be modified individually
+    c2.r = 6
+    c1 == c2
+    # %# See they are not equal now?
+
+    # %% # The representation magic method ( `__repr__()`` ) is automatically generated, keyword arguments will be shown when there are more than 2 fields
+    r1 = Rectangle( 7, 2, Point(3, 1), )
+    # %#
 
   }
 
@@ -2742,7 +2808,7 @@ Simple data structures without inheritance can be simply defined as data classes
 
 
   {## Class based Inheritance
-   # - Composite objects are constructed by a class, together with its super classes
+   # - Composite objects are constructed by a class, together with all its super classes
 
 The `class` keyword is used to define a general class without syntactic sugar artifacts.
 
@@ -2750,45 +2816,72 @@ The `class` keyword is used to define a general class without syntactic sugar ar
     {## Class based Inheritance #}
     export edh'cls'inheritance = bookmark()
 
-
-    # %%
-    class B pass
+    # The extending relationship among classes will cause the objects they constructed to have a super objects structure accordingly
+    # %% #
+    class A pass
+    class B extends A
     class C extends B
-    class D extends C
-    class E extends (D,B)
-    # %%
+    # %% # Construct an end object of class `C`
     o = C()
-    o.a = 5
-    # %%
-    dir$ o
+    # %% # See it has instances of class `B` and `A` respectively
+    supers(o)
     # %#
 
 
-    {## Method Resolution Order
+    {## Multiple Inheritance and Method Resolution Order
      # - C3 linearization
-
-  https://en.wikipedia.org/wiki/C3_linearization
-
      #} {;
-      {## Method Resolution Order #}
+      {## Multiple Inheritance and Method Resolution Order #}
       export edh'mro = bookmark()
 
-      # %%
+      # A class can extend multiple super classes, then there are chances for a same super class to be indirectly extended multiple times, via different paths
+
+      # %% # `B` is extended by `E`, both directly and indirectly via `D` -> `C` -> `B`
+      class D extends C
+      class E extends (D,B)
+
+      # Such situations are handled with an algorithm named C3 linearization, see:
+      #   https://en.wikipedia.org/wiki/C3_linearization
+      # The lineraized super class list can be obtained as the `mro` attribute of a class
+
+      # %% # The result mro
       E.mro
-      # %%
+      # %% # The list of super object instances for the end object constructed
       e = E()
       supers(e)
-      # %#
+      # %# See their respective classes matches the super classes in mro
 
     }
 
   }
 
 
+  {## Super Object Instance Extraction
+   # - Casting to base class in Đ
+   #} {;
+    {## Super Object Instance Extraction #}
+    export edh'base'cast = bookmark()
+
+    # An end object always holds the "HAS-A" relationship with each of its super object instances, the instance resolution pattern can be used to extract super object instance of a specific super class, from an end object:
+
+    # %% # For an object `o` of 2 level class based inheritance
+    class A pass
+    class B extends A
+    class C extends B
+    o = C()
+    # %% # The `B` instance can be extracted from `o` as `b`
+    case o of {{ B: b }} -> b
+    # %% # They are distinct instances
+    b is not o
+    # %% # And `b` is actually listed as one of `o`'s super object instances
+    b ?<= supers(o)
+    # %# Note the super instance of class `A` can be obtained similarly
+
+  }
+
+
   {## Magic Methods
    # - Customize object behaviors responding to infix operators and some common procedures
-
-
    #} {;
     {## Magic Methods #}
     export edh'magic'mths = bookmark()
