@@ -1660,7 +1660,35 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 
       # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
       show$ NA
-      # %# Applicability & defaulting semantics are described in another chapter
+
+      # Artitrary defaulting values can be created dynamically, with an expression providing the value used for default. Such values are usually returned from operator procedures, so objects can override their behavior with magic methods, when operated by the operator, while a default implementation is provided by the operator procedure, which is effective when no magic methods present.
+      # %%
+      operator 0 (+*+) (lhv, rhv) {
+        return default lhv ++ ' *** ' ++ rhv
+      }
+      # %%
+      3*7 +*+ 'is a lucky number'
+
+      # %%
+      class N {
+        method __init__( val as this.__repr__ ) pass
+      }
+
+      class M { extends N
+        method (+*+) (other) {
+          return this ++ ' --- ' ++ other
+        }
+      }
+      # %%
+      n = N(3*7)
+      m = M(3*7)
+      # %%
+      n +*+ 'is a lucky number'
+      # %%
+      m +*+ 'is a lucky number'
+      # %#
+
+      # %# Applicability & defaulting semantics are advanced topics described in another chapter
       ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
         edh'na'semantics # <- follow this bookmark to the specific section there
       }
@@ -2680,16 +2708,19 @@ The left-hand-side expression of finally (@=>) operator is the action to try, re
 export edh'pragmatics = bookmark()
 
 
-{## Objects & Classes
- # - Organizing behaviors with hierarchical classification
+{## Objects & Inheritance
+ # - For data structures & behaviors to be reused
 
 
  #} {; import * './advanced/objs' # <- details of Đ Object System
-  {## Objects & Classes #}
-  export edh'objs'cls = bookmark()
+  {## Objects & Inheritance #}
+  export edh'objs'inheritance = bookmark()
 
   {## Simple Data Classes
-   # - Shorthand class syntax for a simple list of data fields
+   # - Shorthand class syntax for simple data records
+
+Simple data structures without inheritance can be simply defined as data classes. Though data classes are full fledged classes with all capabilities including inheritance.
+
    #} {;
     {## Simple Data Classes #}
     export edh'data'classes = bookmark()
@@ -2698,14 +2729,26 @@ export edh'pragmatics = bookmark()
   }
 
 
-  {## General Classes
-   # - A class is an object constructor
+  {## Prototype based Inheritance
+   # - Extending other objects directly
 
-A data class is still a general class under the hood, the `class` keyword can be used to define a general class.
 
    #} {;
-    {## General Classes #}
-    export edh'gen'classes = bookmark()
+    {## Prototype based Inheritance #}
+    export edh'obj'extending = bookmark()
+
+
+  }
+
+
+  {## Class based Inheritance
+   # - Composite objects are constructed by a class, together with its super classes
+
+The `class` keyword is used to define a general class without syntactic sugar artifacts.
+
+   #} {;
+    {## Class based Inheritance #}
+    export edh'cls'inheritance = bookmark()
 
 
     # %%
@@ -2714,14 +2757,31 @@ A data class is still a general class under the hood, the `class` keyword can be
     class D extends C
     class E extends (D,B)
     # %%
-    E.mro
-    # %%
     o = C()
     o.a = 5
     # %%
     dir$ o
-
     # %#
+
+
+    {## Method Resolution Order
+     # - C3 linearization
+
+  https://en.wikipedia.org/wiki/C3_linearization
+
+     #} {;
+      {## Method Resolution Order #}
+      export edh'mro = bookmark()
+
+      # %%
+      E.mro
+      # %%
+      e = E()
+      supers(e)
+      # %#
+
+    }
+
   }
 
 
@@ -2734,6 +2794,22 @@ A data class is still a general class under the hood, the `class` keyword can be
     export edh'magic'mths = bookmark()
 
 
+  }
+
+
+  {## Host Objects
+   # - Data structures & behaviors written in the host language
+
+Đ objects and classes are defined by scripting code as shown above, while the host programming language can be used to define native data structures and methods, then wrapped as Đ classes and objects, for the scripting code to program them. The host programming langauge can usualy generate high performance machine code, that runs more energy-efficient for computation intensive tasks.
+
+   #} {;
+    {## Host Objects #}
+    export edh'host'obj = bookmark()
+
+    # %% # A simple example of a host class that constructs host objects is:
+    dir$ Vector
+    # See its implementation in Haskell (the host language):
+    # %# https://github.com/e-wrks/edh/blob/latest/host.hs/src/Language/Edh/Batteries/Vector.hs
   }
 
 }
