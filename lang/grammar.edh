@@ -607,7 +607,7 @@ Some symbol values are not pleasing for others to import into their own scopes w
         @}
         # %# Ever wondered why symbols are used in such cases? Imagine all the 3rd party components use alphanumerically named effects, then you'll see it's unsolvable mess.
 
-        # Ever wondered why effects are used in such cases? Dynamic Scoped Effects in Đ is a mechanism for implicit argument passing, which implements effect tracking like Monads does in a functional paradigm. Imagine without effects resolution, and the call hierarchy goes rather deeply nested, you'll have to pass the artifacts required by the inner most procedure as arguments at each layer of the call, all the way from the outer most call site. Then you'll see how implicit arguments can save the day.
+        # Ever wondered why effects are used in such cases? Dynamic Scoped Effects in Đ is a mechanism for implicit argument passing, which implements effect tracking in the dynamic imperative paradigm (rival to what [Algegraic Effects & Handlers] or [Monads] does in the functional paradigm). Imagine without effects resolution, and the call hierarchy goes rather deeply nested, you'll have to pass the artifacts required by the inner most callee as arguments through every layer of the call, all the way from the outer most call site into the inner most effecting site. Then you'll see how implicit arguments can save the day.
 
         # Dynamic Effect Tracking is further described later in this chapter
         ; () => edh'eff'tracking # <- follow this bookmark to that section
