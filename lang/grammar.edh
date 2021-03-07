@@ -461,7 +461,9 @@ Special note about the single character identifier with a mere underscore, it is
 
 Symbol is a special type of values solely for identification purpose, they are defined and used via at-notations.
 
-FYI the other mainstream programming language having symbols is JavaScript, though there is no dedicated syntax in JavaScript as in Đ.
+The other mainstream programming language having symbols is JavaScript, though there is no dedicated syntax in JavaScript as in Đ.
+
+Note that Julia's symbol is still alphanumeric based, and is for AST manipulation purpose, which is not the same as in Đ.
 
      #} {;
       {## Symbolic Names and At-Notation #}
@@ -523,6 +525,80 @@ FYI the other mainstream programming language having symbols is JavaScript, thou
       # %% # As well as:
       dir
       # %# See "confidential= @secret" in the result? That's because a symbol value has its `repr` reflecting how it is initially defined, and will never change, though the value can be assigned to different names as we have demonstrated here.
+
+
+      {## Interpolation based At-Notation
+       # - The idiomatic way to use private symbols
+
+Some symbol values are not pleasing for others to import into their own scopes with a direct attribute name, so there is a syntax for an interpolated symbol value to serve as the attribute key, the general syntax is:
+
+  @( <expr-evals-to-symbol-value> )
+
+       #} {;
+        {## Interpolation based At-Notation #}
+        export edh'sym'intpl = bookmark()
+
+        # %% #
+        namespace private'force () {
+          symbol @passphrase
+
+          method launch'missiles() {
+            if 'for~good~profit' != perform @passphrase
+            then error( "We don't serve voluntarily!")
+            console.info<| "Destroying enemies!!!"
+          }
+
+        }
+
+        # %% # This is gonna to fail:
+        {@
+          private'force.launch'missiles()
+        @}
+
+        # %% # This will make it:
+        {@
+          effect @( private'force.passphrase ) = 'for~good~profit'
+          private'force.launch'missiles()
+        @}
+
+        # %% # This will work, but not idiomatic:
+        {@
+          passphrase = private'force.passphrase
+          effect @passphrase = 'for~good~profit'
+          private'force.launch'missiles()
+        @}
+
+        # %% # Why? The same alphanumeric name can usually be used by multiple, independent 3rd party components for some of their symbols, as the software integrator, you'd better think such symbols being their private symbols. Let's add a 2nd component who uses a symbol named `passphrase` too:
+        namespace un'peacekeepers () {
+          symbol @passphrase
+
+          method attack( friendly'army ) {
+            if 'for~world~peace' != perform @passphrase
+            then error( "We don't serve evil!")
+            friendly'army.launch'missiles()
+          }
+        }
+
+        # %% # When all expected effects have to be mixed into your calling scope, the following scription is ugly at best, it can easily confuse future maintainers to introduce bugs:
+        {@
+          passphrase = private'force.passphrase
+          effect @passphrase = 'for~good~profit'
+          passphrase = un'peacekeepers.passphrase
+          effect @passphrase = 'for~world~peace'
+
+          un'peacekeepers.attack( private'force )
+        @}
+
+        # %% # While this is the idiomatic way:
+        {@
+          effect @( private'force.passphrase ) = 'for~good~profit'
+          effect @( un'peacekeepers.passphrase ) = 'for~world~peace'
+
+          un'peacekeepers.attack( private'force )
+        @}
+        # %# Ever wandered why symbols are used in such cases? Imagine all the 3rd party components use alphanumerically named effects, then you'll see it's unsolvable mess.
+      }
+
     }
 
 
