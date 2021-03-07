@@ -572,10 +572,10 @@ Some symbol values are not pleasing for others to import into their own scopes w
         namespace un'peacekeepers () {
           symbol @passphrase
 
-          method attack( friendly'army ) {
+          method auth'attack'by( army'force ) {
             if 'for~world~peace' != perform @passphrase
             then error( "We don't serve evil!")
-            friendly'army.launch'missiles()
+            army'force.launch'missiles()
           }
         }
 
@@ -586,7 +586,7 @@ Some symbol values are not pleasing for others to import into their own scopes w
           passphrase = un'peacekeepers.passphrase
           effect @passphrase = 'for~world~peace'
 
-          un'peacekeepers.attack( private'force )
+          un'peacekeepers.auth'attack'by( private'force )
         @}
 
         # %% # While this is the idiomatic way:
@@ -594,9 +594,9 @@ Some symbol values are not pleasing for others to import into their own scopes w
           effect @( private'force.passphrase ) = 'for~good~profit'
           effect @( un'peacekeepers.passphrase ) = 'for~world~peace'
 
-          un'peacekeepers.attack( private'force )
+          un'peacekeepers.auth'attack'by( private'force )
         @}
-        # %# Ever wandered why symbols are used in such cases? Imagine all the 3rd party components use alphanumerically named effects, then you'll see it's unsolvable mess.
+        # %# Ever wondered why symbols are used in such cases? Imagine all the 3rd party components use alphanumerically named effects, then you'll see it's unsolvable mess.
       }
 
     }
