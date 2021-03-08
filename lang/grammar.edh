@@ -2885,88 +2885,330 @@ Simple data structures without inheritance can be simply defined as data classes
   }
 
 
-  {## Prototype based Inheritance
-   # - Extending other objects directly
-
-
-   #} {;
-    {## Prototype based Inheritance #}
-    export edh'obj'extending = bookmark()
-
-
-  }
-
-
   {## Class based Inheritance
    # - Composite objects are constructed by a class, together with all its super classes
 
-The `class` keyword is used to define a general class without syntactic sugar artifacts.
+A class object is a special kind of object, the `class` keyword is used to define a general class without syntactic sugar artifacts that `data` classes would define automatically.
 
    #} {;
     {## Class based Inheritance #}
     export edh'cls'inheritance = bookmark()
 
-    # The extending relationship among classes will cause the objects they constructed to have a super objects structure accordingly
-    # %% #
-    class A pass
-    class B extends A
-    class C extends B
-    # %% # Construct an end object of class `C`
-    o = C()
-    # %% # See it has instances of class `B` and `A` respectively
-    supers(o)
-    # %#
+    {## Class Artifacts
+     # - What a standalone class can have
+
+First, we demonstrate a standalone class, i.e. without inheritance
+
+     #} {;
+      {## Class Artifacts #}
+      export edh'cls'arts = bookmark()
+
+      # %% #
+
+      {##
+       # A standalone class
+       #}
+      class C {
+
+        {##
+         # A static class attribute
+
+Class attributes serve as the default value for object instances of this class
+
+         #}
+        static'attr'a = 3
+
+        {##
+         # The magic `__init__()` method
+
+This will be called every time a new object instance is constructed, by calling the class object, which semantically being its own constructor procedure.
+
+It can receive arguments as usual procedures.
+
+         #}
+        method __init__( b as this.b, c as this._c = 5, *** ) {
+          # The procedure body can contain arbitrary statements to initialize the object instance.
+          # `this` refers to the object instance just created, assigning attributes to it here is part of the object construction procedure.
+          this._d = this.b * this._c
+        }
+
+        {##
+         # An instance method
+
+Any number of method procedures can be defined for a class.
+
+         #}
+        method instance'method'd() void {
+          console.print$ 'My d = ' ++ this._d
+        }
+
+        {##
+         # The `d` property getter
+
+Properties are syntatic sugar for private fields of an object to be accessed like attributes.
+
+Without a setter method, a property looks & feels like a readonly attribute.
+
+This is the getter method of property `d`.
+
+         #}
+        property$
+        method d() this._d
+
+        {##
+         # The `c` property getter
+
+This is the getter method of property `c`.
+
+         #}
+        property$
+        method c() this._c
+
+        {##
+         # The `c` property setter
+
+With a setter method, a property look & feels like a usual attribute.
+
+This is the setter method of property `c`.
+
+         #}
+        setter$
+        method c(new'c) {
+          this._c = new'c
+          this._d = this.b * this._c
+          return this._c # for the result of the assignment
+        }
+
+      }
+
+      # %% # Static class attributes is accessable via the class object directly
+      C.static'attr'a
+
+      # %% # Construct an instance of class `C`
+      o = C(2)
+
+      # %% # Static class attributes not overridden by the instance can be read as instance attribute too
+      o.static'attr'a
+
+      # %% # See its fields
+      o.b
+
+      # %% # Call its methods
+      o.instance'method'd()
+
+      # %% # Read its properties
+      ( o.d, o.c, )
+
+      # %% # Change its properties
+      o.c = 111
+
+      # %% # This is gonna to fail
+      o.d = 99
+
+      # %#
+    }
+
+
+    {## Super Classes
+     # - Extending other classes
+
+If a class `extends` one or more super classes, either directly or indirectly, an object this class constructs will have a super object list accordingly.
+
+     #} {;
+      {## Super Classes #}
+      export edh'super'cls = bookmark()
+
+      # %% #
+
+      {##
+       # A derived class from another one
+       #}
+      class D { extends C
+
+        {##
+         # All classes can have its own `__init__()` magic method
+
+Especially note that construction arguments are passed to all classes' `__init__()` method, so they'd better to ignore args in the pack for the `__init__()` method by other (either super or descendant) classes. In this case, it's a good idea to only receive named arguments (keyword args), as positional arguments are pretty easy to be supplied under wrong assumptions or mis-interpreted.
+
+         #}
+        method __init__( *, x as this.x, *** ) {
+          this.y = super.b * this.x
+        }
+
+      }
+
+      {##
+       # A further extended class
+       #}
+      class E extends D
+
+      # %#
+
+      # %% # Here we construct an end object of class `E`
+      # Note `9` as a positional argument is meant to be passed to `C`'s constructor, while `x= 23` is meant for that of `D`'s keyword args so named
+      e = E( 9, x= 23, )
+
+      # %% # See it has instances of class `D` and `C` respectively
+      supers(e)
+      # %#
+
+      # An object attribute when requested against an end object, will be resolved by consulting itself first, then its super objects in order as listed, an attribute value provided by any instance (or its class) will be used and the resolution is done. It'll be runtime error if none of the instances provides the interesting attribute.
+
+      # Unless overridden by a descendant class, artifacts of a super class should just work via the end object instance
+
+      # %% # Static class attributes inherited
+      e.static'attr'a
+
+      # %% # Inherited fields
+      e.b
+
+      # %% # Inherited methods
+      e.instance'method'd()
+
+      # %% # Read inherited properties
+      ( e.d, e.c, )
+
+      # %% # Change inherited properties
+      e.c = 111
+
+      # %% # This is gonna to fail
+      e.d = 99
+
+      # %#
+    }
+
+
+    {## Super Object Instance Extraction
+     # - Obtaining super class instance
+
+An end object always holds the "HAS-A" relationship with each of its super object instances, the instance resolution match pattern can be used to extract super object instance of a specific super class, from an end object.
+
+     #} {;
+      {## Super Object Instance Extraction #}
+      export edh'super'inst'extraction = bookmark()
+
+      # %% # For an object `o` with 2 levels of class inheritance
+      class A pass
+      class B extends A
+      class C extends B
+      o = C()
+
+      # %% # The `B` instance can be extracted from `o` as `b` like this:
+      case o of {{ B: b }} -> b
+
+      # %% # They are distinct instances
+      b is not o
+
+      # %% # And `b` is actually listed as one of `o`'s super object instances
+      b ?<= supers(o)
+      # %# Note the super instance of class `A` can be obtained similarly
+
+    }
 
 
     {## Multiple Inheritance and Method Resolution Order
      # - C3 linearization
+
+A class can extend multiple super classes, then there are chances for a same super class to be indirectly extended multiple times, via different paths.
+
+Such situations are handled with an algorithm named C3 linearization, see:
+  https://en.wikipedia.org/wiki/C3_linearization
+
+Note that it's more proper to say "Attribute Resolution Order" instead of "Method Resolution Order" in Đ context, but we use MRO as it's a well established concept in context of C3 linearization.
+
      #} {;
       {## Multiple Inheritance and Method Resolution Order #}
       export edh'mro = bookmark()
 
-      # A class can extend multiple super classes, then there are chances for a same super class to be indirectly extended multiple times, via different paths
+      # %% #
+      class O pass
+      class A extends O
+      class B extends O
+      class C extends O
+      class D extends O
+      class E extends O
+      class K1 extends ( A, B, C )
+      class K2 extends ( D, B, E )
+      class K3 extends ( D, A )
+      class Z extends ( K1, K2, K3 )
 
-      # %% # `B` is extended by `E`, both directly and indirectly via `D` -> `C` -> `B`
-      class D extends C
-      class E extends (D,B)
+      # %% # The lineraized super class list can be obtained as the `mro` attribute of a class
+      Z.mro
 
-      # Such situations are handled with an algorithm named C3 linearization, see:
-      #   https://en.wikipedia.org/wiki/C3_linearization
-      # The lineraized super class list can be obtained as the `mro` attribute of a class
+      # %% # The list of super object instances for the end object constructed, will reflect `mro` of the end class:
+      z = Z()
+      supers(z)
+      # %# See class of the super instances match the super class listed in mro
 
-      # %% # The result mro
-      E.mro
-      # %% # The list of super object instances for the end object constructed
-      e = E()
-      supers(e)
-      # %# See their respective classes matches the super classes in mro
+      # %% # A specific super instance can be obtained via pattern matching:
+      case z of { { K2: k2 } } -> k2
+
+      # %% # A super instance alone, can also be thought of as an end object on its own right:
+      supers( k2 )
+      # %% # See its own super instance list, matching it's own class' mro:
+      K2.mro
+      # %#
+
+      # %% # Super instances are shared by each member instance of a final end object:
+      ; (
+        case z of { { O: z's'o } } -> z's'o
+      ) is (
+        case k2 of { { O: k2's'o } } -> k2's'o
+      )
+      # %#
 
     }
 
   }
 
 
-  {## Super Object Instance Extraction
-   # - Casting to base class in Đ
+  {## Prototype based Inheritance
+   # - Extending other objects directly
+
+You can avoid class inheritance at all, and let an object instance extend one or more other objects directly, and since the extending relationship can be chained, multiple levels of instance inheritance is possible.
+
+You can set a shared super object as for the prototype, then new objects can extend it directly, with arbitrary attributes overridden.
+
+The overrides happen dynamically, which means the relationship and overriding value can change at anytime.
+
+The super object can also change dynamically, which means all descendant objects will effectively change accordingly, w.r.t. attributes they don't override.
+
    #} {;
-    {## Super Object Instance Extraction #}
-    export edh'base'cast = bookmark()
+    {## Prototype based Inheritance #}
+    export edh'proto'inheritance = bookmark()
 
-    # An end object always holds the "HAS-A" relationship with each of its super object instances, the instance resolution pattern can be used to extract super object instance of a specific super class, from an end object:
+    # %% #
+    data Point(x, y) pass
 
-    # %% # For an object `o` of 2 level class based inheritance
-    class A pass
-    class B extends A
-    class C extends B
-    o = C()
-    # %% # The `B` instance can be extracted from `o` as `b`
-    case o of {{ B: b }} -> b
-    # %% # They are distinct instances
-    b is not o
-    # %% # And `b` is actually listed as one of `o`'s super object instances
-    b ?<= supers(o)
-    # %# Note the super instance of class `A` can be obtained similarly
+    center'of'everything = Point(0,0)
 
+    class Origin {
+      method __init__(***) {
+        extends center'of'everything
+      }
+    }
+
+    data Circle(radius, center= Origin()) pass
+
+    # %% # These 2 circles have their respective origin point extend from a shared point
+    c1 = Circle(5)
+    c2 = Circle(6)
+    c1 ++ ' vs ' ++ c2
+
+    # %% # Their origin points are distinct objects, can change individually
+    c2.center.x = 3
+    c1 ++ ' vs ' ++ c2
+
+    # %% # The shared super object can also change, possibly causing a blast of changes
+    center'of'everything.y = 7
+    c1 ++ ' vs ' ++ c2
+    # %#
+
+    # You are not limited to `extends` only one super object, multiple super objects can be extended at a time:
+    extends (super1, super2, *more'supers,)
+    # And you can issue `extends` at anywhere for as many times as you'd like, that's to say, it's also dynamic.
+
+    # Prototype based inheritance is powerful but can easily go wrong, and harder to reason about for complex systems. It may be too dangerous for software intergration scenarios, while can be convenient if managed well in component local scenarios.
   }
 
 
