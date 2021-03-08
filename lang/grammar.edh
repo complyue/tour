@@ -3454,16 +3454,229 @@ The `null()` utility will consult `__null__()` of an object value.
           # %#
         }
 
+
+        {## Converting to String Forms
+         # - For pretty show of objects
+         #} {;
+          {## Converting to String Forms #}
+          export edh'str'magics = bookmark()
+
+          {## String Representation
+           # - The `__repr__()` magic
+
+The `repr()` utility will consult `__repr__()` of an object value.
+
+Especially note that all implementers should try the best to give the "repr" string in form of valid Đ source code, and make it evaluates to a value equal to the original value, best to be identical, or instantly equal, or at least closely related. Though being invalid Đ source is not technically prohibited, and sometimes unavoidable.
+
+Note that the REPLs, `console.print()` and many other utilities use `repr()` to convert non-string values for the show, so a good `__repr__()` implementation is really beneficial.
+
+           #} {;
+            {## String Representation #}
+            export edh'repr'magic = bookmark()
+
+            # %% # Use a hard-coded value for simplest example
+            class R {
+              method __repr__() 'R()'
+            }
+            o = R()
+
+            # %% #
+            repr(o) is 'R()'
+
+
+            # %% # It doesn't have to be a method procedure, a plain value will do too
+            class R {
+              method __init__() {
+                this.__repr__ = 'R()'
+              }
+            }
+            o = R()
+            repr(o) is 'R()'
+
+            # %#
+          }
+        }
+
+
+        {## Converting to String Value
+         # - The `__str__()` magic
+
+The `str()` utility will consult `__str__()` of an object value.
+
+         #} {;
+          {## Converting to String Value #}
+          export edh'str'magic = bookmark()
+
+          # %% # Use a hard-coded value for simplest example
+          class S {
+            method __str__() 'SSS'
+          }
+          o = S()
+          str(o)
+
+
+          # %% # It doesn't have to be a method procedure, a plain value will do too
+          class S {
+            method __init__() {
+              this.__str__ = 'SSS'
+            }
+          }
+          o = S()
+          str(o)
+
+          # %#
+        }
+
+
+        {## Verbose String for the Show
+         # - The `__show__()` magic
+
+The `show()` utility will consult `__show__()` of an object value.
+
+         #} {;
+          {## Verbose String for the Show #}
+          export edh'show'magic = bookmark()
+
+          # %% # Use a hard-coded value for simplest example
+          class W {
+            method __show__() 'SSS'
+          }
+          o = W()
+          show(o)
+
+
+          # %% # It doesn't have to be a method procedure, a plain value will do too
+          class W {
+            method __init__() {
+              this.__show__ = 'SSS'
+            }
+          }
+          o = W()
+          show(o)
+
+          # %#
+        }
+
+
+        {## Verbose String for Description
+         # - The `__desc__()` magic
+
+The `desc()` utility will consult `__desc__()` of an object value.
+
+         #} {;
+          {## Verbose String for Description #}
+          export edh'desc'magic = bookmark()
+
+          # %% # Use a hard-coded value for simplest example
+          class D {
+            method __desc__() 'DDD'
+          }
+          o = D()
+          desc(o)
+
+
+          # %% # It doesn't have to be a method procedure, a plain value will do too
+          class D {
+            method __init__() {
+              this.__desc__ = 'DDD'
+            }
+          }
+          o = D()
+          desc(o)
+
+          # %#
+        }
+
+
+        {## Stringify to JSON
+         # - The `__json__()` magic
+
+The `json()` utility will consult `__json__()` of an object value.
+
+If a string value is returned, make sure to follow the JSON format specification:
+  https://www.json.org
+
+Instead of a string, you can return other values convertible to JSON strings, e.g. lists or dicts, they'll be further stringified automatically. This is more idiomatic since the result data structures will be syntax highlighted and validated as Đ source, while gotchas like trailing commas are took care of automatically.
+
+         #} {;
+          {## Stringify to JSON #}
+          export edh'json'magic = bookmark()
+
+          # %% # Use a hard-coded value for simplest example
+          class J {
+            method __json__() {
+              "k": "V",
+            }
+          }
+          o = J()
+          json(o)
+
+
+          # %% # It doesn't have to be a method procedure, a plain value will do too
+          class J {
+            method __init__() {
+              this.__json__ = {
+                "k": "V",
+              }
+            }
+          }
+          o = J()
+          json(o)
+
+          # %#
+        }
+
+
         {## Instant Equality Test
          # - The `__eq__()` magic
 
 The (==) and (!=) operator will consult `__eq__()` of its lhs object operand, then its rhs object operand if no conclusion from lhs.
 
+But note that for possible vectorized comparison between some objects, the class should instead implement the infix operator magic, in the way described in the next section.
+
          #} {;
           {## Instant Equality Test #}
           export edh'eq'magic = bookmark()
 
+          # %% #
 
+          {##
+           # Convert any value to string
+           #}
+          class Str {
+
+            # Match any value
+            method __match__(v) {
+              return Str(v)
+            }
+
+            # Do the conversion
+            method __init__( x ) {
+              this.__str__ = str(x)
+            }
+
+            # Implement the string representation
+            method __repr__() {
+              return "Str(" ++ repr(this.__str__) ++ ")"
+            }
+
+            # Check only the string form
+            method __eq__(other) {
+              return str(other) == this.__str__
+            }
+
+          }
+
+          # %% #
+          s = Str(3*7)
+          # %%
+          s == '21'
+          # %%
+          '21' == s
+          # %% #
+          s != '22'
+
+          # %#
         }
 
 
