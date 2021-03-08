@@ -1606,7 +1606,9 @@ The common sense of "equality" assumes snapshot semantics when comparing two mut
       class D {
         method __init__(x as this.x, y as this.y) pass
         method __eq__(other) case other of {
-          { D(x= otherX, y= otherY) } -> { # this uses a match pattern doing instance check with field extraction at the same time
+          # A match pattern is used here,
+          # it does instance check with field extraction at the same time
+          { D(x= otherX, y= otherY) } -> {
             this.x == otherX and this.y == otherY
           }
           _ -> false
@@ -3340,22 +3342,96 @@ The super object can also change dynamically, which means all descendant objects
 
 
   {## Methods and Magic Ones
-   # - The execution context of procedures
+   # - Procedures called in particular execution context
 
-Customize object behaviors responding to infix operators and some common procedures
+When a procedure is called, there are associated contextual information with the call, e.g. from where the caller has obtained the procedure. In case the procedure is obtained as some attribute of an object, then we say this procedure is called as a "method" of that object.
+
+Actually in Đ, there are always contextual objects associated with a call, when no source object is used to obtain a callee, the current scope's contextual objects are used for the association, then the callee is called as "method" of those objects as well.
+
+In some cases, a method is not called as usual with an explicit surface syntax, but due to deeper reasons according to some hidden rules, so we say they are "magic method"s.
 
    #} {;
     {## Methods and Magic Ones #}
     export edh'mths'and'magic = bookmark()
 
+    {## This and That Reference
+     # - How contextual objects can be refered to
+     #} {;
+      {## This and That Reference #}
+      export edh'this'that'refs = bookmark()
+
+      # %% # This simple example should help you understand it
+      class C {
+
+        method hello() {
+          'Hello, this is ' ++ this ++ ", I know that " ++ that ++ ' is called.'
+        }
+
+        method what's'this() return this
+        method what's'that() return that
+
+      }
+
+      class D extends C
+      # %#
+
+      # %% # Let's call an inherited method
+      o = D()
+      o.hello()
+      # %# Both `this` and `that` refer to an contextual object per the method get called
+
+      # %% # `this` refers to the object instance actually defined the method procedure (the callee)
+      o.what's'this()
+      # Note a method is usually defined by the class of an object, but an object instance is also allowed to define methods on its own right.
+
+      # %% # `that` refers to the end object via which the method procedure is obtained (usually via at-notation)
+      o.what's'that()
+
+      # So in the case as demonstrated above:
+
+      # %% # `that` refers to the end object `o`
+      o.what's'that() is o
+
+      # %% # `this` refers to `o`'s super object, whose class is `C`, which has provided the called method procedure:
+      case o of {{ C: c }}
+      -> c is o.what's'this()
+
+      # %# There can be intermediate super objects involved, but no special syntax to obtain them.
+
+
+      {## Rule of Thumb
+       # - You know `this` better, and `that` is out of your reach
+
+The rule of thumb to intuit `this` and `that` reference when you are writing code of a method:
+
+  The enclosing class will provide the method you are writing, so the instance of it is "closer" to you, i.e. you can see how other methods as well as other artifacts are implemented near the method procedure you are writting.
+
+  `that` object must be of some descendant class derived from current enclosing class, you are not sure what new behaviors have been added to `that`, as well as how `that` has overrided the behaviors here in current context. So `that` is "farther" from you.
+
+       #} {;
+        {## Rule of Thumb #}
+        export edh'this'that'rot = bookmark()
+      }
+
+    }
+
+
+    {## Magic Methods
+     # - Customize object behaviors in responding to infix operators and some common procedures
+     #} {;
+      {## Magic Methods #}
+      export edh'magic'mths = bookmark()
+
+
+    }
 
   }
 
 
   {## Host Objects
-   # - Data structures & behaviors written in the host language
+   # - Data structures & behaviors implemented in the host language
 
-Đ objects and classes are defined by scripting code as shown above, while the host programming language can be used to define native data structures and methods, then wrapped as Đ classes and objects, for the scripting code to program them. The host programming langauge can usualy generate high performance machine code, that runs more energy-efficient for computation intensive tasks.
+Đ objects and classes are defined by scripting code as shown above, while the host programming language can be used to define native data structures and methods, then wrapped as Đ classes and objects, for the scripting code to integrate various components together. The host programming langauge can usualy generate high performance machine code, that runs more energy-efficient for computation intensive tasks.
 
    #} {;
     {## Host Objects #}
