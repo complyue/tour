@@ -3685,11 +3685,72 @@ But note that for possible vectorized comparison between some objects, the class
       {## General Infix Operator Magics
        # - Responding to infix operators
 
+Almost all infix operators come with the default batteries can be overridden by magic methods. The mechanism and syntax are described in this section.
 
        #} {;
         {## General Infix Operator Magics #}
         export edh'infix'magics = bookmark()
 
+        # For an infix operator to be overridable by object magic methods, the operator procedure should return defaulting values, among which `default nil` or the short-hand NA, as a special case, meaning it's not applicable unless the operands being some object with corresponding magic method to draw a conclusion for the operation. The lhs operand then the rhs operand will be tried, from which to obtain and execute a corresponding magic method, if they are object values.
+
+        # %% # Let's demonstrate it with such a new operator (*-*)
+        {##
+         # Concatenate values for demo purpose
+         #}
+        operator 0 (*-*) (lhv, rhv) {
+          return default lhv ++ ' *** ' ++ rhv
+        }
+
+        # %% # See the default implementation works well
+        'we the people' *-* 'are proud humans'
+
+        # %% # Then let's define a class overriding the object behavior when involved in that operator
+        class M {
+
+          {##
+           # For ease of identification
+           #}
+          method __init__( vs as this.__repr__ ) pass
+
+          {##
+           # LHS operand objet behavior
+
+This is the responding magic method when an object of this class is the left-hand-side operand of the operator.
+
+The method name needs to be verbatimly the operator symbol, quoted in a pair of parenthese.
+
+           #}
+          method (*-*) (other) {
+            return this ++ ' <-- ' ++ other
+          }
+
+          {##
+           # RHS operand objet behavior
+
+This is the responding magic method when an object of this class is the right-hand-side operand of the operator.
+
+The method name needs to be verbatimly the operator symbol, followed by an immediate dot (.), and quoted in a pair of parenthese.
+
+           #}
+          method (*-*.) (other) {
+            return other ++ ' --> ' ++ this
+          }
+
+        }
+        # %% # Construct an instance of the class
+        m = M( 'MMM' )
+
+        # %% # Check the lhs magic method works
+        m *-* 'it is not KKK'
+
+        # %% # Check the rhs magic method works
+        "What's really matters?" *-* m
+        # %#
+
+        # %# Applicability & defaulting semantics are advanced topics described in another chapter
+        ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
+          edh'na'semantics # <- follow this bookmark to the specific section there
+        }
 
       }
 
