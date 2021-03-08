@@ -3312,12 +3312,10 @@ The super object can also change dynamically, which means all descendant objects
     center'of'everything = Point(0,0)
 
     class Origin {
-      method __init__(***) {
-        extends center'of'everything
-      }
+      method __init__(***) extends center'of'everything
     }
 
-    data Circle(radius, center= Origin()) pass
+    data Circle(radius, center= Origin(),) pass
 
     # %% # These 2 circles have their respective origin point extend from a shared point
     c1 = Circle(5)
@@ -3338,6 +3336,12 @@ The super object can also change dynamically, which means all descendant objects
     # And you can issue `extends` at anywhere for as many times as you'd like, that's to say, it's also dynamic.
 
     # Prototype based inheritance is powerful but can easily go wrong, and harder to reason about for complex systems. It may be too dangerous for software intergration scenarios, while can be convenient if managed well in component local scenarios.
+
+    # As you may have realized, some interesting facts:
+
+    #   * Prototype based inheritance of class objects, actually serves as the corner stone for the implementation of class based inhertance for normal objects.
+
+    #   * After constructed, a composite object with class inheritance will, technically act just like a prototype based one. The difference lies only in the construction process, where new instances of super classes are constructed to be the super object instances, instead of some shared existing super instances.
   }
 
 
@@ -3404,9 +3408,9 @@ In some cases, a method is not called as usual with an explicit surface syntax, 
 
 The rule of thumb to intuit `this` and `that` reference when you are writing code of a method:
 
-  The enclosing class will provide the method you are writing, so the instance of it is "closer" to you, i.e. you can see how other methods as well as other artifacts are implemented near the method procedure you are writting.
+  The enclosing class will provide the method you are writing, so the instance of it is "closer" to you, i.e. you can see exactly how other methods as well as other artifacts are implemented near the method procedure you are writting.
 
-  `that` object must be of some descendant class derived from current enclosing class, you are not sure what new behaviors have been added to `that`, as well as how `that` has overrided the behaviors here in current context. So `that` is "farther" from you.
+  `that` object must be of some descendant class derived from current enclosing class, you are not sure what new behaviors have been added to `that`, as well as how `that` has overrided the behaviors as implemented here in the enclosing class. So `that` is "farther" from you.
 
        #} {;
         {## Rule of Thumb #}
@@ -3422,6 +3426,59 @@ The rule of thumb to intuit `this` and `that` reference when you are writing cod
       {## Magic Methods #}
       export edh'magic'mths = bookmark()
 
+      {## Special Magics
+       # - Some construts will call specially named methods and honor their results
+       #} {;
+        {## Special Magics #}
+        export edh'special'magics = bookmark()
+
+        {## Null Test
+         # - The `__null__()` magic
+
+The `null()` utility will consult `__null__()` of an object value.
+
+         #} {;
+          {## Null Test #}
+          export edh'null'magic = bookmark()
+
+          # %% # An object is always considered non-null / truthy by default
+          class C pass
+          null( C() ) is false
+
+          # %% # Unless it tells by itself, e.g. always falsy
+          class C {
+            method __null__() true
+          }
+          null( C() )
+
+          # %#
+        }
+
+        {## Instant Equality Test
+         # - The `__eq__()` magic
+
+The (==) and (!=) operator will consult `__eq__()` of its lhs object operand, then its rhs object operand if no conclusion from lhs.
+
+         #} {;
+          {## Instant Equality Test #}
+          export edh'eq'magic = bookmark()
+
+
+        }
+
+
+      }
+
+      {## General Infix Operator Magics
+       # - Responding to infix operators
+
+
+       #} {;
+        {## General Infix Operator Magics #}
+        export edh'infix'magics = bookmark()
+
+
+      }
 
     }
 
