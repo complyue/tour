@@ -2826,6 +2826,133 @@ The left-hand-side expression of finally (@=>) operator is the action to try, re
 export edh'pragmatics = bookmark()
 
 
+{## Procedures
+ # - Đ is functional to such an extent
+
+There are several types of procedure, including the lambda forms (arrow procedures), and expression being 1st class as well.
+
+ #} {;
+  {## Procedures #}
+  export edh'procs = bookmark()
+
+
+  {## Vanilla Procedures
+   # - Defined with the `method` keyword
+   #} {;
+    {## Vanilla Procedures #}
+    export edh'vanilla'procs = bookmark()
+
+
+  }
+
+
+  {## Interpreter Procedures
+   # - Defined with the `interpreter` keyword
+   #} {;
+    {## Interpreter Procedures #}
+    export edh'interpreter'procs = bookmark()
+
+
+  }
+
+
+  {## Generator Procedures
+   # - Defined with the `generator` keyword
+   #} {;
+    {## Generator Procedures #}
+    export edh'generator'procs = bookmark()
+
+
+  }
+
+
+  {## Producer Procedures
+   # - Defined with the `producer` keyword
+   #} {;
+    {## Producer Procedures #}
+    export edh'producer'procs = bookmark()
+
+
+  }
+
+
+  {## Arrow Procedures
+   # - Defined with the (=>) operator
+
+It'll be a generator procedure if the body contains at least 1 `yield` expression, otherwise it'll be a vanilla procedure.
+
+   #} {;
+    {## Arrow Procedures #}
+    export edh'arrow'procs = bookmark()
+
+
+  }
+
+
+  {## Producer Arrow Procedures
+   # - Defined with the (=>*) operator
+
+No `yield` can appear in the procedure body.
+
+   #} {;
+    {## Producer Arrow Procedures #}
+    export edh'arrow'procs = bookmark()
+
+
+  }
+
+
+  {## Operator Procedures
+   # - The implementation of infix operators
+   #} {;
+    {## Operator Procedures #}
+    export edh'op'procs = bookmark()
+
+
+  }
+
+
+  {## Definition Procedures
+   # - To initialize a module, a namespace, or a class
+
+   #} {;
+    {## Definition Procedures #}
+    export edh'defi'procs = bookmark()
+
+
+  }
+
+
+  {## Methods, Bound and Unbound
+   # - Responsibility for objects
+
+Procedures are always called with responsibility for some object(s), in this sense they are said to be "methods" of those objects.
+
+A procedure will be bound when obtained via dot-notation before called.
+
+When calling an unbound procedure, the owning objects are infered from the context.
+
+   #} {;
+    {## Methods, Bound and Unbound #}
+    export edh'mths'bound'unbound = bookmark()
+
+
+    {## This/That/Super Reference
+     # - Compositional object structure
+
+     #} {;
+      {## This/That/Super Reference #}
+      export edh'this'that'super'ref = bookmark()
+
+
+    }
+
+
+  }
+
+}
+
+
 {## Objects & Inheritance
  # - For data structures & behaviors to be reused
 
@@ -3212,11 +3339,14 @@ The super object can also change dynamically, which means all descendant objects
   }
 
 
-  {## Magic Methods
-   # - Customize object behaviors responding to infix operators and some common procedures
+  {## Methods and Magic Ones
+   # - The execution context of procedures
+
+Customize object behaviors responding to infix operators and some common procedures
+
    #} {;
-    {## Magic Methods #}
-    export edh'magic'mths = bookmark()
+    {## Methods and Magic Ones #}
+    export edh'mths'and'magic = bookmark()
 
 
   }
@@ -3235,133 +3365,6 @@ The super object can also change dynamically, which means all descendant objects
     dir$ Vector
     # See its implementation in Haskell (the host language):
     # %# https://github.com/e-wrks/edh/blob/latest/host.hs/src/Language/Edh/Batteries/Vector.hs
-  }
-
-}
-
-
-{## Procedures
- # - Đ is functional to such an extent
-
-There are several types of procedure, including the lambda forms (arrow procedures), and expression being 1st class as well.
-
- #} {;
-  {## Procedures #}
-  export edh'procs = bookmark()
-
-
-  {## Vanilla Procedures
-   # - Defined with the `method` keyword
-   #} {;
-    {## Vanilla Procedures #}
-    export edh'vanilla'procs = bookmark()
-
-
-  }
-
-
-  {## Interpreter Procedures
-   # - Defined with the `interpreter` keyword
-   #} {;
-    {## Interpreter Procedures #}
-    export edh'interpreter'procs = bookmark()
-
-
-  }
-
-
-  {## Generator Procedures
-   # - Defined with the `generator` keyword
-   #} {;
-    {## Generator Procedures #}
-    export edh'generator'procs = bookmark()
-
-
-  }
-
-
-  {## Producer Procedures
-   # - Defined with the `producer` keyword
-   #} {;
-    {## Producer Procedures #}
-    export edh'producer'procs = bookmark()
-
-
-  }
-
-
-  {## Arrow Procedures
-   # - Defined with the (=>) operator
-
-It'll be a generator procedure if the body contains at least 1 `yield` expression, otherwise it'll be a vanilla procedure.
-
-   #} {;
-    {## Arrow Procedures #}
-    export edh'arrow'procs = bookmark()
-
-
-  }
-
-
-  {## Producer Arrow Procedures
-   # - Defined with the (=>*) operator
-
-No `yield` can appear in the procedure body.
-
-   #} {;
-    {## Producer Arrow Procedures #}
-    export edh'arrow'procs = bookmark()
-
-
-  }
-
-
-  {## Operator Procedures
-   # - The implementation of infix operators
-   #} {;
-    {## Operator Procedures #}
-    export edh'op'procs = bookmark()
-
-
-  }
-
-
-  {## Definition Procedures
-   # - To initialize a module, a namespace, or a class
-
-   #} {;
-    {## Definition Procedures #}
-    export edh'defi'procs = bookmark()
-
-
-  }
-
-
-  {## Methods, Bound and Unbound
-   # - Responsibility for objects
-
-Procedures are always called with responsibility for some object(s), in this sense they are said to be "methods" of those objects.
-
-A procedure will be bound when obtained via dot-notation before called.
-
-When calling an unbound procedure, the owning objects are infered from the context.
-
-   #} {;
-    {## Methods, Bound and Unbound #}
-    export edh'mths'bound'unbound = bookmark()
-
-
-    {## This/That/Super Reference
-     # - Compositional object structure
-
-     #} {;
-      {## This/That/Super Reference #}
-      export edh'this'that'super'ref = bookmark()
-
-
-    }
-
-
   }
 
 }
