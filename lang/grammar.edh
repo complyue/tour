@@ -3754,7 +3754,7 @@ Note for security reasons, sandboxed code is prohibited from importing os file b
 
 
   {## Import & Export
-   # - Sharing & referencing
+   # - Sharing & reusing
 
 All defining expressions can be prefixed with the `export` keyword for the result artifact to be listed as exported from contextual `this` object, unless evaluated in a _pure_ context. And it's possible for a block expression to be prefixed with the `export` keyword, so all artifacts defined within that block are exported. All objects can export artifacts for others to import.
 
@@ -3775,7 +3775,7 @@ Then exported artifacts from the source object are received as specified by the 
 
 
 {## Expression Values and Scope Wrapprs
- # - Here is why Đ is even More dynamic than Python
+ # - Dynamic evaluation of any expression, anytime, anywhere
  #} {;
   {## Expression Values and Scope Wrappers #}
   export edh'exprs'in'scopes = bookmark()
