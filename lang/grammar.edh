@@ -3168,24 +3168,66 @@ No `yield` can appear in the procedure body.
 
   {## Operator Procedures
    # - The implementation of infix operators
-
-
    #} {;
     {## Operator Procedures #}
     export edh'op'procs = bookmark()
 
-    {## 3-Arg Operator Procedure
+    {## Strict (2-arg) Operator Procedures
+     # - Operator procedures with strict evaluation
+
+The general syntax to define a 2-arg operator procedure is:
+
+  operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( <lhs-value>, <rhs-value> ) <procedure-body>
+
+The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
+
+     #} {;
+      {## Strict (2-arg) Operator Procedures #}
+      export edh'2'arg'op'procs = bookmark()
+
+      # %% # For a simple example, we define the "function" composition operator using the mid-dot symbol
+      # See: https://middot.net for how to input a mid-dot
+
+      {## The function composition operator #}
+      infixr 9 ( · ) ( f, g ) {
+        method @( f.name ++ ' · ' ++ g.name ) (x) {
+          f ( g ( x ) )
+        }
+      }
+
+      show$ ( · )
+
+      # %% # Given 2 "function"s:
+      method plus5 x x+5
+      method mult3 x x*3
+
+      # %% # They can be composed into a new "function"
+      p = plus5 · mult3
+
+      p|desc
+
+      # %% # Then the composite "function" can be used like any other procedures
+      2 |p
+      # %%
+      p$ 2
+      # %%
+      p( 2 )
+      # %#
+    }
+
+
+    {## 3-arg Operator Procedures
      # - Operator procedures with non-strict evaluation
 
-The general syntax to define an 3-arg operator procedure is:
+The general syntax to define a 3-arg operator procedure is:
 
   operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( callerScope, <lhs-expr>, <rhs-expr> ) <procedure-body>
 
-The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
      #} {;
-      {## 3-Arg Operator Procedure #}
-      export edh'3'arg'op'proc = bookmark()
+      {## 3-arg Operator Procedures #}
+      export edh'3'arg'op'procs = bookmark()
 
       # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this operator is applied, and the rest 2 arguments will be expression values instead of evaluated result values, for the lhs and rhs operands of the operator application.
       # Expression Values and Scope Wrapprs are further described later in this chapter.
@@ -3231,17 +3273,113 @@ This operator is strict on its lhs argument, but won't evaluate its rhs argument
       # %# See they have exactly the same semantics
     }
 
+
+    {## Operator Precedence & Fixity/Associativity
+     # - How expressions work
+
+Contributions needed here to explain it well.
+
+     #} {;
+      {## Operator Precedence & Fixity/Associativity #}
+      export edh'op'precedence'fixity = bookmark()
+
+      # TODO contributions needed here
+
+      # %%
+      infixr 5 ( 📢 ) ( lhv, rhv ) {
+        console.print$ rhv ++ ' is telling ' ++ lhv
+        return rhv
+      }
+
+      show$( 📢 )
+
+      # %%
+      'a lie' 📢 'a tale' 📢 'the goat'
+
+      # %%
+      operator 1 ( 🆚 ) ( lhv, rhv ) {
+        console.info <| "🌀 What's the difference?\n     "
+        ++ lhv ++ '\n  🆚\n     ' ++ rhv
+      }
+
+      show$ ( 🆚 )
+
+      # %%
+      let ( a, b ) = ( 'Orange', 'Apple', )
+      a 🆚 b
+
+      # %# Destined to fail as no fixity
+      #   a 🆚 b 🆚 c
+      # Note above line is commented out or the whole file won't parse
+      # You can copy & paste the text into REPL and see how it fails at runtime
+
+
+      # %% # Overide the (++) operator within a dedicated namespace, avoid polluting the module global scope
+      case {@
+        before = 'You' ++ ' and ' ++ 'me'
+
+        # for an operator already declared beforehand, the fixity follows existing
+        # declaration when you use `operator` or `infix` as the keyword to override it
+        operator (++) ( lhv, rhv ) {
+          # inside the overriding operator definition, the overridden,
+          # original operator is available as was before the overide
+          lhv ++ ' ⭕ ' ++ rhv
+        }
+
+        after = 'You' ++ ' and ' ++ 'me'
+
+        scope() # Save a scope wrapper object, so we can still eval expressions in this scope later
+      @} of { dynamic'workspace } -> {
+
+        # Note the assign (=) operation can not be used, or it'll create a pure context where operator procedure definition will not bind the result procedure value to its current scope.
+        pass
+      }
+
+      dir$ dynamic'workspace
+      # %#
+
+      # %% # Check the result there
+      dynamic'workspace.eval( expr
+        before 🆚 after
+      )
+
+      # %% # A vanilla method or interpreter procedure can be re-declared as some operator, if it takes exactly 2 positional arguments (not counting the `callerScope` argument)
+
+      method concat1( lhv, rhv ) {
+        lhv ++ ' plus ' ++ rhv
+      }
+      infixl 3 (>+<) () concat1
+
+      interpreter concat2( callerScope, lhe, rhe ) {
+        callerScope.eval( lhe ) ++ ' and ' ++ callerScope.eval( rhe )
+      }
+      infixl 3 (>&<) () concat2
+
+      # %% # All operators can combine together, according to their respective fixity and precedence
+      3*7 >+< 9*9
+      🆚
+      3*7 >&< 9*9
+
+      # %#
+    }
+
   }
 
 
   {## Definition Procedures
    # - To initialize a module, a namespace, or a class
 
+Whole content of a `.edh` file as source of an Đ module is executed in the module scope.
+
+The body of a namespace definition is executed in the namespace's object scope.
+
+The body of a class (either usual class or data class) definition is executed in the class's object scope.
+
+Conceptually we say they all are of a special type of procedures - definition procedures.
+
    #} {;
     {## Definition Procedures #}
     export edh'defi'procs = bookmark()
-
-
   }
 
 
