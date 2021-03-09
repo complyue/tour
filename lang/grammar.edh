@@ -2829,9 +2829,17 @@ export edh'pragmatics = bookmark()
 
 
 {## Procedures
- # - Đ is functional to such an extent
+ # - "Function"s having access to the whole world
 
-There are several types of procedure, including the lambda forms (arrow procedures), and expression being 1st class as well.
+A *function* in mathematics has well defined input and output, it can refer to nothing outside of its input. Functional programming langauges e.g. Haskell, reflects such constraint well. But unfortunately many procedural / imperative programming langauges, tracing back to C and other ancestors, defined their "function"s with ability to access global / closure "variable"s (The "variable" there is albeit another misconception agsinst mathematical variables), so side-effects can be there out of trivial reasonability by programmers in the day, leading to more bugs in software developed comercially.
+
+It's not a big deal for Đ the language has stopped refering to impure computations (with side-effects) as "function"s, but more conforming conception is a good start to put effect tracking as a focus for the programming tools, looking forward for greater quality in the software developed as the result.
+
+A procedure in Đ is a 1st class value, holding some computation with formally declared input arguments, and when called with concrete values for those arguments, it will evaluate to some result value (though possibly `nil`), with or without side-effects produced.
+
+There are several types of procedure, each provides some distinct convenience under different circumstances.
+
+Procedure is a special form of lambda-expression (as in mathematics) per se, while note that there is also 1st class **expression** values in Đ, which are effectful computations without formal arguments declaration, and without closure capturing (but with value interpolation instead) per se.
 
  #} {;
   {## Procedures #}
@@ -2840,11 +2848,47 @@ There are several types of procedure, including the lambda forms (arrow procedur
 
   {## Vanilla Procedures
    # - Defined with the `method` keyword
+
+The general syntax to define a vanilla procedure is:
+
+  method <procedure-name> <arg-spec> <procedure-body>
+
+The definition is an expression evaluates to a value of `MethodType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+
+Note that many other procedures share mostly the same syntax with the vanilla procedure definition, they just use different keywords and imply different semantics when called.
+
    #} {;
     {## Vanilla Procedures #}
     export edh'vanilla'procs = bookmark()
 
+    # %% # A simple number increamental procedure is usually written like this:
+    method f(x) {
+      return x+1
+    }
 
+    # %% # See type of the procedure value
+    type$ f
+
+    # %% # And called like this:
+    f(5)
+
+
+    # %% # The parenthese around the argument list can be omitted since it is unary, and the procedure body can be simply the expression it should evaluate, so the minimal form can be:
+    method f x x+1
+    # %% # Also it can be called with the ($) operator
+    f$ 5
+    # %% # Or the (|) operator
+    5 |f
+
+    # %% # Recursion is intuitive:
+    method factorial(n) if n <= 1 then 1 else n * factorial(n - 1)
+    # %% # Or using tenary:
+    method factorial(n) n <= 1 and 1 or n * factorial(n - 1)
+
+    # %% #
+    factorial(5)
+
+    # %#
   }
 
 
