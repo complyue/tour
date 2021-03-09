@@ -1171,8 +1171,8 @@ It is used to create a default expression with its operand expression.
         # Defaulting semantics is an advanced topic explained in another chapter:
         ; () => import (
           edh'defaulting, # <- follow this bookmark to the relevant section there
-          **_
-        ) './advanced/dflt'
+          **
+        ) './advanced/appl'
       }
 
 
@@ -3691,18 +3691,32 @@ Almost all infix operators come with the default batteries can be overridden by 
         {## General Infix Operator Magics #}
         export edh'infix'magics = bookmark()
 
-        # For an infix operator to be overridable by object magic methods, the operator procedure should return defaulting values, among which `default nil` or the short-hand NA, as a special case, meaning it's not applicable unless the operands being some object with corresponding magic method to draw a conclusion for the operation. The lhs operand then the rhs operand will be tried, from which to obtain and execute a corresponding magic method, if they are object values.
+        # For an infix operator to be overridable by object magic methods, the operator procedure should return defaulting values.
+        # Defaulting semantics is an advanced topic explained in another chapter:
+        ; () => import (
+          edh'defaulting, # <- follow this bookmark to the relevant section there
+          **
+        ) './advanced/appl'
 
-        # %% # Let's demonstrate it with such a new operator (*-*)
+
+        # %% # Let's demonstrate it with a simple new operator (*-*)
         {##
          # Concatenate values for demo purpose
          #}
         operator 0 (*-*) (lhv, rhv) {
+          {#
+The defaulting will be triggered when:
+
+  * No magic methods present, i.e. for both lhs and rhs value, it is either not an object value, or being an object without the expected magic method
+  * All magic methods report `NA` (effectively `default nil`) back
+
+In case for the default, we just concatenate the operands as strings, with ' *** ' in between
+           #}
           return default lhv ++ ' *** ' ++ rhv
         }
 
         # %% # See the default implementation works well
-        'we the people' *-* 'are proud humans'
+        'We the people' *-* 'are proud humans'
 
         # %% # Then let's define a class overriding the object behavior when involved in that operator
         class M {
@@ -3710,10 +3724,10 @@ Almost all infix operators come with the default batteries can be overridden by 
           {##
            # For ease of identification
            #}
-          method __init__( vs as this.__repr__ ) pass
+          method __init__( repr as this.__repr__ ) pass
 
           {##
-           # LHS operand objet behavior
+           # LHS operand object behavior
 
 This is the responding magic method when an object of this class is the left-hand-side operand of the operator.
 
@@ -3725,7 +3739,7 @@ The method name needs to be verbatimly the operator symbol, quoted in a pair of 
           }
 
           {##
-           # RHS operand objet behavior
+           # RHS operand object behavior
 
 This is the responding magic method when an object of this class is the right-hand-side operand of the operator.
 

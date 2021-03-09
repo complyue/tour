@@ -114,7 +114,7 @@ Everything is a _value_ in Đ, every _value_ is of some _type_. Some types are i
     edh'na'semantics # <- follow this bookmark to learn more details
 
     # NA semantics is actually a special case of *Defaulting Semantics*, see:
-    import * './dflt' # <- navigate to elaboration of Đ Defaulting Semantics
+    edh'defaulting # <- navigate to elaboration of Đ Defaulting Semantics
 
     # %% # NA stands for Not/Applicable, it's a literal constant in Đ
     NA

@@ -1,46 +1,101 @@
-{## Applicability Semantics #}
+{## Applicability & Defaulting Semantics #}
 
 {## Applicability Lacks a Proper Comprehension
- # - Most if not all programming languages lack it
- #
- # There are some *Missing Value Handling* at library/framework/application
- # level, e.g.
- #
- #  https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html
- #
- #} {;
-}
+ # - Most programming languages lack it
 
+Julia handles missing values but without defaulting:
 
-{## NA
- # - The lack of applicability
- #
- # An operator procedure shall return NA to indicate that its operation is not
- # applicable to the operand(s) passed in.
- #
- # A magic object method overriding an operator shall obey the same rule.
- #
+  https://docs.julialang.org/en/v1/manual/missing
+
+For other languages, there are some *Missing Value Handling* at library/framework/application level, yet without language level defaulting, e.g.
+
+  https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html
+
  #} {;
-  {## Semantics for Not/Applicable #}
   export edh'na'semantics = bookmark()
-
-  # NA semantics is actually a special case of *Defaulting Semantics*, see:
-  import * './dflt' # <- navigate to elaboration of Đ Defaulting Semantics
-
-  # %% # NA stands for Not/Applicable, it's a literal constant in Đ
-  NA
-
-  # %% # How is it technically working?
-  show( NA )
-
-  # %% # The actually `NA` value is a defined constant term, with the
-  # value in turn being a *default* expression of literal `nil`, so it
-  # is technically a shorthand of `NA := default nil`
-  default nil
-  # %#
-
-  edh'defaulting # <- follow this bookmark to learn more details
 }
+
+
+{## Defaulting Semantics
+ # - In favor of more specific operation implementations
+
+An operation can be applicable to the supplied operands, but somehow the original procedure's implementation should be considered too general to be the most favorable, in this case it can return a defaulting value to indicate more specific operations are preferable, so possible delegate procedures are searched and tried by Đ evaluation engine. When no such delegate procedures can be found, the expression from the defaulting value will be evaluated for the default value, as the final result of the operation.
+
+ #} {;
+  {## Defaulting Semantics #}
+  export edh'defaulting = bookmark()
+
+  {## Defaulting Values
+   # - The special type of values making all that happen
+
+To create a defaulting value, the general syntax is:
+
+    default [ (***contextual'apk) ] <expr-for-default-value>
+
+The contextual args pack is used to avoid multi-shot evaluation of lhs/rhs expressions in case the delegate procedure did the evalutation from original expressions, while the original procedure is an intrinsic operator, or 3-arg operator procedure, who take expressions instead of evaulated result values as lhs/rhs operands, it should not try evaluate either lhs/rhs expression after a delegate procedure has done the evaluation. Usually when the delegate procedure did evaluation of both lhs/rhs expressions, it should pass back `(<lhs-value>, <rhs-value>)` as the contextual apk, or `(lhv= <lhs-value>,)` or `(rhv= <rhs-value>,)` if it only evaluated either of the operand expressions.
+
+The contextual apk can be omitted otherwise, and the expression for the default value would be a literal at times, so in relevant procedures, it's common to see writtings like:
+
+    return default true
+
+    return default 0
+
+    return NA
+
+Among which `NA` carries special semantics for "Not/Applicable", it is understood by the Đ parser as a literal expression for `NA := default nil`.
+
+Technically, it is `default nil` that ultimately implements the "Not/Applicable" semantics, as runtime error will be thrown if `nil` turns out to be the default value after all attempts regarding the evaluation. So writing out `default nil` or `default <expr-evals-to-nil>` will trigger "Not/Applicable" semantics as well.
+
+A delegate procedure can `return NA` to prefer whatever the original procedure would default to, and the original procedure can `return NA` to indicate that it is not really applicable unless any of the delegate procedures can conclude a meaningful result.
+
+   #} {;
+    {## Defaulting Values #}
+    export edh'defaulting'values = bookmark()
+
+    # %% #
+    show$ NA
+    # %#
+  }
+
+
+  {## Operation Overriding/Overloading
+   # - How operators and magic methods work in Đ
+   #
+   # There is no true overloading in Đ, but with defaulting semantics added to
+   # the overriding mechanism, overloading is simulated.
+   #
+   #} {;
+
+    {## Operator Procedures
+     # - Declaration, Definition and Overriding
+     #} {;
+
+    }
+
+    {## Magic Object Methods
+     # - summary
+     # details
+     #} {;
+
+      {## Left-Hand-Side and Right-Hand-Side
+       # - summary
+       # details
+       #} {;
+
+      }
+
+      {## Method Resolution Order
+       # - The mro mechanism is the same as in Python
+       #} {;
+
+      }
+
+    }
+
+  }
+
+}
+
 
 {## nan, None, Nothing, nil
  # - Other constructs in Đ Dealing with *Missing Semantics*
