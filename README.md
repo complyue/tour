@@ -5,6 +5,7 @@ Greetings! TL;DR - Just click:
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour)
 
 - [What's Đ (Edh)](#whats-đ-edh)
+  - [Đ Slogan](#đ-slogan)
 - [About this Tour](#about-this-tour)
 - [Taking the Tour](#taking-the-tour)
   - [Fast and Easy Way - Gitpod workspace](#fast-and-easy-way---gitpod-workspace)
@@ -25,11 +26,17 @@ Greetings! TL;DR - Just click:
 
 ## What's Đ (Edh)
 
-**Đ (Edh)** is an _Object-Oriented_, _Dynamic_ _Scripting_ programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
+### Đ Slogan
 
-Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
+> Reactive Events Integration with Effects Tracked
 
-**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language design, raw machine performance as well as a prosperous ecosystem and etc. are less a goal, they are offloaded to efforts by the _host language_ and/or _runtime_ .
+**Đ (Edh)** stands for _Event Distributing & Hosting_, the surface language is an _Object-Oriented_, _Dynamic_ _Scripting_ programming language, serving interoperation between distributed processes as well as computations within a local process, possibly integrated together from independently developed software components. Massive **Concurrency** is very expected, and that's automatically mapped to **Parallelism** upon provisioned hardware infrastructure.
+
+Source code in **Đ (Edh)** - the _surface language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
+
+**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language design, raw machine performance as well as a prosperous ecosystem and etc. are less a goal, they are offloaded to efforts around the _host_ programming language and/or runtime.
+
+Free of side-effects is not strictly enforced, but you can start effect tracking with **Dynamic Scoped Effects** in **Đ (Edh)**, to gradually improve modularity & maintainability of the software components (libraries, frameworks, applications) at large scale.
 
 Đ seeks to be a Business Integration language, as well as a User Interface language, it is born for two main goals:
 

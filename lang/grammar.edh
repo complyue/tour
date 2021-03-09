@@ -2668,7 +2668,7 @@ Implemented as infix operators, the action to try with possibly exceptions throw
     {## Exception Handling #}
     export edh'exception'handling = bookmark()
 
-    {## The catch ($=>) Operator
+    {## The "catch" ($=>) Operator
      # - Catch & handle exceptions
 
 The left-hand-side expression of catch ($=>) operator is the action to try, and the right-hand-side expression is the exception handler.
@@ -2682,7 +2682,7 @@ If evaluation of the rhs expression is a no-match, the exception is considered n
 The rhs handler expression can explicitly issue a `rethrow` statement to continue the exception propagation process outwards, after matched the exception and some other statements executed.
 
      #} {;
-      {## The catch ($=>) Operator #}
+      {## The "catch" ($=>) Operator #}
       export edh'exc'catch = bookmark()
 
       # %% # It is left-associative, and with precedence -2
@@ -2768,13 +2768,13 @@ The rhs handler expression can explicitly issue a `rethrow` statement to continu
     }
 
 
-    {## The finally (@=>) Operator
+    {## The "finally" (@=>) Operator
      # - Success or failure, something has to be done
 
 The left-hand-side expression of finally (@=>) operator is the action to try, regardless of whether it's evaluated successfully, or some exception occurred meanwhile, the right-hand-side expression will always be evaluated/executed, before giving out result of the lhs evaluation as the result of the whole expression, or further propagating the exception outwards.
 
      #} {;
-      {## The finally (@=>) Operator #}
+      {## The "finally" (@=>) Operator #}
       export edh'exc'finally = bookmark()
 
       # %%s #
