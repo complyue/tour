@@ -2345,7 +2345,7 @@ The loop-source is a generator procedure call in this case
       "Loop result= " ++
       for ( i, n, memo= 'no comments', ) from g( 11, )
       do console.print( 'Item #' ++ i ++ ': ' ++ n ++ ' with ' ++ memo )
-      # %# #
+      # %#
 
       # Also note that:
       #  * `continue` can be used in the do-block (loop body) to skip subsequent statements in the block, thus jump to next iteration
@@ -2847,7 +2847,7 @@ Procedure is a special form of lambda-expression (as in mathematics) per se, whi
 
 
   {## Vanilla Procedures
-   # - Defined with the `method` keyword
+   # - The most common type of procedure
 
 The general syntax to define a vanilla procedure is:
 
@@ -2893,21 +2893,153 @@ Note that many other procedures share mostly the same syntax with the vanilla pr
 
 
   {## Interpreter Procedures
-   # - Defined with the `interpreter` keyword
+   # - Procedures with non-strict evaluation
+
+The general syntax to define an intetpreter procedure is:
+
+  interpreter <procedure-name> ( callerScope, ***<rest-arg-spec> ) <procedure-body>
+
+The definition is an expression evaluates to a value of `InterpreterType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+
    #} {;
     {## Interpreter Procedures #}
     export edh'interpreter'procs = bookmark()
 
+    # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this procedure is called, and all other arguments will be expression values instead of evaluated result values, reflecting what's been passed by the caller.
+    # Expression Values and Scope Wrapprs are further described later in this chapter.
+    ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
 
+    # %% #
+    {##
+     # For lazily evaluated substituation
+This procedure is strict on its 1st argument, but won't evaluate its 2nd argument unless the result from the 1st argument is falsy.
+     #}
+    interpreter orElse( callerScope, preferredExpr, substituteExpr, ) {
+      case callerScope.eval(preferredExpr) of {
+
+        # Evaluate to result of the preferred expression so long as it is truthful
+        { preferredValue } | not null(preferredValue) -> preferredValue
+
+        # Or evaluate to whatever the result is from the substitute expression
+        _ -> callerScope.eval(substituteExpr)
+
+      }
+    }
+
+    # %% # See type of the procedure value
+    type$ orElse
+
+    # %% # With some contextual attribute set
+    n = 21
+    # %% # Or set to another value
+    n = 38
+
+    # %% # Call the interpreter procedure:
+    orElse( n-3*7, {
+        console.warn<| 'zero there is'
+        999
+    } )
+    # %# Try switch the value of `n`, and run above cell again to see a different result
   }
 
 
   {## Generator Procedures
-   # - Defined with the `generator` keyword
+   # - Procedures facilitating reusable synchronous iterations
+
+Certain large dataset is not suitable to be stored in its entirety in runtime memory, or the successor item in the collection can be efficiently computed from its predecessor item, or both be the case sometimes. Generator procedures work well for such scenarios.
+
+The general syntax to define a generator procedure is:
+
+  generator <procedure-name> <arg-spec> <procedure-body>
+
+The definition is an expression evaluates to a value of `MethodType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+
+A generator procedure can not be called like other procedures, the only place it can be called is by a for-loop, as the call expression between the `from` keyword and `do` keyword of the for-loop.
+
+The most important feature is that, `yield` expressions can be put in the procedure body of a generator procedure, while it's invalid for a `yield` expression to appear in the body of other type of procedures.
+
+The `yield` expression can be intuited as calling the for-loop's do block (the loop body), after overwritting the loop arguments of the for-loop, at scope of the for-loop.
+
    #} {;
     {## Generator Procedures #}
     export edh'generator'procs = bookmark()
 
+    # %% #
+    {## Iterating the factorial of numbers since 1 up to `n` as specified #}
+    generator withFactorialUpTo( n ) {
+      v = 1
+      for i from range( 1 : n+1 ) do {
+        old'v = v
+        v = i * v
+        yield (i, v)
+      }
+    }
+    # %# Note `range()` used above is a generator procedure by itself
+    range # <- go to its definition to see the implementation as a sophisticated example
+
+    # %% # It is used like this:
+    for (i, fv) from withFactorialUpTo(7)
+    do console.print$ i ++ '! = ' ++ fv
+
+
+    # The for-loop and the generator can exchange values via the `yield` expression, that final result of the loop body is passed back to the generator as the evaluation result of the `yield` expression
+
+    # %% # Let's demonstrate the mechanism with this example
+
+    generator g (n) while true {
+      case yield n*n of {
+
+        # The generator shoud honor special flow control values as the result of `yield`, and cooperate accordingly, like this:
+        { break } -> { return nil } # loop body issued { break }
+        { return rtn } -> { return rtn } # loop body issued { return xxx }
+
+        nil -> { # loop body issued { continue }
+          # but we can't continue without a number passed back,
+          return nil # so just return stop the iteration
+        }
+
+        # Otherwise the loop body has evaluated to a usual value and passed back here,
+        # we simply captured it with attribute name `n` to update our local scope,
+        # the new value will be used in next iteration as in the `n*n` expression above.
+        { n } -> { pass }
+
+      }
+    }
+
+    for n from g( 3 ) do {
+      console.print(n) # Show what we've been given
+
+      if n > 1000 then {
+        break # Special statements like break/return will pass special control values there
+      } else {
+        n - 1 # A usual value will be passed back to generator just straight forward
+      }
+    }
+
+    # %# Above example may be a little harder to comphrend, don't worry, you can postpone the understanding of it until absolutely necessary.
+
+
+    # Named arguments (keyword args) can also be passed as loop arguments from the generator, the following example will strenghen your intuition that `yield` feels like calling-back the loop body for indeterminate effects, i.e. the loop body can be executed 0, 1 or more times, that can never be determined by the looper. While the generator is to decide it, by `yield`ing 0, 1 or more times.
+
+    # %% # Let's demonstrate it with another example
+
+    generator g( base, hint7= None, ) {
+      yield ( 1, 3 * base, memo= '3 as the factor', )
+      yield ( 2, 7 * base, memo= hint7 or nil, )
+      return 5 * base
+    }
+
+    "Loop result= " ++
+    for ( i, n, memo= 'no comments', ) from g( 11, )
+    do console.print( 'Item #' ++ i ++ ': ' ++ n ++ ' with ' ++ memo )
+
+    # %# You may have noticed but it's worth mentioning that in above, the result value of the whole for-loop expression reflects what the generator has `return`ed, given the loop body didn't do an early { break } or { return xxx }.
+
+
+    # Synchronous Narration is an advanced topic described at:
+    ; () => {; import * './advanced/modunarr'
+      edh'sync'narration # <- follow this bookmark to that section
+    }
 
   }
 
@@ -2950,10 +3082,68 @@ No `yield` can appear in the procedure body.
 
   {## Operator Procedures
    # - The implementation of infix operators
+
+
    #} {;
     {## Operator Procedures #}
     export edh'op'procs = bookmark()
 
+    {## 3-Arg Operator Procedure
+     # - Operator procedures with non-strict evaluation
+
+The general syntax to define an 3-arg operator procedure is:
+
+  operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( callerScope, <lhs-expr>, <rhs-expr> ) <procedure-body>
+
+The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+
+     #} {;
+      {## 3-Arg Operator Procedure #}
+      export edh'3'arg'op'proc = bookmark()
+
+      # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this operator is applied, and the rest 2 arguments will be expression values instead of evaluated result values, for the lhs and rhs operands of the operator application.
+      # Expression Values and Scope Wrapprs are further described later in this chapter.
+      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+
+      # %% #
+      {##
+       # For lazily evaluated substituation
+This operator is strict on its lhs argument, but won't evaluate its rhs argument unless the result from the lhs argument is falsy.
+       #}
+      operator 0 (|->) ( callerScope, lhx, rhx ) {
+        case callerScope.eval(lhx) of {
+
+          # Evaluate to result of the left-hand-side expression so long as it is truthful
+          { lhv } | not null(lhv) -> lhv
+
+          # Or evaluate to whatever the result is from the right-hand-side expression
+          _ -> callerScope.eval(rhx)
+
+        }
+      }
+
+      # %% # See type of the procedure value
+      type$ (|->)
+
+      # %% # With some contextual attribute set
+      n = 21
+      # %% # Or set to another value
+      n = 38
+
+      # %% # Call the operator procedure:
+      n-3*7 |-> {
+        console.warn<| 'zero there is'
+        999
+      }
+      # %# Try switch the value of `n`, and run above cell again to see a different result
+
+      # %% # Technically, we have just re-implemented the intrinsic (or) operator
+      n-3*7 or {
+        console.warn<| 'zero there is'
+        999
+      }
+      # %# See they have exactly the same semantics
+    }
 
   }
 
