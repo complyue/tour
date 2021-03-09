@@ -2952,7 +2952,7 @@ The general syntax to define a generator procedure is:
 
   generator <procedure-name> <arg-spec> <procedure-body>
 
-The definition is an expression evaluates to a value of `MethodType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `GeneratorType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
 A generator procedure can not be called like other procedures, the only place it can be called is by a for-loop, as the call expression between the `from` keyword and `do` keyword of the for-loop.
 
@@ -3045,11 +3045,97 @@ The `yield` expression can be intuited as calling the for-loop's do block (the l
 
 
   {## Producer Procedures
-   # - Defined with the `producer` keyword
+   # - To avoid race condition between asynchronous event producer and consumer
+
+Event streams through event sinks are asynchronous in nature, as event sinks will drop events when not subscribed, there will be race condition in starting a new thread to run an event producing computation, while subscribing the event sink to consume the produced event stream at the same time. Producer procedures can be used to eliminate such race conditions.
+
+The general syntax to define a producer procedure is:
+
+  producer <procedure-name> <arg-spec> <procedure-body>
+
+The definition is an expression evaluates to a value of `ProducerType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+
    #} {;
     {## Producer Procedures #}
     export edh'producer'procs = bookmark()
 
+    {## Racing Problem in Lieu of Producer Procedures
+     # - Producer procedures solve race conditions
+
+Let's see a racy solution first.
+
+     #} {;
+      {## Racing Problem in Lieu of Producer Procedures #}
+      export edh'producing'problem = bookmark()
+
+      # %% # The artificial delay in milliseconds between the start of producing and start of consuming. Setting it to zero can by NO means eliminate the delay, due to how the multi-threaded runtime is scheduled. A zero delay just minimizes the chance the unwanted consequences happen to be observed.
+      lag'ms = 0
+
+      # %% # Set some possitive delay, you'll see the result being randomly unpredictable, i.e. perfect race condition demonstrated
+      lag'ms = 5
+
+      # %% # Run this cell to start the race with whatever `lag'ms` set, repeat it to see different results
+
+      evs = sink
+      go {@ # Use a scoped block to not share the `i` attribute of outer scope
+        i = 0; for _ from console.everyMillis(1) do {
+          evs <- i+=1
+          if i>=5 then { break }
+        }
+        evs <- nil # mark eos
+      @}
+
+      for _ from console.everyMillis(lag'ms) do break
+
+      for i from evs do console.print$ "Got " ++ i
+
+      # %# Maybe you'll need to tune the value of `lag'ms` in your runtime to make the racy result more obvious
+    }
+
+
+    {## Using Producer Procedures
+     # - The race-free solution
+     #} {;
+      {## Using Producer Procedures #}
+      export edh'race'free'producing = bookmark()
+
+      # %% # Here is the race-free solution
+
+      producer p(outlet) {
+        i = 0; for _ from console.everyMillis(1) do {
+          outlet <- i+=1
+          if i>=5 then { break }
+        }
+        outlet <- nil # mark eos
+      }
+
+      for i from p() do console.print$ "Got " ++ i
+
+      # %# See there is even no place to insert an artificial delay, and under the hood, even race conditions due to thread scheduling are eliminated by the Đ runtime, so long as you stick to looping against a producer procedure call.
+    }
+
+
+    {## Internal Working of Producer Procedure Call
+     # - How a producer procedure works with for-loop
+
+A new thread will be implicitly started to run the producer procedure body, but the actual execution will be held until the agreed event sink has been subscribed by some consumer, which will be the for-loop in the pattern demonstrated above.
+
+The agreed event sink will be value passed as an argument named `outlet` in the producer procedure call, or such an argument can be omitted as you've see in the solution above, in which case a fresh new event sink value is created and used as the agreed sink.
+
+A producer procedure usually declares an input argument named `outlet`, to receive the agreed event sink value. It can be renamed or omitted at all, but that's quite advanced usage, will require sophisticated concurrency reasoning to get it right.
+
+Finally the agreed event sink - there will always be one, even neither explicitly passed nor received - will be the synchronous result value as for the call of the producer procedure, the for-loop then get this event sink as its iteration source value, thus subscribes to the event sink and loops agsinst the event stream through it.
+
+     #} {;
+      {## Internal Working of Producer Procedure Call #}
+      export edh'producer'works = bookmark()
+    }
+
+
+    # Asynchronous Narration is an advanced topic described at:
+    ; () => {; import * './advanced/modunarr'
+      edh'async'narration # <- follow this bookmark to that section
+    }
 
   }
 
