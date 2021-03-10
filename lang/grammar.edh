@@ -2455,10 +2455,7 @@ The comprehension (=<) operator can be used to pump iterated result values from 
       ; () =< for i from range(3:9) do i*i
 
       # %% # Keyword args comphrehension
-      ; () =< for i from range(3:9) do {
-        key= "square'of'" ++ i
-        ; ( @key= i*i, )
-      }
+      ; () =< for i from range(3:9) do ( @( "square'of'" ++ i )= i*i, )
 
       # %% # List comprehension
       ; [] =< for i from range(3:9) do i*i
@@ -3226,12 +3223,12 @@ There will be semantical differences when `this` and/or `that` references appear
 
   * Those objects will surely be what's in current scope for an arrow procedure, as arrow procedures are immediately bound to the objects in context upon it is defined.
 
-  * What `this` and `that` will refer to, will need more reasoning (to see where and when they'll be bound), for procedures defined with those keywords (method/interpreter/generator/producer), either anonymous or named.
+  * What `this` and `that` will refer to, will need more reasoning (to see where and when they'll be bound), for procedures defined with the keywords (method/interpreter/generator/producer), regardless of them being anonymous or named.
 
      #}
 
-    # `this` and `that` references effective for methods are described later in this chapter
-    ; () => edh'this'that'refs # <- follow this bookmark to that section
+    # `this` and `that` references w.r.t. how methods are bound, is described later in this chapter
+    ; () => edh'mth'binding # <- follow this bookmark to that section
 
   }
 
@@ -3453,34 +3450,6 @@ Conceptually we say they all are of a special type of procedures - definition pr
     export edh'defi'procs = bookmark()
   }
 
-
-  {## Methods, Bound and Unbound
-   # - Responsibility for objects
-
-Procedures are always called with responsibility for some object(s), in this sense they are said to be "methods" of those objects.
-
-A procedure will be bound when obtained via dot-notation before called.
-
-When calling an unbound procedure, the owning objects are infered from the context.
-
-   #} {;
-    {## Methods, Bound and Unbound #}
-    export edh'mths'bound'unbound = bookmark()
-
-
-    {## This/That/Super Reference
-     # - Compositional object structure
-
-     #} {;
-      {## This/That/Super Reference #}
-      export edh'this'that'super'ref = bookmark()
-
-
-    }
-
-
-  }
-
 }
 
 
@@ -3504,13 +3473,15 @@ But Đ made it for composition to have the look & feel of inheritance, with boil
   import * './advanced/objs' # <- details of Đ Object System
 
 
-  {## Simple Data Classes
+  {## Data Classes
    # - Shorthand class syntax for simple data records
 
-Simple data structures without inheritance can be simply defined as data classes. Though data classes are full fledged classes with all capabilities including inheritance.
+Simple data structures can be defined as data classes. A data class is still a general class at its core, having all class capabilities including but not limited to, inheritance.
+
+Technically, the data class syntax is a syntactic sugar to define a general class (as described in next section), but with some boilerplate code generated automatically under the hood, for some commonplace features. (TODO expand about those features)
 
    #} {;
-    {## Simple Data Classes #}
+    {## Data Classes #}
     export edh'data'classes = bookmark()
 
     # %{
@@ -3543,25 +3514,31 @@ Simple data structures without inheritance can be simply defined as data classes
   }
 
 
-  {## Class based Inheritance
-   # - Composite objects are constructed by a class, together with all its super classes
+  {## General Classes
+   # - Class is a special kind of object
 
-A class object is a special kind of object, the `class` keyword is used to define a general class without syntactic sugar artifacts that `data` classes would define automatically.
+An Đ object can only be constructed from some class. When an attribute being requested against an object is not found from the object instance itself, its class will be consulted to provide such an attribute for the object instance. A class can be thought of as a backing store for default values of object attributes, which is shared by all object instances belong to it. An attribute value provided by its class, is treated the same as if provided by the object instance directly.
+
+The `class` keyword is used to define a general class, the syntax is:
+
+  class <class-name> <class-body>
+
+<class-name> can be whatever an attribute name, and <class-body> is a statement (usually multiple statements quoted within a pair of curly braces as a block expression statement) to be executed immediately to intialize the class artifacts.
 
    #} {;
-    {## Class based Inheritance #}
-    export edh'cls'inheritance = bookmark()
+    {## General Classes #}
+    export edh'class = bookmark()
 
     {## Class Artifacts
      # - What a standalone class can have
-
-First, we demonstrate a standalone class, i.e. without inheritance
-
      #} {;
       {## Class Artifacts #}
       export edh'cls'arts = bookmark()
 
-      # %% #
+      # Note that methods are further described in a later section, but the code in this section includes them for demonstration purpose.
+      ; () => edh'mths'and'magic # <- follow this bookmark to that secion
+
+      # %%
 
       {##
        # A standalone class
@@ -3577,16 +3554,26 @@ Class attributes serve as the default value for object instances of this class
         static'attr'a = 3
 
         {##
+         # A static class method
+
+Class methods are intended to be called without any particular object instance, `this` here should refer to the class object itself.
+
+         #}
+        method static'mth'b() {
+          console.print$ 'Hello from class ' ++ this ++ ' !'
+        }
+
+        {##
          # The magic `__init__()` method
 
-This will be called every time a new object instance is constructed, by calling the class object, which semantically being its own constructor procedure.
+This will be called every time a new object instance is constructed, by calling the class object, which semantically being its object constructor.
 
-It can receive arguments as usual procedures.
+It can receive arguments as usual procedures, from whatever passed for the object construction.
 
          #}
         method __init__( b as this.b, c as this._c = 5, *** ) {
           # The procedure body can contain arbitrary statements to initialize the object instance.
-          # `this` refers to the object instance just created, assigning attributes to it here is part of the object construction procedure.
+          # `this` refers to the object instance just created, assigning attributes to it here is part of the object instance initialization procedure.
           this._d = this.b * this._c
         }
 
@@ -3603,7 +3590,7 @@ Any number of method procedures can be defined for a class.
         {##
          # The `d` property getter
 
-Properties are syntatic sugar for private fields of an object to be accessed like attributes.
+Properties are syntatic sugar for private data of an object to be accessed like attributes.
 
 Without a setter method, a property looks & feels like a readonly attribute.
 
@@ -3625,7 +3612,7 @@ This is the getter method of property `c`.
         {##
          # The `c` property setter
 
-With a setter method, a property look & feels like a usual attribute.
+With a setter method, a property look & feels like a usual attribute, i.e. can be assigned as well as read.
 
 This is the setter method of property `c`.
 
@@ -3639,8 +3626,11 @@ This is the setter method of property `c`.
 
       }
 
-      # %% # Static class attributes is accessable via the class object directly
+      # %% # Static class attributes are accessable via the class object directly
       C.static'attr'a
+      # %% # Static class methods should be called via the class object directly
+      C.static'mth'b()
+      # %# Technically all attributes defined for a class can be accessed this way, but instance methods are not intended to be so, for in their procedure bodies, `this` reference is assumed to refer to object instance of the class, instead of the class object itself.
 
       # %% # Construct an instance of class `C`
       o = C(2)
@@ -3655,26 +3645,35 @@ This is the setter method of property `c`.
       o.instance'method'd()
 
       # %% # Read its properties
-      ( o.d, o.c, )
+      ; ( o.d, o.c, )
 
       # %% # Change its properties
       o.c = 111
 
-      # %% # This is gonna to fail
+      # %% # Assign to a readonly property, gonna to fail
       o.d = 99
 
       # %#
     }
 
+  }
 
-    {## Super Classes
+
+  {## Class based Inheritance
+   # - A class with super classes will construct composite objects
+
+   #} {;
+    {## Class based Inheritance #}
+    export edh'cls'inheritance = bookmark()
+
+    {## Super Classes, Their Role in Object Construction
      # - Extending other classes
 
-If a class `extends` one or more super classes, either directly or indirectly, an object this class constructs will have a super object list accordingly.
+If a class `extends` one or more super classes, either directly or indirectly, an object this class constructs will have a list of super objects each constructed from a respective super class accordingly.
 
      #} {;
-      {## Super Classes #}
-      export edh'super'cls = bookmark()
+      {## Super Classes, Their Role in Object Construction #}
+      export edh'super'cls'role = bookmark()
 
       # %% #
 
@@ -3724,7 +3723,7 @@ Especially note that construction arguments are passed to all classes' `__init__
       e.instance'method'd()
 
       # %% # Read inherited properties
-      ( e.d, e.c, )
+      ; ( e.d, e.c, )
 
       # %% # Change inherited properties
       e.c = 111
@@ -3793,13 +3792,16 @@ Note that it's more proper to say "Attribute Resolution Order" instead of "Metho
       # %% # The lineraized super class list can be obtained as the `mro` attribute of a class
       Z.mro
 
-      # %% # The list of super object instances for the end object constructed, will reflect `mro` of the end class:
+      # %% # The super object list of a class reflects what a class extends directly, see for a comparison
+      supers(Z)
+
+      # %% # The list of super object instances for the end object constructed, will reflect `mro` of the end class, note that's different from the super class list:
       z = Z()
       supers(z)
       # %# See class of the super instances match the super class listed in mro
 
-      # %% # A specific super instance can be obtained via pattern matching:
-      case z of { { K2: k2 } } -> k2
+      # %% # A specific super instance can be extracted via pattern matching:
+      case z of {{ K2: k2 }} -> k2
 
       # %% # A super instance alone, can also be thought of as an end object on its own right:
       supers( k2 )
@@ -3807,11 +3809,11 @@ Note that it's more proper to say "Attribute Resolution Order" instead of "Metho
       K2.mro
       # %#
 
-      # %% # Super instances are shared by each member instance of a final end object:
+      # %% # Super instances are shared by each member instance of a final end object, see:
       ; (
-        case z of { { O: z's'o } } -> z's'o
+        case z of {{ O: z's'o }} -> z's'o
       ) is (
-        case k2 of { { O: k2's'o } } -> k2's'o
+        case k2 of {{ O: k2's'o }} -> k2's'o
       )
       # %#
 
@@ -3823,7 +3825,7 @@ Note that it's more proper to say "Attribute Resolution Order" instead of "Metho
   {## Prototype based Inheritance
    # - Extending other objects directly
 
-You can avoid class inheritance at all, and let an object instance extend one or more other objects directly, and since the extending relationship can be chained, multiple levels of instance inheritance is possible.
+You can avoid class inheritance at all, and let an object instance extend one or more other objects directly. Further more, since the extending relationship can be chained, multiple levels of instance inheritance is possible.
 
 You can set a shared super object as for the prototype, then new objects can extend it directly, with arbitrary attributes overridden.
 
@@ -3877,63 +3879,124 @@ The super object can also change dynamically, which means all descendant objects
   {## Methods and Magic Ones
    # - Procedures called in particular execution context
 
-When a procedure is called, there are associated contextual information with the call, e.g. from where the caller has obtained the procedure. In case the procedure is obtained as some attribute of an object, then we say this procedure is called as a "method" of that object.
-
-Actually in Đ, there are always contextual objects associated with a call, when no source object is used to obtain a callee, the current scope's contextual objects are used for the association, then the callee is called as "method" of those objects as well.
-
-In some cases, a method is not called as usual with an explicit surface syntax, but due to deeper reasons according to some hidden rules, so we say they are "magic method"s.
+Procedures are always called with responsibility for some objects, in this sense they are said to be "methods" of those objects, or we can say those objects "own" those methods.
 
    #} {;
     {## Methods and Magic Ones #}
     export edh'mths'and'magic = bookmark()
 
-    {## This and That Reference
-     # - How contextual objects can be refered to
+    {## Method Binding, `this` and `that` Reference
+     # - How contextual objects are decided and refered to
+
+A procedure can be bound to one `this` object and one `that` object at the same time, so as to be a method of them.
+
      #} {;
-      {## This and That Reference #}
-      export edh'this'that'refs = bookmark()
-
-      # %% # This simple example should help you understand it
-      class C {
-
-        method hello() {
-          'Hello, this is ' ++ this ++ ", I know that " ++ that ++ ' is called.'
-        }
-
-        method what's'this() return this
-        method what's'that() return that
-
-      }
-
-      class D extends C
-      # %#
-
-      # %% # Let's call an inherited method
-      o = D()
-      o.hello()
-      # %# Both `this` and `that` refer to an contextual object per the method get called
-
-      # %% # `this` refers to the object instance actually defined the method procedure (the callee)
-      o.what's'this()
-      # Note a method is usually defined by the class of an object, but an object instance is also allowed to define methods on its own right.
-
-      # %% # `that` refers to the end object via which the method procedure is obtained (usually via at-notation)
-      o.what's'that()
-
-      # So in the case as demonstrated above:
-
-      # %% # `that` refers to the end object `o`
-      o.what's'that() is o
-
-      # %% # `this` refers to `o`'s super object, whose class is `C`, which has provided the called method procedure:
-      case o of {{ C: c }}
-      -> c is o.what's'this()
-
-      # %# There can be intermediate super objects involved, but no special syntax to obtain them.
-
+      {## Method Binding, `this` and `that` Reference #}
+      export edh'mth'binding = bookmark()
 
       {## Rule of Thumb
-       # - You know `this` better, and `that` is out of your reach
+       # - Bindings are never changed, `that` can only derive from `this` if not `this`
+
+An already bound method procedure will not be changed anymore, i.e. the binding is always kept intact, regardless of rules for how unbound procedures to be bound.
+
+As a result of the binding rules (to be described in following sections), `this` can only be the same object as `that`, or one of the super objects of `that` object; to put it another way, `that` will either be just `this`, or a descendant object of `this`.
+
+       #} {;
+        {## Rule of Thumb #}
+        export edh'binding'rot = bookmark()
+      }
+
+
+      {## Binding Rules for Dot-Notation
+       # - Methods via object attribute resolution
+
+Dot-notation is the most typical scenario for a procedure provide by an object (or its class) to be bound, when left-hand-side of the dot-notation being evaluated is an object, it triggers object-attribute-resolution, and if it resolves to an unbound procedure value -
+
+  * That object will be `that` object bound with the procedure, before it assumed the final result of the whole dot-notation.
+
+The very procedure might not have been provided directly by `that` object -
+
+  * It could be inherited from one of `that`'s super objects, in such cases, the super object (or its class) actually provided the procedure will be `this` object to be bound with the procedure, before it assumed the final result of the whole dot-notation.
+
+  * Or `that` object has just provided the procedure by itself, then `this` object will be `that` object as well.
+
+Finally the procedure is bound to `this` object and `that` object, so as to be a bound method of them, and the bound method assumes the final result value of the dot-notation.
+
+       #} {;
+        {## Binding Rules for Dot-Notation #}
+        export edh'dot'mth'binding = bookmark()
+      }
+
+
+      {## Binding Rules for Import
+       # - Methods via import
+
+Procedures imported from some object (but other than a module object, usually be a namespace object e.g.) are, bound with the source object as both `this` and `that`, before put as attributes, into local scope or the import target object's object scope.
+
+       #} {;
+        {## Binding Rules for Import #}
+        export edh'imp'mth'binding = bookmark()
+      }
+
+
+      {## Ad-Hoc Binding Rules
+       # - Methods per current scope
+
+Every scope has one `this` and one `that` as contextual objects, when calling an unbound procedure, the contextual `this` and `that` object are taken from current scope of the call site. The procedure is called as if it has been bound to such `this` and `that` object. So the binding happens only conceptually in this case, no physical binding would actually happen.
+
+       #} {;
+        {## Ad-Hoc Binding Rules #}
+        export edh'adhoc'mth'binding = bookmark()
+      }
+
+
+      {## `this` and `that` Demonstrated
+       # - This simple example should help you intuit it
+       #} {;
+        {## `this` and `that` Demonstrated #}
+        export edh'mth'binding'example = bookmark()
+
+        # %% #
+        class C {
+
+          method hello() {
+            'Hello, this is ' ++ this ++ ", I know that " ++ that ++ ' is called.'
+          }
+
+          method what's'this() return this
+          method what's'that() return that
+
+        }
+
+        class D extends C
+        # %#
+
+        # %% # Let's call an inherited method
+        o = D()
+        o.hello()
+        # %# Both `this` and `that` refer to an contextual object per the method get called
+
+        # %% # `this` refers to the object instance actually defined the method procedure (the callee)
+        o.what's'this()
+        # Note a method is usually defined by the class of an object, but an object instance is also allowed to define methods on its own right.
+
+        # %% # `that` refers to the end object via which the method procedure is obtained (usually via at-notation)
+        o.what's'that()
+
+        # So in the case as demonstrated above:
+
+        # %% # `that` refers to the end object `o`
+        o.what's'that() is o
+
+        # %% # `this` refers to `o`'s super object, whose class is `C`, which has provided the called method procedure:
+        case o of {{ C: c }}
+        -> c is o.what's'this()
+
+        # %# There can be intermediate super objects involved, but no special syntax to obtain them.
+
+
+        {## Rule of Thumb
+         # - You know `this` better, and `that` is out of your reach
 
 The rule of thumb to intuit `this` and `that` reference when you are writing code of a method:
 
@@ -3941,16 +4004,32 @@ The rule of thumb to intuit `this` and `that` reference when you are writing cod
 
   `that` object must be of some descendant class derived from current enclosing class, you are not sure what new behaviors have been added to `that`, as well as how `that` has overrided the behaviors as implemented here in the enclosing class. So `that` is "farther" from you.
 
-       #} {;
-        {## Rule of Thumb #}
-        export edh'this'that'rot = bookmark()
+         #} {;
+          {## Rule of Thumb #}
+          export edh'this'that'rot = bookmark()
+        }
       }
+
+    }
+
+
+    {## `super` Reference
+     # - To obtain overridden attributes from super objects, by a descendant object
+
+
+     #} {;
+      {## `super` Reference #}
+      export edh'super'ref = bookmark()
+
 
     }
 
 
     {## Magic Methods
      # - Customize object behaviors in responding to infix operators and some common procedures
+
+In some cases, a method is not called as usual with an explicit surface syntax, but due to deeper reasons according to some hidden rules, so we say they are "magic method"s.
+
      #} {;
       {## Magic Methods #}
       export edh'magic'mths = bookmark()
@@ -4311,21 +4390,141 @@ The method name needs to be verbatimly the operator symbol, followed by an immed
     {## Host Objects #}
     export edh'host'obj = bookmark()
 
-    # %% # A simple example of a host class that constructs host objects is:
+    {#
+A simple example of a host class that constructs host objects is `Vector`, see its implementation in Haskell (the host language):
+
+  https://github.com/e-wrks/edh/blob/latest/host.hs/src/Language/Edh/Batteries/Vector.hs
+
+Especially note this class is not designed to be performant w.r.t. vectorized computations, consult HasDim for raw machine performance, as well as IEEE floating point number support, at:
+
+  http://github.com/e-wrks/hasdim
+
+     #}
+
+    # %% # A simple numeric vector
+    v = Vector( 3, 2, 5, )
+
+    # %% # The (+) operator triggering its (+) magic method, which broadcasts the operation to all the elements
+    v + 100
+    # %% # The (+) operator triggering its (+.) magic method, doing the same when at rhs
+    100 + v
+
+    # %% # The (++) operator triggering its (++) magic method, doing the same broadcasting, but for the string-wise concatenation as a scalar (++) operation would do.
+    v ++ 5
+
+    # %% # TODO impl. comparisons
+    v > 1
+
+    # %%
+
+    # %% # All of its methods are host procedures defined into the host class
     dir$ Vector
-    # See its implementation in Haskell (the host language):
-    # %# https://github.com/e-wrks/edh/blob/latest/host.hs/src/Language/Edh/Batteries/Vector.hs
+    # %#
   }
 
 }
 
 
 {## Lexical Scoping
- # - Static scoping is used for usual artifact resolution (i.e. other than effect resolution)
+ # - Static scoping is used for lexical attribute resolution
+
+Construting to effect resolution, which is dynamic scope per se.
+
 
  #} {;
   {## Lexical Scoping #}
   export edh'lexi'scoping = bookmark()
+
+  {## Scopes and Special Ones
+   # - Scopes are created for execution of procedures
+
+Every scope has one `this` object and one `that` object as its contextual objects.
+
+
+   #} {;
+    {## Scopes and Special Ones #}
+    export edh'scopes = bookmark()
+
+    {## World Root Scope
+     # - The outer most scope
+
+
+     #} {;
+      {## World Root Scope #}
+      export edh'world'root'scope = bookmark()
+
+
+    }
+
+
+    {## Procedure Call Scopes
+     # - Each procedure call creates a new dedicated scope
+
+
+     #} {;
+      {## Procedure Call Scopes #}
+      export edh'proc'scopes = bookmark()
+
+
+    }
+
+
+    {## Object Initialization Scopes
+     # - Initialization scopes
+
+
+     #} {;
+      {## Object Initialization Scopes #}
+      export edh'init'scopes = bookmark()
+
+      {## Module Scopes
+       # - Each module has its own scope
+
+
+       #} {;
+        {## Module Scopes #}
+        export edh'modu'scopes = bookmark()
+
+
+      }
+
+      {## Namespace Scopes
+       # - Each namespace has its own scope
+
+
+       #} {;
+        {## Namespace Scopes #}
+        export edh'ns'scopes = bookmark()
+
+
+      }
+
+      {## Class Scopes
+       # - Each class has its own scope
+
+
+       #} {;
+        {## Class Scopes #}
+        export edh'cls'scopes = bookmark()
+
+
+      }
+
+    }
+
+  }
+
+
+  {## Lexical Attribute Resolution
+   # - Resolve attributes statically
+
+
+   #} {;
+    {## Lexical Attribute Resolution #}
+    export edh'lexi'attr'resolv = bookmark()
+
+
+  }
 
 
   {## Closure
@@ -4387,24 +4586,38 @@ Then exported artifacts from the source object are received as specified by the 
   {## Scope Wrappers
    # - A scope can be wrapped as an object to do reflection in Đ
 
-`scope` is a builtin class.
+`scope` is a class comes with the default batteries.
 
    #} {;
     {## Scope Wrappers #}
     export edh'scope'wrappers = bookmark()
 
 
-    # %% # without argument, it creates an object wrapping the scope where it's called from
+    # %% # Without argument, everytime you call `scope()`, it creates an object wrapping the scope at caller site.
     method f() {
-      method g() {
-        let ( a, b, ) = ( 7, 3, )
-        scope()
-      }
+      # Put these into current procedure scope
       let ( c, d, ) = ( 2, 8, )
-      return g() @=> g = nil # dispose g after one-time used
+
+      # Call an ad-hoc arrow procedure to observe the lexical structure of its scope
+      return ()|() => {
+        # Put these into current procedure scope
+        let ( a, b, ) = ( 7, 3, )
+        # Wrap current scope and return the wrapper object
+        return scope()
+      }
     }
     s = f()
     'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
+    # %% #
+    s.outer.eval(expr
+      e = c / d
+    )
+    dir$ s.outer
+    # %% #
+    s.eval(expr
+      e = 3*a - 5*b + c - 7*d
+    )
+    dir$ s
     # %#
 
 
@@ -4439,7 +4652,7 @@ Expression is 1st class in Đ, you can create expression values with literal for
 
 
   {## Expression Arguments to Procedures
-   # - Arguments are passed in expr form, to interpreter procedures and 3af operator procedures
+   # - Arguments are passed in expr form, to interpreter procedures and 3-arg operator procedures
 
 For an interpreter procedure or an infix operator procedure with 3 positional arguments, the first argument will be wrapped scope object of its caller, and rest arguments are all expression values.
 
@@ -4507,7 +4720,7 @@ There are cases it's desirable to cease the side-effect of attribute creation in
 
 
 {## Dynamic Effect Tracking
- # - Tracking effects the dynamic and imperative way
+ # - Tracking effects dynamically, the procedural way
  #} {;
   {## Dynamic Effect Tracking #}
   export edh'eff'tracking = bookmark()
