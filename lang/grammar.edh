@@ -2893,7 +2893,7 @@ Note that many other procedures share mostly the same syntax with the vanilla pr
 
 
   {## Interpreter Procedures
-   # - Procedures with non-strict evaluation
+   # - To receive arguments as expressions for controlled evaluation
 
 The general syntax to define an intetpreter procedure is:
 
@@ -2901,45 +2901,40 @@ The general syntax to define an intetpreter procedure is:
 
 The definition is an expression evaluates to a value of `InterpreterType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
+The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this procedure is called, and rest arguments will receive what the caller passes for the call, but they will be expression values without evaluated.
+
    #} {;
     {## Interpreter Procedures #}
     export edh'interpreter'procs = bookmark()
 
-    # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this procedure is called, and all other arguments will be expression values instead of evaluated result values, reflecting what's been passed by the caller.
     # Expression Values and Scope Wrapprs are further described later in this chapter.
     ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
 
     # %% #
-    {##
-     # For lazily evaluated substituation
-This procedure is strict on its 1st argument, but won't evaluate its 2nd argument unless the result from the 1st argument is falsy.
-     #}
-    interpreter orElse( callerScope, preferredExpr, substituteExpr, ) {
-      case callerScope.eval(preferredExpr) of {
-
-        # Evaluate to result of the preferred expression so long as it is truthful
-        { preferredValue } | not null(preferredValue) -> preferredValue
-
-        # Or evaluate to whatever the result is from the substitute expression
-        _ -> callerScope.eval(substituteExpr)
-
+    {## Create a lazy evaluator of the specified expression #}
+    interpreter compute( callerScope, x, name= None, ) {
+      # note the following method definition won't bind the result procedure value into local scope as an attribute named after `@name`, because it is evaluated in the pure context created by the `return` statement, this is important for the attributes `callerScope` and `x` not to be overwritten due to the `name` argument happens to be given a value of their respective name.
+      {##
+       # A lazy evaluator
+This is an unary procedure (niladic computation) that evaluates the original expression per called
+       #}
+      return method @( name and callerScope.eval(name) or 'lazyEval' ) () {
+        callerScope.eval(x)
       }
     }
 
-    # %% # See type of the procedure value
-    type$ orElse
+    # %% #
+    a = 5; b = 3
+    sum = compute( a + b, name= 'The sum of a and b', )
 
-    # %% # With some contextual attribute set
-    n = 21
-    # %% # Or set to another value
-    n = 38
+    # %% #
+    "  Once upon a time, the sum was " ++ sum() ++ '.'
 
-    # %% # Call the interpreter procedure:
-    orElse( n-3*7, {
-        console.warn<| 'zero there is'
-        999
-    } )
-    # %# Try switch the value of `n`, and run above cell again to see a different result
+    # %% #
+    a = 7
+    "  Then after a change, it becomes " ++ sum() ++ '.'
+
+    # %#
   }
 
 
@@ -3141,7 +3136,7 @@ Finally the agreed event sink - there will always be one, even neither explicitl
 
 
   {## Arrow Procedures
-   # - Defined with the (=>) operator
+   # - Lambda procedures bound to contextual objects
 
 It'll be a generator procedure if the body contains at least 1 `yield` expression, otherwise it'll be a vanilla procedure.
 
