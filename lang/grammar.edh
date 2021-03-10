@@ -3211,8 +3211,8 @@ The definition is an expression evaluates to a value of `OperatorType`, this val
     }
 
 
-    {## 3-arg Operator Procedures
-     # - Operator procedures with non-strict evaluation
+    {## Non-Strict (3-arg) Operator Procedures
+     # - For controlled evaluation
 
 The general syntax to define a 3-arg operator procedure is:
 
@@ -3221,10 +3221,11 @@ The general syntax to define a 3-arg operator procedure is:
 The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
      #} {;
-      {## 3-arg Operator Procedures #}
+      {## Non-Strict (3-arg) Operator Procedures #}
       export edh'3'arg'op'procs = bookmark()
 
       # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this operator is applied, and the rest 2 arguments will be expression values instead of evaluated result values, for the lhs and rhs operands of the operator application.
+
       # Expression Values and Scope Wrapprs are further described later in this chapter.
       ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
 
@@ -3233,7 +3234,7 @@ The definition is an expression evaluates to a value of `OperatorType`, this val
        # For lazily evaluated substituation
 This operator is strict on its lhs argument, but won't evaluate its rhs argument unless the result from the lhs argument is falsy.
        #}
-      operator 0 (|->) ( callerScope, lhx, rhx ) {
+      operator 0 (||>) ( callerScope, lhx, rhx ) {
         case callerScope.eval(lhx) of {
 
           # Evaluate to result of the left-hand-side expression so long as it is truthful
@@ -3246,7 +3247,7 @@ This operator is strict on its lhs argument, but won't evaluate its rhs argument
       }
 
       # %% # See type of the procedure value
-      type$ (|->)
+      type$ (||>)
 
       # %% # With some contextual attribute set
       n = 21
@@ -3254,7 +3255,7 @@ This operator is strict on its lhs argument, but won't evaluate its rhs argument
       n = 38
 
       # %% # Call the operator procedure:
-      n-3*7 |-> {
+      n-3*7 ||> {
         console.warn<| 'zero there is'
         999
       }
