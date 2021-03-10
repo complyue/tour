@@ -3096,7 +3096,7 @@ Let's see a racy solution first.
 
       # %% # Here is the race-free solution
 
-      producer p(outlet) {
+      producer p(outlet= sink) {
         i = 0; for _ from console.everyMillis(1) do {
           outlet <- i+=1
           if i>=5 then { break }
@@ -3138,25 +3138,100 @@ Finally the agreed event sink - there will always be one, even neither explicitl
   {## Arrow Procedures
    # - Lambda procedures bound to contextual objects
 
-It'll be a generator procedure if the body contains at least 1 `yield` expression, otherwise it'll be a vanilla procedure.
+Lambdas is essential to functional programming paradigm, where higher order functions (procedures will be used in Đ) can take other functions as arguments and operate on them with more abstract semantics.
+
+Arrow procedures are anonymous (unnamed) procedures defined with lambda syntax, they will be bound to the contextual objects (those can be refered to by `this` and `that` reference), w.r.t. where they are defined, in addition to have their lexical scopes enclosed, as all procedures do.
+
+The general syntax to define an arrow procedure is:
+
+  <arg-spec> => <procedure-body>
+
+or
+
+  <arg-spec> =>* <procedure-body>
+
+Technically, it is the application of the arrow definition (=>) or (=>*) operators, thus an infix operation expression.
+
+With the (=>) operator, the expression evaluates to a value of `GeneratorType` (which is a bound generator arrow), if the body contains at least 1 `yield` expression; otherwise the result will be of `MethodType` (thus a vanilla arrow). The semantics when the result procedure is called, is identical to a generator procedure or a vanilla procedure accordingly.
+
+With the (=>*) operator, the expression evaluates to a value of `ProducerType` (which is a bound producer arrow). The semantics when the result procedure is called, is identical to a producer procedure.
 
    #} {;
     {## Arrow Procedures #}
     export edh'arrow'procs = bookmark()
 
+    # %% # A simple vanilla arrow
+    type$ x => x+1
 
-  }
+    # %% # A simple generator arrow
+    type$ x => {
+      yield x+1
+      yield x+2
+      return x+3
+    }
+
+    # %% # A simple producer arrow
+    type$ (x, outlet= sink,) =>* {
+      defer outlet <- nil
+      outlet <- x+1
+      outlet <- x+2
+      outlet <- x+3
+    }
+    # %#
 
 
-  {## Producer Arrow Procedures
-   # - Defined with the (=>*) operator
+    # %% #A sophisticated ad-hoc generator arrow, demonstrating a freeform list builder
 
-No `yield` can appear in the procedure body.
+    # With some contextual state
+    let ( foo, bar ) = ( 77, 88 )
+    let lll = [ 3, 2, 5 ]
 
-   #} {;
-    {## Producer Arrow Procedures #}
-    export edh'arrow'procs = bookmark()
+    # Comprehend items into a list, those generated with arbitrary control flows
+    ; [] =< for i from (() => {
+        yield "a"
+        yield ( if foo < bar
+          then "b"
+          else "c" )
+        yield "d"
+        for item from lll do {
+          yield item
+          yield item * 2
+        }
+    }) () do i
 
+    # %# Loop based comprehension is described in another section
+    ; () => edh'loop'comprehension # <- follow this bookmark to there
+
+
+    # Note that anonymous procedures can be defined with keyword based syntax as well, as described in previous sections. The trick is to specify the procedure name to be `_`.
+
+    # %% # e.g. the following implementation has identical semantics as the last cell:
+    ; [] =< for i from ( generator _() {
+        yield "a"
+        yield ( if foo < bar
+          then "b"
+          else "c" )
+        yield "d"
+        for item from lll do {
+          yield item
+          yield item * 2
+        }
+    }) () do i
+    # %# So long as neither `this` nor `that` object is referred in the procedure bodies
+
+
+    {#
+
+There will be semantical differences when `this` and/or `that` references appear in the procedure body:
+
+  * Those objects will surely be what's in current scope for an arrow procedure, as arrow procedures are immediately bound to the objects in context upon it is defined.
+
+  * What `this` and `that` will refer to, will need more reasoning (to see where and when they'll be bound), for procedures defined with those keywords (method/interpreter/generator/producer), either anonymous or named.
+
+     #}
+
+    # `this` and `that` references effective for methods are described later in this chapter
+    ; () => edh'this'that'refs # <- follow this bookmark to that section
 
   }
 
