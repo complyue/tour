@@ -4018,12 +4018,46 @@ The rule of thumb to intuit `this` and `that` reference when you are writing cod
     {## `super` Reference
      # - To obtain overridden attributes from super objects, by a descendant object
 
+In a method overriding the super one from a descendant class/object, sometimes you still want to call the super implementation as part of the overriding implementation, you can refer to the super method with `super` at the lhs of a dot-notation to retrieve an attribute from the first super object providing it.
 
      #} {;
       {## `super` Reference #}
       export edh'super'ref = bookmark()
 
+      # %% # Define a base implementation of a counter like this:
+      data C(cnt) {
 
+        method inc() {
+          # Increase our cnt field atomically
+          ai this.cnt += 1
+          # And return the new value
+          return this.cnt
+        }
+
+      }
+
+      c = C(97)
+
+      # %% # Run this cell multiple times to see it goes up well.
+      c.inc()
+
+      # %% # Now let's derive an implementation that can never go greater than 100
+      class D { extends C
+        method inc() {
+          if super.cnt >= 100
+          then console.error<| "No, it's enough, no further increament!"
+          else super.inc()
+        }
+      }
+
+      d = D(97)
+
+      # %% #
+      d.inc()
+
+      # %# See how super is used in `D.inc()`?
+
+      # Note that since there can be multiple super objects, you can not use `super` alone to obtain a single object value. While you can iterate all super objects obtained by `supers()`.
     }
 
 
