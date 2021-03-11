@@ -4427,31 +4427,46 @@ The method name needs to be verbatimly the operator symbol, followed by an immed
     export edh'host'obj = bookmark()
 
     {#
-A simple example of a host class that constructs host objects is `Vector`, see its implementation in Haskell (the host language):
+`Vector` is a simple example of a host class that constructs & manipulates host objects, and implements magic methods to support fancy user interactions. See its implementation in Haskell (the host language):
 
   https://github.com/e-wrks/edh/blob/latest/host.hs/src/Language/Edh/Batteries/Vector.hs
 
-Especially note this class is not designed to be performant w.r.t. vectorized computations, consult HasDim for raw machine performance, as well as IEEE floating point number support, at:
+Especially note though this class implements vectorized computation, it is not designed for performance but convenience. For high performance w.r.t. vectorized number crunching, as well as IEEE floating point number support, checkout HasDim at:
 
   http://github.com/e-wrks/hasdim
 
      #}
 
-    # %% # A simple numeric vector
+    # %% # A simple vector of Đ values
     v = Vector( 3, 2, 5, )
 
     # %% # The (+) operator triggering its (+) magic method, which broadcasts the operation to all the elements
     v + 100
+
     # %% # The (+) operator triggering its (+.) magic method, doing the same when at rhs
     100 + v
 
-    # %% # The (++) operator triggering its (++) magic method, doing the same broadcasting, but for the string-wise concatenation as a scalar (++) operation would do.
+    # %% # The (++) operator triggering its (++) magic method, doing the same broadcasting, while with string-wise concatenation as the (++) operator is applied element-wise
     v ++ 5
 
-    # %% # TODO impl. comparisons
-    v > 1
+    # %% # The (++) operator triggering its (++.) magic method, doing the same when at rhs
+    5 ++ v
 
-    # %%
+    # %% # Vectorized comparison would return a result Vector of same length, with scalar result value per element
+    v >= 3
+
+    # %% # The comparison result Vector can be used as a filter to mask out unsatisfying elements as NA
+    v[ v >= 3 ]
+
+    # %% # The comparison result Vector can also be used as a mask to update only satisfying elements
+    v[ v >= 3 ] += 100
+    v
+
+    # %% #
+    v[ v > 10 ] ++= ", which is too large"
+    v
+
+    # %% # TODO impl. and demo. `.map()` `.update()` etc.
 
     # %% # All of its methods are host procedures defined into the host class
     dir$ Vector
