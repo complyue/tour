@@ -4476,6 +4476,111 @@ Especially note though this class implements vectorized computation, it is not d
 }
 
 
+{## Modules
+ # - A unit of sharing for artifacts in a world
+
+Usual module objects are loaded from `.edh` files from os filesystems, as get imported.
+
+Except for the entry module, in a particular Đ world, one particular `.edh` file, can have only one module object created and initialized from the file content, later imports resolved to the same file will just use the initialized module object as the source, effectively making such modules globally shared.
+
+Note for security reasons, sandboxed code is prohibited from performing os file oriented importing, though it is allowed to import from existing objects (including module objects), i.e. the import can succeed if the source expression evaluates to some object.
+
+Note that technically, a distinct module object can be created by calling the `module()` constructor, but that's rarely done.
+
+ #} {;
+  {## Modules #}
+  export edh'modules = bookmark()
+
+  {## Reflective Attributes in a Module
+   # - Every module object contains some meta attribute to reflect its source information
+   #} {;
+    {## Reflective Attributes in a Module #}
+    export edh'modu'meta'arts = bookmark()
+
+    # %% # It should at lease contain the `__name__` attribute
+    __name__
+
+    # %% # File modules should contain `__file__` for absolute file path of the source file as well
+    __file__
+    # %% # Also `__path__` to be used as basis for relative import from within the very module
+    __path__
+
+    # %#
+  }
+
+
+  {## Import & Export
+   # - Sharing & reusing
+
+All defining expressions can be prefixed with the `export` keyword for the result artifact to be listed as exported from contextual `this` object, unless evaluated in a _pure_ context. And it's possible for a block expression to be prefixed with the `export` keyword, so all artifacts defined within that block are exported. All objects can export artifacts for others to import.
+
+The general syntax for importing is:
+
+  import <args-receive-spec> <import-source> [into <receiver-object-reference>]
+
+The <import-source> are usually literal strings to specify global modules loaded from os filesystems. Dynamic strings are supported, but discouraged. Loaded modules are uniquely identified by the canonical full absolute path of its source file, thus globally shared.
+
+The <import-source> can also evaluates to an existing object value, the os filesystem will not be consulted in this case.
+
+Then exported artifacts from the source object (directly specified or loaded from os file) are received as specified by the receive specification, usually into current scope, or into an object as specified after the `into` keyword.
+
+   #} {;
+    {## Import & Export #}
+    export edh'imp'exp = bookmark()
+
+    {## Relative Import
+     # - From a file module loaded from an os file relative to the importer
+
+When the <import-source> evaluates to a string started with a dot character (`.`), it is interpeted as relative import from a specific file module. The os filesystem will be consulted, to check files relative to whatever the value of `__path__` in scope. `.edh` and `/__init__.edh` will be added to the import spec, whichever matches an existing file will be used as the source file for the import.
+
+     #} {;
+      {## Relative Import #}
+      export edh'rel'import = bookmark()
+
+      # TODO examples in code cells
+    }
+
+
+    {## Absolute Import
+     # - From a file module loaded from the file relative to `edh_modules` directory
+
+With localized dependency in mind, regarding production deployment of Đ packages and projects, ...
+
+     #} {;
+      {## Absolute Import #}
+      export edh'abs'import = bookmark()
+
+      # TODO examples in code cells
+    }
+
+
+    {## Cyclic Imports & Module Loading
+     # - How modules are loaded with possible cyclic references
+
+It can not be strictly avoided for file modules to reference each others cyclicly.
+
+     #} {;
+      {## Cyclic Imports & Module Loading #}
+      export edh'modu'load'cyc = bookmark()
+
+      # TODO examples in code cells
+    }
+  }
+
+
+  {## Entry Modules
+   # - The starting point of an Đ program
+
+An Đ program is always started to run either an Đ file or an Đ module, in either case, the file content will be parsed then executed, contextual scope of the execution will be the (module) object scope of a newly created module object, the created module object will be both `this` and `that` object of the execution scope.
+
+   #} {;
+    {## Entry Modules #}
+    export edh'entry'modus = bookmark()
+  }
+
+}
+
+
 {## Lexical Scoping
  # - Static scoping is used for lexical attribute resolution
 
@@ -4593,41 +4698,6 @@ Every scope has one `this` object and one `that` object as its contextual object
 }
 
 
-{## Modules
- # - The modular way to share artifacts in the world
-
- Usual module objects are loaded from `.edh` files from os filesystems. In a particular Đ world, one particular `.edh` file, can have only one module object created and initialized from the file content, later imports resolved to the same file will just use the initialized module object as the source, effectively making such modules globally shared.
-
-A module object can be created by calling the `module()` constructor, but rarely done.
-
-Note for security reasons, sandboxed code is prohibited from importing os file based modules, while it is allowed to import from arbitrary objects (including module objects) it knows about, i.e. having the reference to such an object.
-
- #} {;
-  {## Modules #}
-  export edh'modules = bookmark()
-
-
-  {## Import & Export
-   # - Sharing & reusing
-
-All defining expressions can be prefixed with the `export` keyword for the result artifact to be listed as exported from contextual `this` object, unless evaluated in a _pure_ context. And it's possible for a block expression to be prefixed with the `export` keyword, so all artifacts defined within that block are exported. All objects can export artifacts for others to import.
-
-The general syntax for importing is:
-
-  import <args-receive-spec> <import-source> [into <receiver-object-reference>]
-
-Then exported artifacts from the source object are received as specified by the receive specification, usually into current scope, or into an object specified after the `into` keyword as the receiver.
-
-   #} {;
-    {## Import & Export #}
-    export edh'imp'exp = bookmark()
-
-
-  }
-
-}
-
-
 {## Expression Values and Scope Wrapprs
  # - Dynamic evaluation of any expression, anytime, anywhere
  #} {;
@@ -4725,11 +4795,11 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
 Đ host procedures (written in Haskell) see Đ AST directly.
 
+TODO expand this section.
+
    #} {;
     {## Code as Data #}
     export edh'host'proc'exprs = bookmark()
-
-
   }
 
 }
@@ -4772,9 +4842,75 @@ There are cases it's desirable to cease the side-effect of attribute creation in
 
 {## Dynamic Effect Tracking
  # - Tracking effects dynamically, the procedural way
+
+With mathematical methodologies, monads is a mature and powerful machinery to be implemented in a functional programming language, to vend and consume provisional effects with well defined contexts. (there is algebraic effects & handlers under active development at time of speaking - 2020)
+
+With procedural methodologies, such contextual semantics of APIs are largely ended up defined and consulted as specifications in descriptive documentation form, in lieu of language constructs to encode the applicability of certain effects contextual-wise.
+
+*Dynamic Scoped Effects* essentially is *dynamic scoping* with a separate effect registration & resolution space, avoided the failure of traditional dynamic scoping that lexical artifacts get mixed with callstack provided artifacts, which has things confusingly messed up.
+
+
  #} {;
   {## Dynamic Effect Tracking #}
   export edh'eff'tracking = bookmark()
+
+  {## Technical Basics
+   # - How it works in simple cases
+
+   #} {;
+    {## Technical Basics #}
+    export edh'eff'tech'basics = bookmark()
+
+    # %{ #
+
+    # %% #
+
+    method effectfulHello() void {
+
+      # Customize the word used in the greeting phrase
+      effect greetingWord = 'Hello'
+
+      # Ask the running environment for a pharase to use
+      greetMsg = behave greetingPhrase()
+
+      # The phrase goes to stdout as so implemented here
+      console.print$ greetMsg
+
+    }
+
+    method effectfulApp( ) void {
+
+      # Customize the greeting phrase a greeter would like to use
+      effect method greetingPhrase() {
+        # Ask the running environment about what greeting word to use,
+        # then given we are facing the curious world, let's speak of it.
+        return behave greetingWord ++ ', world!'
+      }
+
+      # We start with a greeting
+      perform greeter()
+
+      # Then do things ...
+
+    }
+
+
+    # %% # It can be called like this
+
+    effect greeter = effectfulHello
+
+    effectfulApp( )
+
+    # %}
+
+    {#
+It would seem redundant & unwieldy for this simple scenario, but the key is the ability for effect-callouts to penetrate call frames across the stack, or all intermediate procedures would have to explictly list relevant arguments and merely pass them on to inner callees, which is unrealistic or at best nightmare for realworld integration scenarios.
+
+A Monad can encapsulate all possible effects, and allow inner computations nested arbitrarily deep to callout these effects, so long as it is a monadic computation in the said Monad. Algebraic Effects & Handlers solve this problem as well.
+
+
+     #}
+  }
 
 
 }
