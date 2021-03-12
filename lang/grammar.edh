@@ -1002,16 +1002,18 @@ Arguments are packed into an apk in the following cases:
   }
 
 
-  {## Arguments Receiving
+  {## Arguments Receiving, Repacking
    # - Receive arguments from an apk into current scope
 
-Arguments are received from an ArgsPack in the following cases:
+Arguments are received from an `ArgsPack` in the following cases:
  * In execution of a `let` statement, according to specification at left-hand-side of the `=` operator
  * In execution of a for-loop expression, according to the loop argument specification
  * When a procedure is called, according to the argument specification in the definition of the procedure
 
+Upon receiving, rest arguments can be repacked into new `ArgsPack`s, when varidic arguments are expected.
+
    #} {;
-    {## Arguments Receiving #}
+    {## Arguments Receiving, Repacking #}
     export edh'args'receiving = bookmark()
 
     # %% #
