@@ -4478,13 +4478,13 @@ Especially note though this class implements vectorized computation, it is not d
 {## Modules
  # - A unit of sharing for artifacts in a world
 
-Usual module objects are loaded from `.edh` files from os filesystems, as get imported.
+Usual module objects are loaded from `.edh` files from os filesystems, as one getting imported.
 
-Except for the entry module, in a particular Đ world, one particular `.edh` file, can have only one module object created and initialized from the file content, later imports resolved to the same file will just use the initialized module object as the source, effectively making such modules globally shared.
+Except for the entry module, in a particular Đ world, one particular `.edh` file, can have only one module object created and initialized from the file content, later imports resolved to the same file will just reuse the initialized module object as the source, effectively making such modules globally shared world-wide.
 
-Note for security reasons, sandboxed code is prohibited from performing os file oriented importing, though it is allowed to import from existing objects (including module objects), i.e. the import can succeed if the source expression evaluates to some object.
+Note for security reasons, sandboxed code is prohibited from performing os file oriented importing, though it is allowed to import from existing objects (including module objects), i.e. the import can only succeed if the source expression evaluates to some object but not strings or other type of values.
 
-Note that technically, a distinct module object can be created by calling the `module()` constructor, but that's rarely done.
+Note that technically, a distinct module object can be created by calling the `module` class as an object constructor, but that's rarely done.
 
  #} {;
   {## Modules #}
@@ -4530,7 +4530,12 @@ Then exported artifacts from the source object (directly specified or loaded fro
     {## Relative Import
      # - From a file module loaded from an os file relative to the importer
 
-When the <import-source> evaluates to a string started with a dot character (`.`), it is interpeted as relative import from a specific file module. The os filesystem will be consulted, to check files relative to whatever the value of `__path__` in scope. `.edh` and `/__init__.edh` will be added to the import spec, whichever matches an existing file will be used as the source file for the import.
+When the <import-source> evaluates to a string started with a dot character (`.`), it is interpeted as relative import, and with the value of `__path__` in scope as base path, the os filesystem will be consulted, to check existence of the following files in turn:
+
+  <__path__>/<import-spec-string>.edh
+  <__path__>/<import-spec-string>/__init__.edh
+
+The first matched existing file will be used as the source file for the import; or the import fails.
 
      #} {;
       {## Relative Import #}
@@ -4543,7 +4548,16 @@ When the <import-source> evaluates to a string started with a dot character (`.`
     {## Absolute Import
      # - From a file module loaded from the file relative to `edh_modules` directory
 
-With localized dependency in mind, regarding production deployment of Đ packages and projects, ...
+When the <import-source> evaluats to a string not started with a dot character (`.`), it is interpeted as absolute import from a specific file module. The os filesystem will be consulted, regarding the process working directory (pwd) of the Đ runtime. In production deployment of Đ packages and projects, for specific dependencies to be localized while common dependencies shared, the search algorithm for an Đ runtime to resolve absolute import is like this:
+
+  * Starting from pwd (process working directory), with such a target directory, perform the following match. When succeeded use the matched os file as source file of the import; when the match failed, resort to use parent directory as the new target directory then repeat the match, until reaching the root directory (/), then the import fails.
+
+  * Check whether there is a subdirectory named `edh_modules` directly in the target directory, if not, the match fails; or check existence of the following files in turn:
+
+    edh_modules/<import-spec-string>.edh
+    edh_modules/<import-spec-string>/__init__.edh
+
+The first matched existing file will be used as the source file for the import; or the match fails.
 
      #} {;
       {## Absolute Import #}
@@ -4553,13 +4567,13 @@ With localized dependency in mind, regarding production deployment of Đ package
     }
 
 
-    {## Cyclic Imports & Module Loading
-     # - How modules are loaded with possible cyclic references
+    {## Module Loading, Cyclic Imports
+     # - How modules are loaded, with possible cyclic references
 
 It can not be strictly avoided for file modules to reference each others cyclicly.
 
      #} {;
-      {## Cyclic Imports & Module Loading #}
+      {## Module Loading, Cyclic Imports #}
       export edh'modu'load'cyc = bookmark()
 
       # TODO examples in code cells
