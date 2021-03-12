@@ -328,16 +328,50 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 export edh'semantics = bookmark()
 
 
-{## Entities, Attributes and Identifiers
- # - Each entity consists of a dynamic set of attribute values identified by distinct identifiers
+{## Special Namespace Objects
+ # - `namespace` is a special class of objects in Đ
 
-Entity is the logical unit of information that organized in an Đ world. Entities only exist conceptually, some entities are used to each back a scope (module scope or procedure scope), other entities are used to each back an object (excepting host objects). While some objects (e.g. module objects, namespace objects, class objects) each encapsulate a scope of its own, such an object and the scope it encapsolutes are both backed by a same entity.
+The general syntax to define a namespace object is:
+
+  namespace <ns-name> ( **<kwarg-senders> ) <ns-body>
+
+Following the `namespace` keyword, first comes name of the namespace, it can be any valid attribute identifier, and will be used as the attribute name for current scope to receive the new namespace object.
+
+Then there is a pack of argument senders, but no positional argument is expected in it, just named (keyword) arguments, they'll be the namespace's attributes as you'd intuit.
+
+Finally there's the namespace initialization procedure body, all sorts of statements can go there, they'll be evaluated in a scope with the backing entity being also the namespace object's backing entity as well, so as to further initialize attributes in that entity.
+
+ #} {;
+  {## Special Namespace Objects #}
+  export edh'namespaces = bookmark()
+
+  # %% # A simple example to define a namespace object
+  symbol @ns'secret
+
+  namespace ns( a= 3, b= 2, @ns'secret= 37256, ) {
+    c = a - b / 5
+    ; @'full-time' = false
+  }
+
+  dir$ ns
+  # %#
+
+  # Note that attributes, symbols, at-notations etc. will be described in later sections of this chapter
+}
+
+
+{## General Namespacing, Entities with Attributes by Identifiers
+ # - Each entity is conceptually a general namespace
+
+Entity is the logical unit of information to be organized in an Đ world. An entity consists of a dynamic set of attribute values identified by distinct identifiers. Entities only exist conceptually, some entities are used to each back a scope (module scope or procedure scope), other entities are used to each back an object (excepting host objects). While some objects (e.g. module objects, namespace objects, class objects) each encapsulate a scope of its own, such an object and the scope it encapsulates are both backed by the same entity.
 
 Đ is rather dynamic in nature - at runtime, not only each individual attribute value can change arbitrarily, new attributes can be added to an entity, as well as existing attributes can be deleted from it. That is to say, the structure as well as the attribute values of each entity can vary on its own at runtime.
 
+We'll use namespace objects as examples in following sections.
+
  #} {;
-  {## Entities, Attributes and Identifiers #}
-  export edh'ent'attr'naming = bookmark()
+  {## General Namespacing, Entities with Attributes by Identifiers #}
+  export edh'namespacing = bookmark()
 
 
   {## Mutable Entities
@@ -368,24 +402,6 @@ Although attributes of entities in Đ are inherently meant to be assigned (as we
    #} {;
     {## Attribute Identifiers #}
     export edh'attr'ids = bookmark()
-
-
-    {## A Typical Entity Example
-     # - Let's take a namespace object for example
-     #} {;
-      {## A Typical Entity Example #}
-      export edh'entity'example = bookmark()
-
-      # Namespaces are described later in this chapter
-      ; () => edh'namespaces # <- follow this bookmark to that section
-
-      # %% # An empty namespace object can be created like this
-      namespace ns() pass
-      dir$ ns
-      # %#
-
-    }
-
 
     {## Alphanumeric Names
      # - The usual "variable" identifiers in a programming language
@@ -643,7 +659,7 @@ Another interesting usage of at-notation is, that string values can be used in p
   }
 
 
-  {## Namespacing and Dot-Notation
+  {## Namespace Access
    # - Every entity is a namespace (in general sense)
 
 As every attribute is uniquely identified by a name within an entity, it naturally becomes a namespace, where the identifiers form the set of names. Though the set is highly dynamic, in the sense that an attribute value after a new name can be added at any time, as well as existing names deleted thereof.
@@ -653,27 +669,8 @@ Dot-notation is the norm with imperative programming languages, the reason proba
 FYI in functional programming languages (such as Haskell), the dot (.) is already used as the operator for function composition, there are alternative means of namespacing (such as "lenses") are used instead of dot-notation.
 
    #} {;
-    {## Namespacing and Dot-Notation #}
-    export edh'ns'dot'notation = bookmark()
-
-    {## The Special Namespace Class
-     # - Namespace is also a special class in Đ, with dedicated syntax
-     #} {;
-      {## The Special Namespace Class #}
-      export edh'namespaces = bookmark()
-
-      # %% # Namespace objects are created with a special syntax, e.g.:
-      symbol @ns'secret
-      namespace ns(a= 3, b= 2, @ns'secret= 37256, ) {
-        c = a - b / 5
-        ; @'full-time' = false
-      }
-      dir$ ns
-      # %# Following the `namespace` keyword, first comes name of the namespace, it can be any valid attribute identifier, and will be used as the attribute name for current scope to receive the new namespace object.
-      # Then there is an arguments pack, but no positional argument is expected there, just named arguments to come, they'll be the namespace's attributes as you'd intuit.
-      # Finally there's the namespace procedure body, all sorts of statements can go there, they'll be evaluated in a scope with the backing entity being exactly the namespace object's backing entity, so as to further initialize attributes in that entity.
-    }
-
+    {## Namespace Access #}
+    export edh'ns'access = bookmark()
 
     {## Obtaining Attribute Value
      # - Read out an attribute value
