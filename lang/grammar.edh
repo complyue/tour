@@ -4570,7 +4570,13 @@ The first matched existing file will be used as the source file for the import; 
     {## Module Loading, Cyclic Imports
      # - How modules are loaded, with possible cyclic references
 
-It can not be strictly avoided for file modules to reference each others cyclicly.
+After a module has been successfully loaded, it is the easist case to import from it, just have all its exported artifacts as if sent to a keyword-only ArgsPack, and let the args receiver specified by the import expression to receive from that apk.
+
+The first importer of a module is responsible to load that module, by executing the module's top level statements sequentially; there are chances for other modules happen need to import the same module before the first importer finished loading the module, such a later importer behave differently regarding whether it is running synchronously with the first importer:
+
+ * If a later importer is running on the same thread as the first importer, it's aparently a cyclic importing case, i.e. the module pending loaded is being imported again by some other module being imported by the former module, and the first importer of the later module turns out to be on the same thread too. We can not wait the former module to finish loading in this case, or it's deadlock, so those artifacts as many as already exported will be packed and received as for the later import procedure. Đ is strict in module loading, and without the loading procedure separated into more phases (such as definition + resolution), this will be surprising someone at times, but the advantage is `import` expressions can be arbitrarily mixed with other types of statements.
+
+ * If a later importer is running on a thread other than the first importer, it's a simple concurrent importing case. The later importer will be registered into a wating list of the first importer, whether the first importer has succeeded loading the module or failed at it, the result will be propagated to all waiters in the list, they'll see the failure or success as if they have done the loading by themselves, and proceed accordingly.
 
      #} {;
       {## Module Loading, Cyclic Imports #}
