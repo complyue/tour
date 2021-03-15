@@ -1,0 +1,45 @@
+{## Data Context Interaction
+ # - Separate perspectives of a program
+
+  https://en.wikipedia.org/wiki/Data,_context_and_interaction
+
+ #} {;
+  {## Data Context Interaction #}
+  export edh'dci = bookmark()
+
+  # %% #
+
+  {##
+   # Let an object assuming a role class
+
+A role class should construct instances with a keyword argument named `delegate`, or it should override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
+
+   #}
+  operator 10 (~assuming~) (lhv, rhv) {
+    default rhv( delegate= lhv )
+  }
+
+  {##
+   # Root class of role classes
+
+All role classes should suport instance construction from a keyword argument named `delegate`
+
+   #}
+  class Role {
+
+    method __init__( *, delegate as this.delegate, *** ) pass
+
+    method __repr__() {
+      repr(this.delegate) ++ ' ~assuming~ ' ++ repr(constructor(that))
+    }
+
+  }
+
+  # %% #
+
+  # %% #
+  ; (3*7) ~assuming~ Role
+
+  # %#
+
+}

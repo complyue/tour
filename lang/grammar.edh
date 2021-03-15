@@ -4732,10 +4732,9 @@ An Đ program is always started to run either an Đ file or an Đ module, in eit
 
 
 {## Lexical Scoping
- # - Static scoping is used for lexical attribute resolution
+ # - Non-local attribute resolution
 
-Construting to effect resolution, which is dynamic scope per se.
-
+If not at rhs of a dot-notation, an attribute reference will always direct into the current scope when used as an assignment target; while used for attribute value reading, such an attribute has to present in the current scope, or some outer scope, for the read to succeed. Outer scope here is defined with static semantics, i.e. an inner scope is always written inside its outer scope if you look at the source code (though with the only exception for the world root scope, which implicitly assumes the direct outer scope of any module scope).
 
  #} {;
   {## Lexical Scoping #}
