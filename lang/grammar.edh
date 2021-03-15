@@ -1830,6 +1830,102 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       # %#
     }
 
+
+    {## Indexing, Slicers
+     # - 0-based index, with special range slicers
+
+Note that usual numeric index in Đ is 0-based, carrying _offset_ semantics as in many popular programming languages such as C, Java, Python, Go etc. While there are other languages like Fortran, R, Julia, MATLAB, Smalltalk, Wolfram etc. use 1-based index carrying _counting_ semantics.
+
+     #} {;
+      {## Indexing, Slicers #}
+      export edh'index'vals = bookmark()
+
+      # %% # Let's take a `Vector` which is indexable, e.g.
+      v = Vector( * ()=< for i from range(5) do i )
+      # %#
+
+      # %% # Individual elements can be obtained via a numeric index
+      v[2]
+
+      # %% # Also assignable
+      v[2] = 555
+      v
+
+      # %% # `All` is `true` named `All`
+      show$ All
+
+      # %% # `All` can be used to denote every elements as a whole
+      v[All] = (5,4,3,2,1,)
+      v
+
+      # %% # Actually, when the index is totally omitted, `All` is implied
+      v[] = (1,2,3,4,5,)
+      v[]
+
+      # %% # `Any` is `true` named `Any`
+      show$ Any
+
+      # %% # `Any` can be used to denote every elements in its own right
+      v[Any] = 5
+      v
+
+      # %% # This will fail as every elements as a whole doesn't match a single element semantically
+      v[All] = 5
+
+      # %% # This is okay and as many elements will be overwritten as possible
+      v[All] = (3,2,1,)
+      v
+
+      # %% # This is totally different semantics, see if the result surprises you
+      v[Any] = (3,2,1,)
+      v
+
+      {## Slicers
+       # - Range specifiers
+
+The general syntax for a range slicer is:
+
+  <start>:<stop>[:<step>]
+
+Especially note that <stop> in an Đ slicer is exclusive, so in case <start> and <stop> is equal, it'll slice nothing out of a container.
+
+Otherwise, <step> defaults to 1 when <stop> is greater than <start>; or -1 when <stop> is less than <start>.
+
+       #} {;
+        {## Slicers #}
+        export edh'slicers = bookmark()
+
+        # %% # Taking this Vector e.g.
+        v = Vector( * ()=< for i from range(10) do i )
+
+        # %% # Slice it since 2, and up to 8, stepping 2
+        v[ 2:8:2 ]
+
+        # %% # Or the reversed direction
+        # Note the `:` and the `-` as the negating sign must be separated by some space, or it'll be parsed as application of the (:-) infix operator
+        v[ 6:1: -2]
+
+        # %% # Negative <start> and <stop> can be used to denote counting from the end toward the beginning
+        v[ -5 : -2 ]
+
+        # %% # When used in slicers, `Any` and `All` are interchangable, e.g.
+        v[ 2:Any ]
+
+        # %% #
+        v[ -2:All ]
+
+        # %% #
+        v[ All: -3 ]
+
+        # %% #
+        v[ Any:3 ]
+
+        # %#
+      }
+
+    }
+
+
     {## Event Sink
      # - Rendezvous point of events
      #} {;
