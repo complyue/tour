@@ -1251,7 +1251,7 @@ There are currently only two postfix operators, namely indexing `[]` and calling
 
 All infix operators are defined as operator procedures, many of them are intrinsic (host) procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing at particular scopes.
 
-Custom operators must be named with one or more valid operator characters, which is one of "=~!@#$%^&|:<>?*+-/" plus various Unicode characters in the following general categories:
+Custom infix operators are usually named after one or more valid operator characters, which is one of "~=!@#$%^&|:<>?*+-/" plus various Unicode characters in the following general categories:
 
   * MathSymbol
   * CurrencySymbol
@@ -1268,6 +1268,8 @@ However, there are a few hard-coded exceptions, namely the following operators:
   * is not
   * and
   * or
+
+Custom infix operators can also be named after tilde (~) denoted alphanumeric symbols, such a symbol must starts with the tilde (~) character, followed by one or more alphanumeric characters, or other operator characters other than the tilde (~). The second tilde (~) character if appeared in such a symbol, will effectively denote end-of-operator-symbol, for anything following it to be treated as separate lexeme.
 
      #} {;
       {## Customizable Infix Operators #}
