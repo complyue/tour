@@ -2914,6 +2914,37 @@ The left-hand-side expression of finally (@=>) operator is the action to try, re
       # %# Note that it is technically valid for multiple finally constructs chained together, just makes no sense in practice
 
     }
+
+
+    {## Handling Exceptions for Forkee Threads
+     # - Toward structured concurrency
+
+Call frames induced by a forked thread will stack up its forker thread's call frames, this also enables the forker thread to handle exceptions occurred in the forkee thread's execution.
+
+But especially note that the _handling_ code (i.e. statement(s) at rhs of the ($=>) operator) will run on the forkee thread, not the forker thread. And multi-shotting of the _handling_ code is a norm when multiple forkee threads will be spawned and they don't catch possible exceptions on their own. If the exception value is to be captured as some attribute, a dedicated scope should be created to receive that attribute, or there'll be race conditions for capturing & subsequent using of the exception value via that attribute concurrently.
+
+Also note that _finalization_ code (i.e. statement(s) at rhs of the (@=>) operator) will never run on any forked thread, as multi-shotting of such blocks is semantically wrong.
+
+     #} {;
+      {## Handling Exceptions for Forkee Threads #}
+      export edh'forkee'exc'handling = bookmark()
+
+      # %% #
+      method async'some(async'id) {
+        throw Exception( 'I just failed #' ++ async'id ++ ' asynchronously!' )
+      }
+
+      {
+        for forkee'id from range(3) do go async'some(forkee'id)
+      } @=> {
+        console.info<| "The cleanup should only happen on the original thread."
+      } $=> {@ # Use a scoped block for the catch, as this catch block can multi-shot on multiple descendant threads, it's a race condation to capture the thrown exception as a named attribute into a shared scope then use it along.
+        { exc } -> {
+          console.warn<| "Caught a forkee's failure: " + show(exc)
+        }
+      @}
+      # %#
+    }
   }
 
 }
