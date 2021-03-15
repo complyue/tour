@@ -4018,6 +4018,8 @@ Procedures are always called with responsibility for some objects, in this sense
 
 A procedure can be bound to one `this` object and one `that` object at the same time, so as to be a method of them.
 
+Đ solves the [Object Schizophrenia](https://en.wikipedia.org/wiki/Schizophrenia_(object-oriented_programming)) problem by providing separate `this` and `that` references, in additional to that `supers()` works with `that` practically.
+
      #} {;
       {## Method Binding, `this` and `that` Reference #}
       export edh'mth'binding = bookmark()
