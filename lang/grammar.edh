@@ -74,7 +74,7 @@ Also opinionated formatters with similar goals:
   {## Indentation and Brackets
    # - Đ interpreter is whitespace insensitive, indentation is enforced by Đ formatter
 
-The programmer is responsible for the brackets (scoping), while the formatter is in charge of proper indentation, it infers indentation level of each line from the nesting of brackets.
+The programmer is responsible for the brackets (lexical / static scoping), while the formatter is in charge of proper indentation, it infers indentation level of each line from the nesting of brackets.
 
    #} {;
 
@@ -363,7 +363,7 @@ Finally there's the namespace initialization procedure body, all sorts of statem
 {## General Namespacing, Entities with Attributes by Identifiers
  # - Each entity is conceptually a general namespace
 
-Entity is the logical unit of information to be organized in an Đ world. An entity consists of a dynamic set of attribute values identified by distinct identifiers. Entities only exist conceptually, some entities are used to each back a scope (module scope or procedure scope), other entities are used to each back an object (excepting host objects). While some objects (e.g. module objects, namespace objects, class objects) each encapsulate a scope of its own, such an object and the scope it encapsulates are both backed by the same entity.
+Entity is the logical unit of information to be organized in an Đ world. An entity consists of a dynamic set of attribute values identified by distinct identifiers. Entities only exist conceptually, some entities are used to each back a procedure scope, other entities are used to each back an object (excepting host objects), together with its object scope.
 
 Đ is rather dynamic in nature - at runtime, not only each individual attribute value can change arbitrarily, new attributes can be added to an entity, as well as existing attributes can be deleted from it. That is to say, the structure as well as the attribute values of each entity can vary on its own at runtime.
 
@@ -375,7 +375,7 @@ We'll use namespace objects as examples in following sections.
 
 
   {## Mutable Entities
-   # - Dynamic means mutability
+   # - All objects and scopes are mutable
 
 All program states of an Đ program pertain to certain entities at the run. Be it a scope, or an object, its backing entity can always be mutated, at any time, as within an Đ world. The modifications usually come from the software component managing program states, but it's fairly common for some monitoring UIs, or interactive REPLs over stdio or network (SSH, WebSocket, etc.) to observe/change the program states for diagnostics / troubleshooting purposes.
 
@@ -4731,115 +4731,100 @@ An Đ program is always started to run either an Đ file or an Đ module, in eit
 }
 
 
-{## Lexical Scoping
- # - Non-local attribute resolution
+{## Hierarchical Scopes, Static & Dynamic
+ # - The static hierarchy of lexical scopes and the dyamic hierarchy of call frames
 
-If not at rhs of a dot-notation, an attribute reference will always direct into the current scope when used as an assignment target; while used for attribute value reading, such an attribute has to present in the current scope, or some outer scope, for the read to succeed. Outer scope here is defined with static semantics, i.e. an inner scope is always written inside its outer scope if you look at the source code (though with the only exception for the world root scope, which implicitly assumes the direct outer scope of any module scope).
+Each scope is backed by an entity with various attribute values identified by distinct identifiers, the set of attributes can be ever changing at runtime.
 
  #} {;
-  {## Lexical Scoping #}
-  export edh'lexi'scoping = bookmark()
+  {## Hierarchical Scopes, Static & Dynamic #}
+  export bookmark'identifier = bookmark()
 
-  {## Scopes and Special Ones
-   # - Scopes are created for execution of procedures
+  {## Static / Lexical Scoping
+   # - Scope hierarchy per source code organization
 
-Every scope has one `this` object and one `that` object as its contextual objects.
+"Lexical" here refers to text, you can intuit the static outer scope as the one within which, the piece of code that would create the (lexical inner) scope of interest, is written.
 
+Per each Đ world, there is a root scope (being an object scope as of the root namespace per se), then all loaded modules live inside the root scope, i.e. each module scope is a direct inner scope of the root scope lexically. Note the root scope is exceptional w.r.t. the lexical semantics, its source code lives as part of the startup code of the Đ runtime, so does not really hold the "lexical" relationship to souce code of modules, but you'd better assume an imaginary such lexical relationship, for coherence of intuition. Many runtimes of other programming languages just inject builtin artifacts into each module's toplevel scope, the Đ runtime is just a little different in here.
+
+Per each module as it being loaded, the evaluation/execution of nested namespaces and scoped blocks will create inner scopes right away, each namespace scope and block scope can have further inner namespaces and scoped blocks with arbitrary levels of nesting.
+
+Procedures can be defined inside a module scope, a namespace socpe, or a block scope, which already be at some where inside the hierarchy of lexical scopes. A procedure upon each time being called, will create a new procedure scope, to receive arguments passed to it, and further foster execution of the procedure body.
+
+Though procedure scopes are created dynamically after the module has finished loading, they are considered statically related to their respective outer scope in lexical semantics, for the lexical intuition to hold up.
 
    #} {;
-    {## Scopes and Special Ones #}
-    export edh'scopes = bookmark()
+    {## Static / Lexical Scoping #}
+    export edh'lexi'scoping = bookmark()
 
-    {## World Root Scope
-     # - The outer most scope
+    {## Lexical Attribute Resolution
+     # - Seeing & shadowing attributes from lexical outer scopes
 
+If not at rhs of a dot-notation, an attribute reference will always direct into the current scope when used as an assignment target;
 
-     #} {;
-      {## World Root Scope #}
-      export edh'world'root'scope = bookmark()
+While used for attribute value reading, such an attribute has to present in the current scope, or some lexical outer scope, for the read to succeed.
 
+So the world root scope serves the ultimate default provider, for attributes that globally shared.
 
-    }
-
-
-    {## Procedure Call Scopes
-     # - Each procedure call creates a new dedicated scope
-
+And shadowing is a natural consequence when an attribute identified by some key presents in an inner scope, so as for the attribute value by the same key, living in any of the lexical outer scopes, to be shadowed. Until an attribute is deleted from the inner scope, the shadowed attribute(s) from outer scopes can never be seen from within the inner scope and its further nested inner scopes.
 
      #} {;
-      {## Procedure Call Scopes #}
-      export edh'proc'scopes = bookmark()
+      {## Lexical Attribute Resolution #}
+      export edh'lexi'attr'resolv = bookmark()
 
+      # %% # We demonatrate it with a scoped block here
+      x = 'outer-value'
+      {@
+        console.print$ 'Inside, before local attr definition, x is: ' ++ x
+        # Upon entering a scoped block, a new lexical inner scope (backed by a separate entity) is created right away, then attributes can be defined locally. And an attribute present in an inner scope shadows all ones with the same name from outer scopes.
+        x = 'inner-value'
+        console.print$ 'Inside, after local attr definition, x is: ' ++ x
+        x = nil
+        console.print$ 'Inside, after local attr deleted, x is: ' ++ x
+      @}
+      console.print$ 'Outside, x is: ' ++ x
+      # %# Upon leaving a scoped block, all artifacts ever defined into the block scope are, discarded
 
-    }
-
-
-    {## Object Initialization Scopes
-     # - Initialization scopes
-
-
-     #} {;
-      {## Object Initialization Scopes #}
-      export edh'init'scopes = bookmark()
-
-      {## Module Scopes
-       # - Each module has its own scope
-
-
-       #} {;
-        {## Module Scopes #}
-        export edh'modu'scopes = bookmark()
-
-
-      }
-
-      {## Namespace Scopes
-       # - Each namespace has its own scope
-
-
-       #} {;
-        {## Namespace Scopes #}
-        export edh'ns'scopes = bookmark()
-
-
-      }
-
-      {## Class Scopes
-       # - Each class has its own scope
-
-
-       #} {;
-        {## Class Scopes #}
-        export edh'cls'scopes = bookmark()
-
-
-      }
-
+      # Note the shadowing of samely named attributes from outer scopes is an anti-pattern, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
     }
 
   }
 
 
-  {## Lexical Attribute Resolution
-   # - Resolve attributes statically
+  {## Coarse Grained Closure
+   # - A procedure always captures the full lexical context where it is defined
 
+As a consequence of the way attributes are resolved lexically, a procedure remembers the full hierarchy of its lexical outer scopes as in where it is defined. We say a procedure captures its enclosing context as a closure.
 
-   #} {;
-    {## Lexical Attribute Resolution #}
-    export edh'lexi'attr'resolv = bookmark()
-
-
-  }
-
-
-  {## Closure
-   # - A procedure always captures the full lexical context it is defined in
-
-Đ closure is rather coarse grained.
+Note that Đ closure is rather coarse grained compared to many other programming languages, closures there usually capture individual "variables" accessible to them when defined, while in Đ it is actually the entities behind the lexical scopes get captured.
 
    #} {;
-    {## Closure #}
+    {## Coarse Grained Closure #}
     export edh'closure = bookmark()
+
+    # Such closure semantics is designed to allow dynamic evaluation/execution of Đ snippets anywhere anytime, honoring entities being integral units of information, without individual attributes teared apart.
+
+    # But it may lead to unintentional resource leaks, especially if you've been used to closures in other mainstream programming languages.
+
+    # TODO demonstrate gotchas of resource leaking due to the coarse grained closure.
+
+  }
+
+
+  {## Dynamic / Call-Stack Scoping
+   # - Scope hierarchy per nested procedure calls
+
+Each procedure during its execution can call other procedures, such a call would stack the callee's procedure scope (together with other information, forming a call-frame) upon the caller's call-frame, which in turn is upon the caller-of-caller's call-frame, all the call-frames form the call stack of current execution thread's context.
+
+In the call-stack hierarchy of call-frames, each call-frame corresponds to a procedure and its procedure scope per the undergoing call. At the bottom of the call-stack would usually be a special call-frame that corresponding to the module initialization procedure and the module scope.
+
+We say the caller's procedure scope is the dynamic outer scope to the callee's procedure scope. As a procedure can be called from anywhere by any procedure, little assumption it can make about its caller and the caller scope, i.e. its dynamic outer scope.
+
+So "dynamic" somehow means "unknown" w.r.t. the caller (dynamic outer) scope.
+
+   #} {;
+    {## Dynamic / Call-Stack Scoping #}
+    export edh'dyn'scoping = bookmark()
 
 
   }
