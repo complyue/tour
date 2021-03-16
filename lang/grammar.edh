@@ -5016,24 +5016,31 @@ TODO expand this section.
 {## Pure Context
  # - For attribute defining side-effect to be suppressed
 
-There are cases it's desirable to cease the side-effect of attribute creation into current scope, for some artifact-defining statements/expressions. E.g. an ad-hoc named value as an argument passed to some API. Some contextes are considered "pure" in Đ code, for this to happen automatically.
+There are cases it's desirable to cease the side-effect of attribute creation into current scope, for some artifact-defining statements/expressions. E.g. an ad-hoc named value as an argument passed to some API. Some contexts are considered "pure" in Đ code, for this to happen automatically.
 
  #} {;
   {## Pure Context #}
   export edh'pure'ctx = bookmark()
 
-  # %% # First make sure `x` is not in scope
+  # %% # First make sure `x` is not in scope, by deleting the attribute
   x = nil
+
+  # %% # Come back later to run this cell, it should evaluates to `true` when `x` is not defined as expected
+  this?x is nil
+  # %#
+
   # %% # A parenthese quoted expression (no matter how complex it is), is evaluated in a pure context
   ; ( x := 5 )
+
   # %% # A standalone arguments packer expression is evaluated in a pure context
   ; ( x := 5, )
+
   # %% # Expressions for arguments within a call expression are evaluated in a pure context, you can intuit that there is just an arguments packer expression there
   show( x := 5, )
+
   # %% # The ($) and (|) operator, they all make calls, would pack the arguments likely, i.e. in a pure context
   show$ x := 5
-  # %% # Finally assert no `x` is ever defined
-  this?x is nil
+
   # %#
 
   # %% # Likely method definition expressions work the same way
@@ -5051,12 +5058,13 @@ There are cases it's desirable to cease the side-effect of attribute creation in
 {## Dynamic Effect Tracking
  # - Tracking effects dynamically, the procedural way
 
-With mathematical methodologies, monads is a mature and powerful machinery to be implemented in a functional programming language, to vend and consume provisional effects with well defined contexts. (there is algebraic effects & handlers under active development at time of speaking - 2020)
+With mathematical methodologies and a functional programming language, monad is a mature and powerful machinery to vend and consume provisional effects with well defined contexts. There is also algebraic effects & handlers under active research at time of speaking - 2021, but no production ready implementation is generally available.
 
-With procedural methodologies, such contextual semantics of APIs are largely ended up defined and consulted as specifications in descriptive documentation form, in lieu of language constructs to encode the applicability of certain effects contextual-wise.
+With procedural methodologies, modular development and composition of effects, are largely approached with frameworks (e.g. OSGi - Open Services Gateway initiative) and/or API/SPI specifications (e.g. EJB - Enterprise Java Beans), in lieu of language constructs to encode modules of effects and composition of them.
 
-*Dynamic Scoped Effects* essentially is *dynamic scoping* with a separate effect registration & resolution space, avoided the failure of traditional dynamic scoping that lexical artifacts get mixed with callstack provided artifacts, which has things confusingly messed up.
+Under the hood, *Dynamic Scoped Effects* is technically *dynamic scoping* done right, it gets rid of the necessarity of IoC (Inversion of Control) containers and DI (Dependency Injection) by proper language features to foster effects dependency at runtime.
 
+*Dynamic Scoping* is a historic approach proved failure, which appears uncommon (at year 2021) to be supported by mainstream programming languages / runtimes. At the same time, effect tracking is an increasingly interesting topic of software engineering at the moment. Offered by Đ, *Dynamic Scoped Effects* tries to refine *Dynamic Scoping*, as well as to tackle the effect tracking problem in the procedural / imperative paradigm.
 
  #} {;
   {## Dynamic Effect Tracking #}
@@ -5112,11 +5120,11 @@ With procedural methodologies, such contextual semantics of APIs are largely end
     # %}
 
     {#
-It would seem redundant & unwieldy for this simple scenario, but the key is the ability for effect-callouts to penetrate call frames across the stack, or all intermediate procedures would have to explictly list relevant arguments and merely pass them on to inner callees, which is unrealistic or at best nightmare for realworld integration scenarios.
+It would seem redundant & unwieldy for this simple scenario, but the key is the ability for effect-callouts to penetrate call frames across the stack, or all intermediate procedures would have to explictly list relevant arguments and merely pass them on to inner callees, which is unrealistic or at best a nightmare for realworld integration scenarios.
 
-A Monad can encapsulate all possible effects, and allow inner computations nested arbitrarily deep to callout these effects, so long as it is a monadic computation in the said Monad. Algebraic Effects & Handlers solve this problem as well.
+A Monad can encapsulate all possible effects, and allow inner computations nested arbitrarily deep to callout these effects, so long as it is a monadic computation in the said Monad. Algebraic Effects & Handlers solve this problem as well, with more open constraints.
 
-
+*Dynamic Scoped Effects* as you've seen, solves it as well.
      #}
   }
 
