@@ -4818,14 +4818,39 @@ Each procedure during its execution can call other procedures, such a call would
 
 In the call-stack hierarchy of call-frames, each call-frame corresponds to a procedure and its procedure scope per the undergoing call. At the bottom of the call-stack would usually be a special call-frame that corresponding to the module initialization procedure and the module scope.
 
-We say the caller's procedure scope is the dynamic outer scope to the callee's procedure scope. As a procedure can be called from anywhere by any procedure, little assumption it can make about its caller and the caller scope, i.e. its dynamic outer scope.
-
-So "dynamic" somehow means "unknown" w.r.t. the caller (dynamic outer) scope.
+We say the caller's procedure scope is the dynamic outer scope to the callee's procedure scope. As a procedure can be called from anywhere by any procedure, "dynamic" here means unknowing of the calling procedure and what's in scope of the callier.
 
    #} {;
     {## Dynamic / Call-Stack Scoping #}
     export edh'dyn'scoping = bookmark()
 
+    {## Dynamic Effect Resolution
+     # - Obtaining effects from dynamic outer scopes
+     #} {;
+      {## Dynamic Effect Resolution #}
+      export edh'dyn'eff'resolv = bookmark()
+
+      # We resolve effectful artifacts against dynamic outer scopes, the syntax & semantics are further described in a later section
+      ; () => edh'eff'tracking # <- following this bookmark to that section
+
+
+    }
+
+  }
+
+
+  {## `this` and `that` Reference in Scope
+   # - Contextual objects bound to scopes
+   #} {;
+    {## `this` and `that` Reference in Scope #}
+    export edh'this'that'in'scope = bookmark()
+
+    # Every scope has one `this` object and one `that` object designated, they can be the same object or have `that` being a descendant object of `this`, as a result of [Method Binding] described in an earlier section
+    edh'mth'binding # <- follow this bookmark to that section
+
+    # When a bound procedure is called, `this` and `that` to be in the new procedure scope will, exactly reflect what have been bound to the procedure. Otherwise `this` and `that` in scope of the call site will be inherited by the new procedure socpe.
+
+    # For object initialization procedures, both `this` and `that` will refer to the very object being initialized, that can be a module, a namespace, or a class object.
 
   }
 
@@ -4834,41 +4859,94 @@ So "dynamic" somehow means "unknown" w.r.t. the caller (dynamic outer) scope.
 
 {## Expression Values and Scope Wrapprs
  # - Dynamic evaluation of any expression, anytime, anywhere
+
+A procedure is always called against some object, it also has a formal declaration of all its input arguments, what if we strip off these properties? The result is: we get expressions.
+
+Expression is a 1st class type of values in Đ.
+
+A scope can be wrapped as an object, for reflective evaluation of Đ expressions, or direct attribute manipulation to be done as in that scope.
+
  #} {;
   {## Expression Values and Scope Wrappers #}
   export edh'exprs'in'scopes = bookmark()
 
-  {## Scope Wrappers
-   # - A scope can be wrapped as an object to do reflection in Đ
+  {## The `expr` Expression
+   # - Literal expressions
 
-`scope` is a class comes with the default batteries.
+An arbitrary expression following the `expr` keyword will create a literal value of `ExprType`.
+
+At the time an `expr` is defined, immediate values can be interpolated into the defined literal expression value, each immediate expression quoted within a pair of curly braces augmented with '$' will be evaluated at the `expr` definition time, and interpolated as literal values embedded in the result expression.
+
+   #} {;
+    {## The `expr` Expression #}
+    export edh'expr'expr = bookmark()
+
+    # %% # It can be assigned as an attribute of current scope like any other values
+    x = expr a + b * c
+
+    type$ x
+    # %# See its type
+
+    # %% # Its textual representation is its original source text
+    repr$ x
+
+    # %# An expression created this way will have its original source reserved, to serve as its `repr`.
+
+
+    # %% # To demonstrate the interpolation
+    let ( a, b, c, ) = ( 3, 7, 5, )
+    x' = expr a + {$ b*c $} * c
+
+    repr$ x'
+    # %# See how the expression between `{$` and `$}` is eagerly evaluated and interpolated
+
+    # A literal value interpolated will give its `repr` in place of the original `{$ $}` segment, for `repr` of the whole literal expression value.
+
+    # %% # Check it evaluated in the reflective way
+    scope().eval( x' )
+
+    # %# Note that `scope().eval()` is described in the next section below
+
+  }
+
+
+  {## Scope Wrappers
+   # - Scopes wrapped as objects
+
+`scope` is a class, thus an object constructor, comes with the Đ runtime.
 
    #} {;
     {## Scope Wrappers #}
     export edh'scope'wrappers = bookmark()
 
 
-    # %% # Without argument, everytime you call `scope()`, it creates an object wrapping the scope at caller site.
+    # Without argument, everytime you call `scope()`, it creates an object wrapping the scope of the calling site.
+
+    # %% # Let's use a hierarchy of nested procedure scopes for the demonstration
     method f() {
-      # Put these into current procedure scope
+      # Put these into the outer procedure scope
       let ( c, d, ) = ( 2, 8, )
 
-      # Call an ad-hoc arrow procedure to observe the lexical structure of its scope
+      # Call an ad-hoc arrow procedure to get its procedure scope wrapped, for later observation of lexical structure of scopes with that as the tip
       return ()|() => {
-        # Put these into current procedure scope
+        # Put these into the inner procedure scope
         let ( a, b, ) = ( 7, 3, )
-        # Wrap current scope and return the wrapper object
+
+        # Wrap and return current scope
         return scope()
       }
     }
     s = f()
     'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
-    # %% #
+    # %#
+
+    # %% # Evaluate some expression in the outer scope and see how it's changed
     s.outer.eval(expr
       e = c / d
     )
     dir$ s.outer
-    # %% #
+
+    # %% # Evaluate some expression in the inner scope and see how it's changed
     s.eval(expr
       e = 3*a - 5*b + c - 7*d
     )
@@ -4876,31 +4954,22 @@ So "dynamic" somehow means "unknown" w.r.t. the caller (dynamic outer) scope.
     # %#
 
 
-    # %% # if an object is passed as ctor argument, it creates an object wrapping that object's scope
+    # %% # If an object is passed as ctor argument, it creates a wrapper object for the object scope of that object
     class C pass
     o = C()
     s = scope(o)
-    s.put( a= 3, c= 2, b= 5, )
     s.attrs()
-    # %#
+    # %# It's empty as no attribute is defined by a bare object
 
-  }
+    # %% # We can put some attributes into it
+    s.put( a= 3, c= 7, b= 5, )
+    dir$ s
 
-
-  {## The `expr` Expression
-   # - Original source preserved
-
-A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
-
-Expression is 1st class in Đ, you can create expression values with literal form
-
-   #} {;
-    {## The `expr` Expression #}
-    export edh'expr'expr = bookmark()
-
-    # %%
-    x = expr a + b * c
-
+    # %% # Expression evaluation works with an object scope as well
+    s.eval(expr
+      d = a + b / c
+    )
+    dir$ s
     # %#
 
   }
@@ -4917,8 +4986,13 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
 
     # %%
     x' = makeExpr( a + b * c )
-    # %%
+
+    repr$ x'
+    # %# See its textual representation is in AST form, with rather verbose source location information, no original source text is reserved for expressions created this way
+
+    # %% # While it can be reflectively evaluated as well
     s.eval( x' )
+
     # %#
 
   }
