@@ -4824,16 +4824,81 @@ We say the caller's procedure scope is the dynamic outer scope to the callee's p
     {## Dynamic / Call-Stack Scoping #}
     export edh'dyn'scoping = bookmark()
 
-    {## Dynamic Effect Resolution
-     # - Obtaining effects from dynamic outer scopes
+    {## Dynamic Effect Naming & Resolving
+     # - Define and use effects dynamically
+
+Effectful artifacts live in a separate namespace side by side with each scope.
+
+Current Đ interpreter implements it by putting an attribute named `__effects__` of dict value into each scope when the first effectful artifact is defined into it, that `__effects__` dict will receive subsequent effectful artifacts since then on, and serving the source for effect resolution against its owning scope. It is so made easy to observe what effects present in a scope from REPL and other interactive mechanisms, but such technical implementation details may change in the future.
+
+Effectful artifacts can be procedure values, or immutable numerical values, string values etc. as for configuration purpose, actually they can be arbitrary values, e.g. it is not uncommon for event sinks to be effectful artifacts.
+
      #} {;
-      {## Dynamic Effect Resolution #}
-      export edh'dyn'eff'resolv = bookmark()
+      {## Dynamic Effect Naming & Resolving #}
+      export edh'eff'naming'resolving = bookmark()
 
-      # We resolve effectful artifacts against dynamic outer scopes, the syntax & semantics are further described in a later section
+      {#
+
+The syntax to define effectful artifact(s) into current scope is:
+
+  effect <attr-defining-expr>
+
+The <attr-defining-expr> can be any expression, including block expression, such an expression or all nested expressions within a block there will be directed to effect namespace for all attribute definition behaviors. Typical examples include:
+  * direct attribute assignment i.e. application of the infix (=) operator with a direct attribute addressor at lhs
+  * term definitions i.e. application of the infix (:=) operator
+  * procedure definitions
+  * imports
+
+       #}
+      # %% #
+      effect x = 5
+
+      effect y := 3
+
+      effect method f(n) n+1
+
+      # %# Note this can not succeed
+      effect import * 'some/exported/effects'
+
+      # %% # See the `__effects__` dict now in current scope
+      dir
+
+      # %#
+
+
+      {#
+
+The general syntax to call out an effectful artifact is:
+
+  perform <effect-attr-name>
+  behave <effect-attr-name>
+
+The two keywords have different semantics when the call-out expression is evaluated in a procedure which is called as an effectful procedure:
+
+  * `perform` will only search outer scopes relative to where the called procedure is effectfully resolved
+  * `behave` will search the full call stack, so reentrant to the same procedure is possible
+
+They are semantically the same when evaluated for a procedure otherwise called normally.
+
+Rule of thumb is to use `perform` whenever possible, think about and try avoid infinite recursive effect calls when you have to use `behave`.
+
+The target attribute will be searched against all outer scopes in their respective effect namespace, until one is found, or upon bottom of the call stack is reached, a runtime error ensues.
+
+       #}
+
+      # %% #
+      perform x
+
+      # %% #
+      perform y
+
+      # %% #
+      perform f(7)
+
+      # %#
+
+      # Idiomatic usages of effectful artifacts are further described in a later section
       ; () => edh'eff'tracking # <- following this bookmark to that section
-
-
     }
 
   }
