@@ -28,10 +28,10 @@ Realworld systems are inherently effectful, any event upon it is realized (hoste
 export edh'syntax = bookmark()
 
 
-{## Syntax & Style
+{## Code Styling
  # - Đ code style is officially opinionated
  #} {;
-  {## Syntax & Style #}
+  {## Code Styling #}
   export edh'syntax'style = bookmark()
 
   {## The Official Đ Code Formatter
@@ -325,6 +325,578 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 }
 
 
+{## Code Syntax
+ # - Expressions and statements
+
+Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated. Note that an expression may or may not have side-effects when evaluated.
+
+Expressions can be combined together (e.g. by an infix, binary operator, among other forms), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarchy.
+
+For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it produces desriable side-effects.
+
+Đ is _strict_ in evaluation of statements, an Đ interpreter program evaluates a statement immediately upon one is encountered. The contrary is _lazy_ evaluation, in which sense the actually evaluation can be postponed until absolutely necessary.
+
+ #} {; import * './refs'
+  {## Code Syntax #}
+  export edh'exprs'stmts = bookmark()
+
+  {## Typical Examples
+   # - Commonplace expressions and statements
+   #} {;
+    {## Typical Examples #}
+    export edh'expr'stmt'examples = bookmark()
+
+    # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
+    let (a, b, c,) = (3, 2, 7,)
+    # %# See that there's NO result by running this cell?
+
+    # %% # Arithmetic expressions are very typical, usually having literal expressions and attribute expressions joined with binary operators, e.g.:
+    a + b * c - 5
+    # %# See the result?
+    # Note `*` is the multiplication operator (while in everywhere else other than a programming language, it is `×`)
+  }
+
+
+  {## Arguments Packing & Unpacking
+   # - Positional & named formal arguments to be packed and unpacked
+
+Đ has a unique immutable data structure - ArgsPack, usually abbreviated as apk. An apk is created by a pair of parenthese quoting a list of positonal or named argument expressions.
+
+Arguments are packed into an apk in the following cases:
+ * In execution of a `let` statement, for right-hand-side to the `=` operator
+ * In evaluation of a call expression, i.e. an expression of callee followed by the postfix `()` operator
+ * In evaluation of an indexing expression, i.e. an expression of container followed by the postfix `[]` operator
+ * In evaluation of a standalone apk literal
+
+   #} {;
+    {## Arguments Packing & Unpacking #}
+    export edh'args'un'packing = bookmark()
+
+    # %% # Positional-only apk is roughly equivalent to what's called "tuple" in other programming languages having it (e.g. Python), both semantically and syntatically.
+    type( (1,2,3,) )
+    # %% # A single argument pack needs to be disambiguated with one or more extra commas (leading, trailing or unusually - both)
+    type( (,1,) )
+    # %% # While only trailing commas are idiomatic in Đ
+    ; (1,)
+    # %% # Or it'll be parsed as parenthese-quoted expression for precedence override purpose
+    type( (1) )
+    # %#
+
+    # %% # Named arguments can be put anywhere in the list, but an apk value will be canonicalized to have all positional arguments separated from named arguments, with their respective order of appearance reserved:
+    apk = ( name= 'Compl', 1, 2, year= 2021, )
+    # %#
+
+    # %% # Asterisks can be used to unpack apk/list/dict into current target apk
+    l = [ 3, 5, ]
+    d = { 'name': 'Yue', 'city': 'Chongqing', }
+    ; ( 7, ***apk, **d, *l, year= 2030, city= 'Shanghai', *apk, )
+    # %# As you can see:
+    #
+    #   Unpacking and direct argument specifications can be arbitrarily mixed
+    #
+    #   *** triple asterisks unpack both positional & named arguments
+    #    ** double asterisks unpack only named arguments
+    #     * single asterisks unpack only positional arguments
+    #
+    #   The order of appearance are always reserved
+    #
+    #   A repeated named argument replaces the value, but doesn't change where it sppears
+
+  }
+
+
+  {## Arguments Receiving, Repacking
+   # - Receive arguments from an apk into current scope
+
+Arguments are received from an `ArgsPack` in the following cases:
+ * In execution of a `let` statement, according to specification at left-hand-side of the `=` operator
+ * In execution of a for-loop expression, according to the loop argument specification
+ * When a procedure is called, according to the argument specification in the definition of the procedure
+
+Upon receiving, rest arguments can be repacked into new `ArgsPack`s, when varidic arguments are expected.
+
+   #} {;
+    {## Arguments Receiving, Repacking #}
+    export edh'args'receiving = bookmark()
+
+    # %% #
+    apk = ( name= 'Compl', 1, 2, 3, year= 2021, city= 'Choingqing' )
+    # Note a standalone apk is used at right-hand-side of the `=` operator in the let statement, it of course can be a literal apk instead
+    let ( name as nnn, x, *xs, optional'x= None, **kws, ) = apk
+    # %%
+    nnn
+    # %%
+    x
+    # %%
+    xs
+    # %%
+    optional'x
+    # %%
+    kws
+    # %#
+
+    # As you can see in above, single asterisks can be used to receive rest positional arguments as a specified attribute, while double asterisks can be used to receive rest keyword arguments
+
+    # %% # Triple asterisks can be used to receive rest positional + keyword arguments as a new apk attribute with the specified name
+    let ( x, ***apk', ) = apk
+    # %%
+    apk'
+    # %%
+    x
+    # %#
+
+  }
+
+
+  {## Operators
+   # - Fully customizable infix operators with a few intrinsic prefix and postfix operators
+
+There are a few prefix and postfix operators intrinsic to the Đ language, while all infix operators are customizable operator procedures. A set of infix operator procedures come with the default batteries bundled with the bare interpreter package, more Đ packages would possibly add their own operator implementations and/or overrides, along with other artifacts such as classes, methods, symbols etc.
+
+   #} {;
+    {## Operators #}
+    export edh'operators = bookmark()
+
+
+    {## Intrinsic Prefix Operators
+     # - All unary
+
+All prefix operators are intrinsic to the language, they can only be right-associative, but their precedences decide how nested operators parse, thus the semantics.
+
+Especially note that a semicolon (or comma according to the context) may be usually needed immediately before a prefix operator which can also be an infix operator (namely `+`, `-`, and `|`), for disambiguation purpose.
+
+     #} {;
+      {## Intrinsic Prefix Operators #}
+      export edh'prefix'ops = bookmark()
+
+
+      {## The prefix plus (+) operator
+       # - With precedence 9
+
+It is technically no-op, but is idiomatic to be written out explicitly in certain cases, e.g. as in `+inf` when contrasted with negative infinity `-inf`.
+
+       #} {; export edh'prefix'plus'op = bookmark()
+        # %% # It's technically no difference with or without a prefix +
+        ; +inf is inf
+        # %# See above is true.
+      }
+
+
+      {## The prefix minus (-) operator
+       # - With precedence 9
+
+It is used to negate a decimal value, and will err out for other type of values at runtime.
+
+       #} {; export edh'prefix'minus'op = bookmark()
+        # %%
+        ; -3.5
+        # %%
+        ; - ( 5 / -11 )
+        # %%
+        ; -inf
+        # %#
+      }
+
+
+      {## The prefix (not) operator
+       # - With precedence 4
+
+It is used to negate a boolean value, and will err out for other type of values at runtime.
+
+       #} {; export edh'prefix'not'op = bookmark()
+        # %%
+        not true
+        # %%
+        not 3 > 2
+        # %%
+        not 3*7 == 22
+        # %#
+      }
+
+
+      {## The prefix guard (|) operator
+       # - With precedence 1
+
+It is used to explicitly mandate a conditional match for a branch, regardless of the contextual matching target value.
+
+       #} {; export edh'prefix'guard'op = bookmark()
+        # %% #
+        ; | 3*7 is 21 -> "That's so true."
+        # %% #
+        ; | 3 < 2 -> "No way this get shown!"
+        # %# Branches are described later in this chapter
+        ; () => edh'branching # <- follow this bookmark to that section
+      }
+
+
+      {## The prefix (void) operator
+       # - With precedence -10
+
+It is used to technically cease the result (to be always replaced with `nil`) of its operand expression, as well as to formally declare the no-result semantics as an expression.
+
+       #} {; export edh'prefix'void'op = bookmark()
+        # %% # It is idiomatic for a procedure to have a `void` body, when no meaningful result is meant to be returned. Compare this (deprecated) implementation:
+        method do'sth() {
+          that.some'method'with'meaningful'result()
+          return nil
+        }
+        # %% # to the idiomatic implementation:
+        method do'sth() void {
+          that.some'method'with'meaningful'result()
+        }
+        # %# See the later is both more concise and more pragmatic.
+      }
+
+
+      {## The prefix (ai) operator
+       # - With precedence -10
+
+It is used to perform its operand expression (usually consists of multiple steps) to be evaluated in a single STM transaction.
+
+Note an STM transaction will retry automatically, and prone to no-progressing under heavy concurrent contention. And IO actions are not permitted during an STM transaction. Carefully reasoning is reqired to use this operator properly.
+
+       #} {; export edh'prefix'ai'op = bookmark()
+        # %% # A correct (but not performant) implementation of simple concurrent counter can be:
+        data ConcCounter(cnt= 0) {
+          method inc() ai this.cnt += 1
+          method dec() ai this.cnt -= 1
+        }
+        # %# Data classes are described later in this chapter
+        ; () => edh'data'classes # <- follow this bookmark to that section
+      }
+
+
+      {## The prefix (default) operator
+       # - With precedence -10
+
+It is used to create a default expression with its operand expression.
+
+       #} {; export edh'prefix'default'op = bookmark()
+        # Defaulting semantics is an advanced topic explained in another chapter:
+        ; () => import (
+          edh'defaulting, # <- follow this bookmark to the relevant section there
+          **
+        ) './advanced/appl'
+      }
+
+
+      {## The prefix (new) operator
+       # - With precedence -10
+
+It is technically no-op, and used for source-level compatibility with other scripting languages like JavaScript, where scripting based RPC (Remote Procedure Call) would take place.
+
+       #} {; export edh'prefix'new'op = bookmark()
+        # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
+        false and that.jsRPC(js!expr{
+            console.log( 'The time now is ' + new Date());
+        })
+        # %# Note that expression values are described later in this chapter
+        ; () => edh'expr'expr # <- follow this bookmark to that section
+      }
+
+    }
+
+
+    {## Intrinsic Postfix Operators
+     # - Currently just indexing and calling
+
+All postfix operators are intrinsic to the language, they can only be left-associative.
+
+There are currently only two postfix operators, namely indexing `[]` and calling `()`. They both have the highest possible precedence.
+
+     #} {;
+      {## Intrinsic Postfix Operators #}
+      export edh'postfix'ops = bookmark
+
+
+      {## Indexing
+       # - For element extraction & assignment
+
+       #} {;
+        {## Indexing #}
+        export edh'indexing = bookmark()
+
+        # %% # You can obtain positional arguments from an ArgsPack with positive integer index
+        apk = (3, 2, 5,)
+        apk[ 1 ] # Đ index is zero based (i.e. offset semantics as in C family languages)
+        # %% # You can obtain values from a dict with the key as index
+        d = {
+          'name': 'Compl',
+          'year': 2021,
+        }
+        d[ 'name']
+        # %% # A dict can be modified via indexed assignment
+        d[ 'year' ] = 2030
+        d
+        # %#
+      }
+
+
+      {## Calling
+       # - Making procedure calls
+
+       #} {;
+        {## Calling #}
+        export edh'calling = bookmark()
+
+        # %% # You've just seen plenty usage of it
+        console.print(
+          'Calling a procedure is actually the application of the postfix () operator.'
+        )
+        # %#
+      }
+
+    }
+
+
+    {## Customizable Infix Operators
+     # - In spirit of Haskell / C++
+
+All infix operators are defined as operator procedures, many of them are intrinsic (host) procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing at particular scopes.
+
+Custom infix operators are usually named after one or more valid operator characters, which is one of "~=!@#$%^&|:<>?*+-/" plus various Unicode characters in the following general categories:
+
+  * MathSymbol
+  * CurrencySymbol
+  * ModifierSymbol
+  * OtherSymbol
+  * DashPunctuation
+  * OtherPunctuation
+
+Especially note that dot (.) and square brackets ([]) are not valid operator characters, they work with magic methods instead.
+
+However, there are a few hard-coded exceptions, namely the following operators:
+
+  * is
+  * is not
+  * and
+  * or
+
+Custom infix operators can also be named after tilde (~) denoted alphanumeric symbols, such a symbol must starts with the tilde (~) character, followed by one or more alphanumeric characters, or other operator characters other than the tilde (~). The second tilde (~) character if appeared in such a symbol, will effectively denote end-of-operator-symbol, for anything following it to be treated as separate lexeme.
+
+     #} {;
+      {## Customizable Infix Operators #}
+      export edh'infix'ops = bookmark()
+
+
+      # %%
+      namespace custom'infix'ops () {
+
+        {## Custom Operator Declaration
+         # - With precedence & fixity
+
+You must specify the precedence as well as the desired fixity (use one of the keywords: `infixl` / `infixr` / `infix`) when defining fresh new operators
+
+         #} {;
+
+          # Implement the operator with argument list and procedure body
+          infixl 7 (×) (lhv, rhv) lhv * rhv
+
+          # Use an existing operator as the operator implementation
+          infixl 7 (÷) () (/)
+
+        }
+
+        # With a conformant argument list, this method procedure can be re-declared as an operator
+        method stylish'and'concat(lhv, rhv) lhv ++ ' & ' ++ rhv
+
+        {## Operator Override
+         # - With a new implementation, shadowing ones from outer scopes
+
+You can use just the `operator` keyword to override an existing operator
+
+         #} {;
+
+          # Use an existing procedure as the operator implementation
+          operator (and) () stylish'and'concat
+
+        }
+
+      }
+
+      dir$ custom'infix'ops
+      # %#
+
+      # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
+      scope(custom'infix'ops).eval(expr
+        3 × 7 ÷ -56
+      )
+      # %%
+      scope(custom'infix'ops).eval(expr
+        'You' and 'me'
+      )
+      # %# Expression values and scope wrappers are described later in this chapter
+      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+
+
+      # %% # Operator procedures can be referenced with its symbol quoted in a pair of parenthese
+      show$ (*)
+      # %%
+      show$ (is not)
+      # %%
+      show$ (or)
+      # %% #
+      scope(custom'infix'ops).eval(expr
+        show$ (×)
+      )
+      # %#
+
+      # Especially note that, dot-notation won't work for operators, it is designed to work with magic methods instead. The crucial fact to know is: the parenthese is part of the name used to identify a magic method, but never so for names identifying operators.
+      # %% # This is an error:
+      custom'infix'ops.(×)
+      # %# Magic methods are described later in this chapter
+      ; () => edh'magic'mths # <- follow this bookmark to that section
+
+      # Checkout the meta definition for operators come with default batteries
+      import * 'batteries/meta/ops' into Nothing
+    }
+
+
+    {## Notable Infix Operators
+     # - Some important operators come with the default batteries
+     #} {;
+      {## Notable Infix Operators #}
+      export edh'notable'infix'ops = bookmark()
+
+      {## Logical Operators
+       # - Strict and short-circuiting, nullish versions
+
+
+       #} {;
+        {## Logical Operators #}
+        export edh'logical'opa = bookmark()
+
+        {## Strict Version
+         # - (&&) / (||)
+
+Both operands will be evaluated anyway, and it'll be runtime error if either left or right hand side expression evaluates to a value of type other than `BoolType`.
+
+         #} {;
+          {## Strict Version #}
+          export edh'strict'and'or'ops = bookmark()
+
+          # %% # Log a message to know it's called
+          method greater(x, y) {
+            console.info<| 'Comparing ' ++ x ++ ' vs ' ++ y ++ ' ...'
+            x > y
+          }
+
+          # %% # See no short-circuiting would happen
+          greater(3, 5) && greater(9, 2)
+          # %% #
+          greater(5, 3) || greater(2, 9)
+          # %#
+
+          # %% # This will be runtime error
+          5 > 3 && 'yes'
+          # %% # Contrusting to this correct implementation:
+          5 > 3 and 'yes'
+          # %#
+
+        }
+
+
+        {## Short-circuiting Nullish Version
+         # - (and) / (or)
+         #} {;
+          {## Short-circuiting Nullish Version #}
+          export edh'nullish'and'or'ops = bookmark()
+
+          # %% # The rhs expression is evaluated conditionally
+          debug and console.print( "We're debugging." )
+
+          debug or console.print( "We're in production." )
+          # %# Only one of the above 2 prints could have been executed
+
+
+          # %% # Provide some default value in stead of a nullish one
+          d = {} # Let it be an empty dict per se
+          # %% # An empty container is considered falsy
+          null(d) is true
+          # %% # Replace `d` with some default, only when it's empty
+          d or { 'name': 'Anonymous', 'from': 'Internet', }
+          # %% # Let it be non-empty, then run above cell again
+          d = { 'name': 'Compl', 'from': 'Chongqing', }
+          # %#
+
+
+          # %% # Simulation of the tenary operator
+          let abs' = n => n < 0 and -n or n
+          # %%
+          abs'(5)
+          # %%
+          abs'(-5)
+          # %#
+        }
+
+      }
+
+
+      {## Comparison Operatorrs
+       # - Doing equality and ordering comparisons
+       #} {;
+        {## Comparison Operatorrs #}
+        export edh'cmp'ops = bookmark()
+
+        # %% # Identity Equal
+        3*7 is 28
+        # %% # Identity Not Equal
+        3*7 is not 28
+
+        # %% # Instant Equal
+        3*7 == 28
+        # %% # Instant Not Equal
+        3*7 != 28
+
+        # %% # Greater Than
+        3*7 > 28
+        # %% # Greater or Equal
+        3*7 >= 28
+        # %% # Less Than
+        3*7 < 28
+        # %% # Less or Equal
+        3*7 <= 28
+        # %#
+
+      }
+    }
+
+  }
+
+
+  {## More Expressions and Statements
+   # - There are more types of expressions and statements in Đ
+
+For example:
+ * Dict Expresssion
+ * List Expression
+ * Namespace Expression
+ * Class Expression
+ * Block Expression
+ * Yield Expression
+ * Index Expression
+ * Call Expression
+ * Default Expression
+ * Go Statement
+ * Defer Statement
+ * Perceive Statement
+ * Break Statement
+ * Continue Statement
+ * Fallthrough Statement
+ * Throw Statement
+ * Rethrow Statement
+ * Return Statement
+
+   #} {;
+    {## More Expressions and Statements #}
+    export more'exprs'stmts = bookmark()
+
+    edh'lang'refs'details # <- follow this to Đ langauge reference for a detailed list of statements (including expressions) Đ code can have
+  }
+
+}
+
+
 export edh'semantics = bookmark()
 
 
@@ -360,7 +932,7 @@ Finally there's the namespace initialization procedure body, all sorts of statem
 }
 
 
-{## General Namespacing, Entities with Attributes by Identifiers
+{## General Namespace, Entities backing Scopes & Objects
  # - Each entity is conceptually a general namespace
 
 Entity is the logical unit of information to be organized in an Đ world. An entity consists of a dynamic set of attribute values identified by distinct identifiers. Entities only exist conceptually, some entities are used to each back a procedure scope, other entities are used to each back an object (excepting host objects), together with its object scope.
@@ -370,7 +942,7 @@ Entity is the logical unit of information to be organized in an Đ world. An ent
 We'll use namespace objects as examples in following sections.
 
  #} {;
-  {## General Namespacing, Entities with Attributes by Identifiers #}
+  {## General Namespace, Entities backing Scopes & Objects #}
   export edh'namespacing = bookmark()
 
 
@@ -922,578 +1494,6 @@ Note that tentative assignment doesn't work via dot-notation.
 }
 
 
-{## Expressions and Statements
- # - A piece of Đ code is just a sequence of statements
-
-Expression is a special (yet very important) type of statement, an expression yields a meaningful result when evaluated. Note that an expression may or may not have side-effects when evaluated.
-
-Expressions can be combined together (e.g. by an infix, binary operator, among other forms), to form a new expression, so a complex expression can consist of many sub-expressions organized in a deeply nested hierarchy.
-
-For a statement of some type other than _expression_, when evaluated, it doesn't yield a meaningful result, instead it produces desriable side-effects.
-
-Đ is _strict_ in evaluation of statements, an Đ interpreter program evaluates a statement immediately upon one is encountered. The contrary is _lazy_ evaluation, in which sense the actually evaluation can be postponed until absolutely necessary.
-
- #} {; import * './refs'
-  {## Expressions and Statements #}
-  export edh'exprs'stmts = bookmark()
-
-  {## Typical Examples
-   # - Commonplace expressions and statements
-   #} {;
-    {## Typical Examples #}
-    export edh'expr'stmt'examples = bookmark()
-
-    # %% # `let` is a typical statement, its side-effects are assignments to various attributes of the current scope
-    let (a, b, c,) = (3, 2, 7,)
-    # %# See that there's NO result by running this cell?
-
-    # %% # Arithmetic expressions are very typical, usually having literal expressions and attribute expressions joined with binary operators, e.g.:
-    a + b * c - 5
-    # %# See the result?
-    # Note `*` is the multiplication operator (while in everywhere else other than a programming language, it is `×`)
-  }
-
-
-  {## Arguments Packing & Unpacking
-   # - Positional & named formal arguments to be packed and unpacked
-
-Đ has a unique immutable data structure - ArgsPack, usually abbreviated as apk. An apk is created by a pair of parenthese quoting a list of positonal or named argument expressions.
-
-Arguments are packed into an apk in the following cases:
- * In execution of a `let` statement, for right-hand-side to the `=` operator
- * In evaluation of a call expression, i.e. an expression of callee followed by the postfix `()` operator
- * In evaluation of an indexing expression, i.e. an expression of container followed by the postfix `[]` operator
- * In evaluation of a standalone apk literal
-
-   #} {;
-    {## Arguments Packing & Unpacking #}
-    export edh'args'un'packing = bookmark()
-
-    # %% # Positional-only apk is roughly equivalent to what's called "tuple" in other programming languages having it (e.g. Python), both semantically and syntatically.
-    type( (1,2,3,) )
-    # %% # A single argument pack needs to be disambiguated with one or more extra commas (leading, trailing or unusually - both)
-    type( (,1,) )
-    # %% # While only trailing commas are idiomatic in Đ
-    ; (1,)
-    # %% # Or it'll be parsed as parenthese-quoted expression for precedence override purpose
-    type( (1) )
-    # %#
-
-    # %% # Named arguments can be put anywhere in the list, but an apk value will be canonicalized to have all positional arguments separated from named arguments, with their respective order of appearance reserved:
-    apk = ( name= 'Compl', 1, 2, year= 2021, )
-    # %#
-
-    # %% # Asterisks can be used to unpack apk/list/dict into current target apk
-    l = [ 3, 5, ]
-    d = { 'name': 'Yue', 'city': 'Chongqing', }
-    ; ( 7, ***apk, **d, *l, year= 2030, city= 'Shanghai', *apk, )
-    # %# As you can see:
-    #
-    #   Unpacking and direct argument specifications can be arbitrarily mixed
-    #
-    #   *** triple asterisks unpack both positional & named arguments
-    #    ** double asterisks unpack only named arguments
-    #     * single asterisks unpack only positional arguments
-    #
-    #   The order of appearance are always reserved
-    #
-    #   A repeated named argument replaces the value, but doesn't change where it sppears
-
-  }
-
-
-  {## Arguments Receiving, Repacking
-   # - Receive arguments from an apk into current scope
-
-Arguments are received from an `ArgsPack` in the following cases:
- * In execution of a `let` statement, according to specification at left-hand-side of the `=` operator
- * In execution of a for-loop expression, according to the loop argument specification
- * When a procedure is called, according to the argument specification in the definition of the procedure
-
-Upon receiving, rest arguments can be repacked into new `ArgsPack`s, when varidic arguments are expected.
-
-   #} {;
-    {## Arguments Receiving, Repacking #}
-    export edh'args'receiving = bookmark()
-
-    # %% #
-    apk = ( name= 'Compl', 1, 2, 3, year= 2021, city= 'Choingqing' )
-    # Note a standalone apk is used at right-hand-side of the `=` operator in the let statement, it of course can be a literal apk instead
-    let ( name as nnn, x, *xs, optional'x= None, **kws, ) = apk
-    # %%
-    nnn
-    # %%
-    x
-    # %%
-    xs
-    # %%
-    optional'x
-    # %%
-    kws
-    # %#
-
-    # As you can see in above, single asterisks can be used to receive rest positional arguments as a specified attribute, while double asterisks can be used to receive rest keyword arguments
-
-    # %% # Triple asterisks can be used to receive rest positional + keyword arguments as a new apk attribute with the specified name
-    let ( x, ***apk', ) = apk
-    # %%
-    apk'
-    # %%
-    x
-    # %#
-
-  }
-
-
-  {## Operators
-   # - Fully customizable infix operators with a few intrinsic prefix and postfix operators
-
-There are a few prefix and postfix operators intrinsic to the Đ language, while all infix operators are customizable operator procedures. A set of infix operator procedures come with the default batteries bundled with the bare interpreter package, more Đ packages would possibly add their own operator implementations and/or overrides, along with other artifacts such as classes, methods, symbols etc.
-
-   #} {;
-    {## Operators #}
-    export edh'operators = bookmark()
-
-
-    {## Intrinsic Prefix Operators
-     # - All unary
-
-All prefix operators are intrinsic to the language, they can only be right-associative, but their precedences decide how nested operators parse, thus the semantics.
-
-Especially note that a semicolon (or comma according to the context) may be usually needed immediately before a prefix operator which can also be an infix operator (namely `+`, `-`, and `|`), for disambiguation purpose.
-
-     #} {;
-      {## Intrinsic Prefix Operators #}
-      export edh'prefix'ops = bookmark()
-
-
-      {## The prefix plus (+) operator
-       # - With precedence 9
-
-It is technically no-op, but is idiomatic to be written out explicitly in certain cases, e.g. as in `+inf` when contrasted with negative infinity `-inf`.
-
-       #} {; export edh'prefix'plus'op = bookmark()
-        # %% # It's technically no difference with or without a prefix +
-        ; +inf is inf
-        # %# See above is true.
-      }
-
-
-      {## The prefix minus (-) operator
-       # - With precedence 9
-
-It is used to negate a decimal value, and will err out for other type of values at runtime.
-
-       #} {; export edh'prefix'minus'op = bookmark()
-        # %%
-        ; -3.5
-        # %%
-        ; - ( 5 / -11 )
-        # %%
-        ; -inf
-        # %#
-      }
-
-
-      {## The prefix (not) operator
-       # - With precedence 4
-
-It is used to negate a boolean value, and will err out for other type of values at runtime.
-
-       #} {; export edh'prefix'not'op = bookmark()
-        # %%
-        not true
-        # %%
-        not 3 > 2
-        # %%
-        not 3*7 == 22
-        # %#
-      }
-
-
-      {## The prefix guard (|) operator
-       # - With precedence 1
-
-It is used to explicitly mandate a conditional match for a branch, regardless of the contextual matching target value.
-
-       #} {; export edh'prefix'guard'op = bookmark()
-        # %% #
-        ; | 3*7 is 21 -> "That's so true."
-        # %% #
-        ; | 3 < 2 -> "No way this get shown!"
-        # %# Branches are described later in this chapter
-        ; () => edh'branching # <- follow this bookmark to that section
-      }
-
-
-      {## The prefix (void) operator
-       # - With precedence -10
-
-It is used to technically cease the result (to be always replaced with `nil`) of its operand expression, as well as to formally declare the no-result semantics as an expression.
-
-       #} {; export edh'prefix'void'op = bookmark()
-        # %% # It is idiomatic for a procedure to have a `void` body, when no meaningful result is meant to be returned. Compare this (deprecated) implementation:
-        method do'sth() {
-          that.some'method'with'meaningful'result()
-          return nil
-        }
-        # %% # to the idiomatic implementation:
-        method do'sth() void {
-          that.some'method'with'meaningful'result()
-        }
-        # %# See the later is both more concise and more pragmatic.
-      }
-
-
-      {## The prefix (ai) operator
-       # - With precedence -10
-
-It is used to perform its operand expression (usually consists of multiple steps) to be evaluated in a single STM transaction.
-
-Note an STM transaction will retry automatically, and prone to no-progressing under heavy concurrent contention. And IO actions are not permitted during an STM transaction. Carefully reasoning is reqired to use this operator properly.
-
-       #} {; export edh'prefix'ai'op = bookmark()
-        # %% # A correct (but not performant) implementation of simple concurrent counter can be:
-        data ConcCounter(cnt= 0) {
-          method inc() ai this.cnt += 1
-          method dec() ai this.cnt -= 1
-        }
-        # %# Data classes are described later in this chapter
-        ; () => edh'data'classes # <- follow this bookmark to that section
-      }
-
-
-      {## The prefix (default) operator
-       # - With precedence -10
-
-It is used to create a default expression with its operand expression.
-
-       #} {; export edh'prefix'default'op = bookmark()
-        # Defaulting semantics is an advanced topic explained in another chapter:
-        ; () => import (
-          edh'defaulting, # <- follow this bookmark to the relevant section there
-          **
-        ) './advanced/appl'
-      }
-
-
-      {## The prefix (new) operator
-       # - With precedence -10
-
-It is technically no-op, and used for source-level compatibility with other scripting languages like JavaScript, where scripting based RPC (Remote Procedure Call) would take place.
-
-       #} {; export edh'prefix'new'op = bookmark()
-        # Đ can be used to validate / syntax-highlight foreign code snippets those compliant to a common subset of scripting syntax, among JavaScript / Python etc.
-        false and that.jsRPC(js!expr{
-            console.log( 'The time now is ' + new Date());
-        })
-        # %# Note that expression values are described later in this chapter
-        ; () => edh'expr'expr # <- follow this bookmark to that section
-      }
-
-    }
-
-
-    {## Intrinsic Postfix Operators
-     # - Currently just indexing and calling
-
-All postfix operators are intrinsic to the language, they can only be left-associative.
-
-There are currently only two postfix operators, namely indexing `[]` and calling `()`. They both have the highest possible precedence.
-
-     #} {;
-      {## Intrinsic Postfix Operators #}
-      export edh'postfix'ops = bookmark
-
-
-      {## Indexing
-       # - For element extraction & assignment
-
-       #} {;
-        {## Indexing #}
-        export edh'indexing = bookmark()
-
-        # %% # You can obtain positional arguments from an ArgsPack with positive integer index
-        apk = (3, 2, 5,)
-        apk[ 1 ] # Đ index is zero based (i.e. offset semantics as in C family languages)
-        # %% # You can obtain values from a dict with the key as index
-        d = {
-          'name': 'Compl',
-          'year': 2021,
-        }
-        d[ 'name']
-        # %% # A dict can be modified via indexed assignment
-        d[ 'year' ] = 2030
-        d
-        # %#
-      }
-
-
-      {## Calling
-       # - Making procedure calls
-
-       #} {;
-        {## Calling #}
-        export edh'calling = bookmark()
-
-        # %% # You've just seen plenty usage of it
-        console.print(
-          'Calling a procedure is actually the application of the postfix () operator.'
-        )
-        # %#
-      }
-
-    }
-
-
-    {## Customizable Infix Operators
-     # - In spirit of Haskell / C++
-
-All infix operators are defined as operator procedures, many of them are intrinsic (host) procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing at particular scopes.
-
-Custom infix operators are usually named after one or more valid operator characters, which is one of "~=!@#$%^&|:<>?*+-/" plus various Unicode characters in the following general categories:
-
-  * MathSymbol
-  * CurrencySymbol
-  * ModifierSymbol
-  * OtherSymbol
-  * DashPunctuation
-  * OtherPunctuation
-
-Especially note that dot (.) and square brackets ([]) are not valid operator characters, they work with magic methods instead.
-
-However, there are a few hard-coded exceptions, namely the following operators:
-
-  * is
-  * is not
-  * and
-  * or
-
-Custom infix operators can also be named after tilde (~) denoted alphanumeric symbols, such a symbol must starts with the tilde (~) character, followed by one or more alphanumeric characters, or other operator characters other than the tilde (~). The second tilde (~) character if appeared in such a symbol, will effectively denote end-of-operator-symbol, for anything following it to be treated as separate lexeme.
-
-     #} {;
-      {## Customizable Infix Operators #}
-      export edh'infix'ops = bookmark()
-
-
-      # %%
-      namespace custom'infix'ops () {
-
-        {## Declare Fresh-New Operators
-         # - With precedence & fixity
-
-You must specify the precedence as well as the desired fixity (use one of the keywords: `infixl` / `infixr` / `infix`) when defining fresh new operators
-
-         #} {;
-
-          # Implement the operator with argument list and procedure body
-          infixl 7 (×) (lhv, rhv) lhv * rhv
-
-          # Use an existing operator as the operator implementation
-          infixl 7 (÷) () (/)
-
-        }
-
-        # With a conformant argument list, this method procedure can be re-declared as an operator
-        method stylish'and'concat(lhv, rhv) lhv ++ ' & ' ++ rhv
-
-        {## Override Existing Operators
-         # - With a new implementation, shadowing ones from outer scopes
-
-You can use just the `operator` keyword to override an existing operator
-
-         #} {;
-
-          # Use an existing procedure as the operator implementation
-          operator (and) () stylish'and'concat
-
-        }
-
-      }
-
-      dir$ custom'infix'ops
-      # %#
-
-      # %% # Expressions can be evaluated in scope of a namespace via a scope wrapper
-      scope(custom'infix'ops).eval(expr
-        3 × 7 ÷ -56
-      )
-      # %%
-      scope(custom'infix'ops).eval(expr
-        'You' and 'me'
-      )
-      # %# Expression values and scope wrappers are described later in this chapter
-      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
-
-
-      # %% # Operator procedures can be referenced with its symbol quoted in a pair of parenthese
-      show$ (*)
-      # %%
-      show$ (is not)
-      # %%
-      show$ (or)
-      # %% #
-      scope(custom'infix'ops).eval(expr
-        show$ (×)
-      )
-      # %#
-
-      # Especially note that, dot-notation won't work for operators, it is designed to work with magic methods instead. The crucial fact to know is: the parenthese is part of the name used to identify a magic method, but never so for names identifying operators.
-      # %% # This is an error:
-      custom'infix'ops.(×)
-      # %# Magic methods are described later in this chapter
-      ; () => edh'magic'mths # <- follow this bookmark to that section
-
-      # Checkout the meta definition for operators come with default batteries
-      import * 'batteries/meta/ops' into Nothing
-    }
-
-
-    {## Notable Infix Operators
-     # - Some important operators come with the default batteries
-     #} {;
-      {## Notable Infix Operators #}
-      export edh'notable'infix'ops = bookmark()
-
-      {## Logical Operators
-       # - Strict and short-circuiting, nullish versions
-
-
-       #} {;
-        {## Logical Operators #}
-        export edh'logical'opa = bookmark()
-
-        {## Strict Version
-         # - (&&) / (||)
-
-Both operands will be evaluated anyway, and it'll be runtime error if either left or right hand side expression evaluates to a value of type other than `BoolType`.
-
-         #} {;
-          {## Strict Version #}
-          export edh'strict'and'or'ops = bookmark()
-
-          # %% # Log a message to know it's called
-          method greater(x, y) {
-            console.info<| 'Comparing ' ++ x ++ ' vs ' ++ y ++ ' ...'
-            x > y
-          }
-
-          # %% # See no short-circuiting would happen
-          greater(3, 5) && greater(9, 2)
-          # %% #
-          greater(5, 3) || greater(2, 9)
-          # %#
-
-          # %% # This will be runtime error
-          5 > 3 && 'yes'
-          # %% # Contrusting to this correct implementation:
-          5 > 3 and 'yes'
-          # %#
-
-        }
-
-
-        {## Short-circuiting Nullish Version
-         # - (and) / (or)
-         #} {;
-          {## Short-circuiting Nullish Version #}
-          export edh'nullish'and'or'ops = bookmark()
-
-          # %% # The rhs expression is evaluated conditionally
-          debug and console.print( "We're debugging." )
-
-          debug or console.print( "We're in production." )
-          # %# Only one of the above 2 prints could have been executed
-
-
-          # %% # Provide some default value in stead of a nullish one
-          d = {} # Let it be an empty dict per se
-          # %% # An empty container is considered falsy
-          null(d) is true
-          # %% # Replace `d` with some default, only when it's empty
-          d or { 'name': 'Anonymous', 'from': 'Internet', }
-          # %% # Let it be non-empty, then run above cell again
-          d = { 'name': 'Compl', 'from': 'Chongqing', }
-          # %#
-
-
-          # %% # Simulation of the tenary operator
-          let abs' = n => n < 0 and -n or n
-          # %%
-          abs'(5)
-          # %%
-          abs'(-5)
-          # %#
-        }
-
-      }
-
-
-      {## Comparison Operatorrs
-       # - Doing equality and ordering comparisons
-       #} {;
-        {## Comparison Operatorrs #}
-        export edh'cmp'ops = bookmark()
-
-        # %% # Identity Equal
-        3*7 is 28
-        # %% # Identity Not Equal
-        3*7 is not 28
-
-        # %% # Instant Equal
-        3*7 == 28
-        # %% # Instant Not Equal
-        3*7 != 28
-
-        # %% # Greater Than
-        3*7 > 28
-        # %% # Greater or Equal
-        3*7 >= 28
-        # %% # Less Than
-        3*7 < 28
-        # %% # Less or Equal
-        3*7 <= 28
-        # %#
-
-      }
-    }
-
-  }
-
-
-  {## More Expressions and Statements
-   # - There are more types of expressions and statements in Đ
-
-For example:
- * Dict Expresssion
- * List Expression
- * Namespace Expression
- * Class Expression
- * Block Expression
- * Yield Expression
- * Index Expression
- * Call Expression
- * Default Expression
- * Go Statement
- * Defer Statement
- * Perceive Statement
- * Break Statement
- * Continue Statement
- * Fallthrough Statement
- * Throw Statement
- * Rethrow Statement
- * Return Statement
-
-   #} {;
-    {## More Expressions and Statements #}
-    export more'exprs'stmts = bookmark()
-
-    edh'lang'refs'details # <- follow this to Đ langauge reference for a detailed list of statements (including expressions) Đ code can have
-  }
-
-}
-
-
 {## Values, and Really Special Ones
  # - Everything is a value in Đ
 
@@ -1715,11 +1715,11 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
   }
 
 
-  {## Special Values
-   # - Some special values
+  {## Notable Immutable Values
+   # - Some special values those immutable
    #} {;
-    {## Special Values #}
-    export edh'special'values = bookmark()
+    {## Notable Immutable Values #}
+    export edh'notable'values = bookmark()
 
     {## Nothingness
      # - Special nullabilities
@@ -1739,6 +1739,7 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       # %#
     }
 
+
     {## Boolean Values
      # - To be or not to be
      #} {;
@@ -1751,6 +1752,7 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       show$ false
       # %#
     }
+
 
     {## Numeric Values
      # - Decimal as you've been familar with
@@ -1774,6 +1776,38 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       ; -5 / 0
       # %#
     }
+
+
+    {## String Values
+     # - Immutable text
+     #} {;
+      {## String Values #}
+      export edh'strings = bookmark()
+
+      # %% # Take this simple example
+      s = 'abcdef'
+
+      # %% # Both the (++) and (+) operator will concatenate string operands
+      # Note the syntactic sugar ` x ++= y ` expands to ` x = x ++ y `
+      s0 = s
+      s ++= '#defabc'
+      s
+
+      # %% # Let's cut a part (a substring) from it
+      # More about pattern matching and string cut patterns later
+      ; () => edh'str'cut'pattern # <- follow this bookmark to that section
+
+      case s of { s1 @< '#' >@ _ } -> s1
+
+      # %% # The result hapens to be equal to the original value before we concatenated it with more text
+      s1 == s0
+
+      # %% # Actually they are identically equal, as strings are immutable, the identity of a string value is solely determined by its value
+      s1 is s0
+
+      # %#
+    }
+
 
     {## Defaulting Values
      # - Not/Applicable is 1st class value
@@ -1817,6 +1851,7 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       }
     }
 
+
     {## Ordering Values
      # - Result of comparison
      #} {;
@@ -1833,13 +1868,239 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
     }
 
 
-    {## Indexing, Slicers
-     # - 0-based index, with special range slicers
+    {## Notable Value Types
+     # - Some types of values worth special mention
+     #} {;
+      {## Notable Value Types #}
+      export edh'notable'types = bookmark()
+
+      {## ArgsPack (apk) - the Super Tuple
+       # - The super type of tuple with named elements
+
+We already described ArgsPack in the section for syntax of arguments packing, actually the apk type is a super type of the "tuple" type, which is well know in many programming languages.
+
+An apk with only positional arguments carries exactly the same semantics of a "tuple".
+
+An apk with only named arguments corresponds to the "namedtuple" in Python.
+
+While in Đ positional arguments and named arguments can be combined together.
+
+       #} {;
+        {## ArgsPack (apk) #}
+        export edh'apk = bookmark()
+
+        # %% # ArgsPack values are immutable, two apks are identically equal only if all arguments are identically equal, regarding the order of appearance
+        ; ( 3, 2, 5, x= 9, y= 7, ) is ( 3 :> ( 2, 5, x= 9, y= 7, ) )
+
+        # %% # Especially note that the order of appearance for named arguments matters in equality test, observing the following two apks are not equal
+        ; ( 3, x= 9, y= 7, ) is ( 3, y= 7, x= 9, )
+
+        # %% # The insertion order of a named argument is determined by its first appearance
+        ; ( x= 9, y= 7, x= 11, ) is ( x= 11, y= 7, )
+        # %% #
+        ; ( x= 9, y= 7, x= 11, ) is not ( y= 7, x= 11, )
+
+        # %% # Note about nil's deletion semantics in apk construction
+        ; ( x= 9, y= 7, x= nil, ) is ( y= 7, )
+
+        # %% # It is useful when unpacking some unknown apk, with some names undesirable
+        apk'from'elsewhere = ( x= 9, y= 7, )
+        ; ( ***apk'from'elsewhere, x= nil, )
+
+        # %#
+
+        # Idiomatic usage has already been covered in a previous section about arguments packing
+        edh'args'un'packing # <- follow this bookmark to that section
+      }
+
+
+      {## List
+       # - Singly linked prepend cons list
+
+List is a mutable type, optimized for prepend and sequential scan.
+
+       #} {;
+        {## List #}
+        export edh'list = bookmark()
+
+        # %% # Take this simple example
+        l = [ 3, 2, 5, ]
+
+        # %% # `push()` and `pop()` can be use with a list for "stack" semantics
+        h = l.pop()
+        'After ' ++ h ++ ' popped, l now is: ' ++ l
+        # %% #
+        l.push(7)
+        l
+
+        # %% # The prepand (:>) operator does the same thing to a list as `push()`
+        9 :> l
+
+        # %% # List is ploymorph, values of different types can be stored in the same list
+        'Some text' :> l
+
+        # %#
+      }
+
+
+      {## Dict
+       # - Hash map with keys of identity equality
+
+Dict is a mutable type, optimized for O(1) key lookup as well as sequential scan.
+
+Especially note that the scan order of dict entries is insertion order, not key sorting order.
+
+Also note that identity equality is used for keys of a dict, that means a dict can contain multiple instantly equal keys those not identical. Especially note that as a result, even if you implement the `__eq__()` magic for objects (responding to instant equality tests), those objects with instant equal semantics won't overwrite eachothers, when serving as keys in a dict.
+
+       #} {;
+        {## Dict #}
+        export edh'dict = bookmark()
+
+        # %% # Take this example
+        d = { 'c': 3, 'a': 2, 'b': 5, }
+
+        # %% # Arguments packing syntax can be used with the `dict()` constructor
+        # When all keys are strings or symbols, it's more convenient to create a dict like this
+        d' = dict( c= 3, a= 2, b= 5, )
+
+        # %% # Each dict is distinct when separately constructed
+        d' is not d
+
+        # %% # Two dicts can be instantly equal if all entries are instantly equal, regardless of the order of appearance of the entry keys
+        d'' = dict( c= 3, b= 5, a= 2, )
+        d'' == d
+        # %% # Though their reprs are different
+        repr(d'') != repr(d)
+
+        # %% # Note about nil's deletion semantics in dict construction
+        { 'c': 3, 'a': 2, 'b': 5, 'a': nil, } == { "c": 3, "b": 5, }
+
+        # %% # Both the key and the value can be computed dynamically, make use of that and take care
+        { 'c': 3, ( 'a' ++ 'bc' ): 2, 'b': 5, ( 'ab' ++ 'c' ): ( void 3*7 ), }
+
+        # %% # `push()` and `pop()` can also be use with a dict
+        d = dict( c= 3, a= 2, b= 5, )
+        v = d.pop( 'a')
+        'After a=' ++ v ++ ' popped, d now is: ' ++ d
+
+        # %% #
+        d.push( 'a', 9 )
+        d
+
+        # %% # The prepand (:>) operator does the same thing to a dict as `push()`
+        # But note in this case the semantics is actually append instead of prepend
+        ; ( 'd', 'More data' ) :> d
+
+        # %% # 2 pair values can also be used to specify a dict entry, in addition to 2 "tuple" (apk with 2 positional arguments)
+        e = 'e': 'Extensive data'
+        e :> d
+
+        # %#
+      }
+
+
+      {## Pair
+       # - Singly linked append cons list
+
+Pair is an immutable type, meant to be used as range or dict entry specifiers.
+
+Pair values are constructed with the infix (:) operator.
+
+       #} {;
+        {## Pair #}
+        export edh'pair = bookmark()
+
+        # %% # Pair values are immutable, two pairs are identical if all elements are identical, regardless of whether separately constructed
+        let (a,b,c,) = (3,2,5)
+        ; ( 3:2:5 ) is ( a:b:c )
+
+        # %% # Note the (:) operator has a precedence of 2, which is rather low, so parenthese quoting is required as in above
+        show( (:) ) ++ ' vs ' ++ show( (is) )
+
+        # %% # Also note about its left-associativity
+        ( 3:(2:5) ) != ( (3:2):5 )
+
+        # %% # Though they have identical repr
+        repr( 3:(2:5) ) == repr( (3:2):5 )
+        # TODO maybe the repr should be fixed to avoid confusions
+
+        # %#
+      }
+
+
+      {## Event Sink
+       # - Rendezvous point of events
+       #} {;
+        {## Event Sink #}
+        export edh'event'sink'values = bookmark()
+
+        # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
+        assassinate'signal = sink
+        show$ assassinate'signal
+
+        # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
+        assassinate'signal <- 'stab'
+
+        # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
+        go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
+        # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
+
+        # %% # Let's publish another event there:
+        assassinate'signal <- 'shoot'
+        # %# Remind that the publishing can be repeated, try run the "stab" cell again.
+
+        # Events can be *perceive*d by any thread, the perceiver body is executed with the published event as matching target
+        # %% #
+        perceive assassinate'signal { act } -> {
+          console.info<| "I'm assassinated via " ++ act
+        }
+        # %# Then run the publishing cells above again, to see more messages logged.
+        # Branches with pattern/value matching are described later in this chapter
+        ; () => edh'branching # <- follow this bookmark to that section
+
+        # If the perceiver evaluates to value of a `break` statement, that thread will be terminated.
+
+        # %{ # Upon termination of a thread, some actions can be *defer*ed to execute:
+        defer {
+          # %%
+          console.print$ "Here's my last words ..."
+          secRemains = 10
+          for _ from console.everySeconds(1) do {
+            case secRemains -= 1 of {
+              7 -> console.print( "\rPlease let me die a good death." )
+              5 -> console.print( "\rThat's all I want." )
+              4 -> console.print( "\rFarewell!" )
+              0 -> {
+                console.print( "\27[A")
+                break
+              }
+              _ -> console.print( '\r...' ++ secRemains, eol= '\r', )
+            }
+          }
+          # %#
+        }
+        # %}
+
+        # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
+        # %% # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
+        perceive assassinate'signal.subseq 'shoot' -> {
+          console.fatal<| "I'm hit!"
+          break # this being the final result, would terminate the thread installed this perceiver
+        }
+        # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
+
+      }
+
+    }
+
+
+    {## Index Values
+     # - 0-based numeric index, with special range slicers
 
 Note that usual numeric index in Đ is 0-based, carrying _offset_ semantics as in many popular programming languages such as C, Java, Python, Go etc. While there are other languages like Fortran, R, Julia, MATLAB, Smalltalk, Wolfram etc. use 1-based index carrying _counting_ semantics.
 
      #} {;
-      {## Indexing, Slicers #}
+      {## Index Values #}
       export edh'index'vals = bookmark()
 
       # %% # Let's take a `Vector` which is indexable, e.g.
@@ -1849,7 +2110,7 @@ Note that usual numeric index in Đ is 0-based, carrying _offset_ semantics as i
       # %% # Individual elements can be obtained via a numeric index
       v[2]
 
-      # %% # Also assignable
+      # %% # Elements also assignable by index
       v[2] = 555
       v
 
@@ -1874,7 +2135,7 @@ Note that usual numeric index in Đ is 0-based, carrying _offset_ semantics as i
       # %% # This will fail as every elements as a whole doesn't match a single element semantically
       v[All] = 5
 
-      # %% # This is okay and as many elements will be overwritten as possible
+      # %% # This is okay and as many elements will be overwritten
       v[All] = (3,2,1,)
       v
 
@@ -1883,9 +2144,9 @@ Note that usual numeric index in Đ is 0-based, carrying _offset_ semantics as i
       v
 
       {## Slicers
-       # - Range specifiers
+       # - Pairs used as range specifiers
 
-The general syntax for a range slicer is:
+2~3 pairs carry range slicer semantics, the effective syntax is:
 
   <start>:<stop>[:<step>]
 
@@ -1924,70 +2185,6 @@ Otherwise, <step> defaults to 1 when <stop> is greater than <start>; or -1 when 
 
         # %#
       }
-
-    }
-
-
-    {## Event Sink
-     # - Rendezvous point of events
-     #} {;
-      {## Event Sink #}
-      export edh'event'sink'values = bookmark()
-
-      # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
-      assassinate'signal = sink
-      show$ assassinate'signal
-
-      # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
-      assassinate'signal <- 'stab'
-
-      # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
-      go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
-      # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
-
-      # %% # Let's publish another event there:
-      assassinate'signal <- 'shoot'
-      # %# Remind that the publishing can be repeated, try run the "stab" cell again.
-
-      # Events can be *perceive*d by any thread, the perceiver body is executed with the published event as matching target
-      # %% #
-      perceive assassinate'signal { act } -> {
-        console.info<| "I'm assassinated via " ++ act
-      }
-      # %# Then run the publishing cells above again, to see more messages logged.
-      # Branches with pattern/value matching are described later in this chapter
-      ; () => edh'branching # <- follow this bookmark to that section
-
-      # If the perceiver evaluates to value of a `break` statement, that thread will be terminated.
-
-      # %{ # Upon termination of a thread, some actions can be *defer*ed to execute:
-      defer {
-        # %%
-        console.print$ "Here's my last words ..."
-        secRemains = 10
-        for _ from console.everySeconds(1) do {
-          case secRemains -= 1 of {
-            7 -> console.print( "\rPlease let me die a good death." )
-            5 -> console.print( "\rThat's all I want." )
-            4 -> console.print( "\rFarewell!" )
-            0 -> {
-              console.print( "\27[A")
-              break
-            }
-            _ -> console.print( '\r...' ++ secRemains, eol= '\r', )
-          }
-        }
-        # %#
-      }
-      # %}
-
-      # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
-      # %% # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
-      perceive assassinate'signal.subseq 'shoot' -> {
-        console.fatal<| "I'm hit!"
-        break # this being the final result, would terminate the thread installed this perceiver
-      }
-      # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
 
     }
 
