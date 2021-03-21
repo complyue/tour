@@ -56,7 +56,9 @@ Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certa
 {## Compared to Similar Languages
  # - An OO dynamic scripting language at-large
 
-If you are familar with Python, JavaScript, or another Object-Oriented dynamic scripting langauge, you should read this chapter instead of (or at least before) the grammar chapter, you'll probably learn the syntax, semantics and pragmatics of Đ faster with your background knowledge about object orientation, lexical scoping and etc. Especially some important gotchas are presented there, those you'd better know before trapped with wrong assumptions about Đ with respect to related features in those other langauges / runtimes.
+If you are familar with Python, JavaScript, or another Object-Oriented dynamic scripting langauge, you should read this chapter, or feel free to skip it.
+
+You would learn the syntax, semantics and pragmatics of Đ faster with your background knowledge about object orientation, lexical scoping and etc. Also some important gotchas are presented in this chapter, those you'd better know before trapped with wrong assumptions about Đ, relating to features in other langauges / runtimes.
 
  #} {; export import * './lang-cmp'
   {## Đ Compared to Similar Languages #}
@@ -70,9 +72,7 @@ If you are familar with Python, JavaScript, or another Object-Oriented dynamic s
 {## Grammar
  # - Syntax, Semantics, and Pragmatics of Đ
 
-In lieu of this chapter, you can get all you need to know from the chapter above, if you happen to know some other similar languages. Skip this chapter as you like if that's the case.
-
-Before some more formal language specification is defined, this chapter is a closest thing to that. Hopefully this can serve better for readers without priori backgroud knowledge in programming, or only experienced in functional programming (with Haskell likely), since no priori knowledge about procedure / imperative programming is assumed, and more broken-down examples are presented in this chapter, for easier and more complete understandings.
+Hopefully this chapter can serve better for readers without priori backgroud knowledge in programming, or only experienced in functional programming (with Haskell likely), since no priori knowledge about procedure / imperative programming is assumed, and more broken-down examples are presented in this chapter, for easier and more complete understandings.
 
  #} {; export import * './grammar'
   {## Đ Grammar #}
