@@ -3,7 +3,15 @@
 {## Dynamic Scoped Effects
  # - Algebraic Effects come into an imperative, scripting world
 
-To contrast with *monad*, which is a closed, statically typed effect tracking system, Đ effects is an open, dynamically/duck typed effect tracking system.
+To contrast with *monad*, which is a closed, statically typed effect tracking system, Đ effects is an open, dynamically / duck typed effect tracking system.
+
+With mathematical methodologies and a functional programming language, monad is a mature and powerful machinery to vend and consume provisional effects with well defined contexts. There is also algebraic effects & handlers under active research at time of speaking - 2021, but no production ready implementation is generally available.
+
+With procedural methodologies, modular development and composition of effects, are largely approached with frameworks (e.g. OSGi - Open Services Gateway initiative) and/or API/SPI specifications (e.g. EJB - Enterprise Java Beans), in lieu of language constructs to encode modules of effects and composition of them.
+
+Under the hood, *Dynamic Scoped Effects* is technically *dynamic scoping* done right, it gets rid of the necessarity of IoC (Inversion of Control) containers and DI (Dependency Injection) by proper language features to foster effects dependency at runtime.
+
+*Dynamic Scoping* is a historic approach proved failure, which appears uncommon (at year 2021) to be supported by mainstream programming languages / runtimes. At the same time, effect tracking is an increasingly interesting topic of software engineering at the moment. Offered by Đ, *Dynamic Scoped Effects* tries to refine *Dynamic Scoping*, as well as to tackle the effect tracking problem in the procedural / imperative paradigm.
 
  #} {;
   {## Dynamic Scoped Effects #}

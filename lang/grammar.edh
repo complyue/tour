@@ -1176,6 +1176,7 @@ Some symbol values are not pleasing for others to import into their own scopes w
             then error( "We don't serve evil!")
             army'force.launch'missiles()
           }
+
         }
 
         # %% # When all expected effects have to be mixed into your calling scope, the following scription is ugly at best, it can easily confuse future maintainers to introduce bugs:
@@ -5357,23 +5358,17 @@ There are cases it's desirable to cease the side-effect of attribute creation in
 
 {## Dynamic Effect Tracking
  # - Tracking effects dynamically, the procedural way
-
-With mathematical methodologies and a functional programming language, monad is a mature and powerful machinery to vend and consume provisional effects with well defined contexts. There is also algebraic effects & handlers under active research at time of speaking - 2021, but no production ready implementation is generally available.
-
-With procedural methodologies, modular development and composition of effects, are largely approached with frameworks (e.g. OSGi - Open Services Gateway initiative) and/or API/SPI specifications (e.g. EJB - Enterprise Java Beans), in lieu of language constructs to encode modules of effects and composition of them.
-
-Under the hood, *Dynamic Scoped Effects* is technically *dynamic scoping* done right, it gets rid of the necessarity of IoC (Inversion of Control) containers and DI (Dependency Injection) by proper language features to foster effects dependency at runtime.
-
-*Dynamic Scoping* is a historic approach proved failure, which appears uncommon (at year 2021) to be supported by mainstream programming languages / runtimes. At the same time, effect tracking is an increasingly interesting topic of software engineering at the moment. Offered by Đ, *Dynamic Scoped Effects* tries to refine *Dynamic Scoping*, as well as to tackle the effect tracking problem in the procedural / imperative paradigm.
-
  #} {;
   {## Dynamic Effect Tracking #}
   export edh'eff'tracking = bookmark()
 
   {## Technical Basics
    # - How it works in simple cases
-
    #} {;
+    # Effect System is an advanced topic in another chapter
+    import * './advanced/effs'
+    edh'effs # <- follow this bookmark to the section there
+
     {## Technical Basics #}
     export edh'eff'tech'basics = bookmark()
 
@@ -5428,5 +5423,104 @@ A Monad can encapsulate all possible effects, and allow inner computations neste
      #}
   }
 
+
+  {## Symbolic Names are Idiomatic
+   # - To avoid name clashing for effects across frameworks / libraries
+
+In an integrated system, there are times you need to compose effects from independently developed components (by different vendors e.g.), no mechanism can effectively coordinate a clashing-free naming convention, if only alphanumeric names are legitimate.
+
+   #} {;
+    {## Symbolic Names are Idiomatic #}
+    export edh'sym'eff'names = bookmark()
+
+    # For example, these 2 pieces both want to demand an effectful passphrase via the alphanumeric name `passphrase`
+
+    # %% #
+    namespace private'force () {
+
+      method launch'missiles() {
+        if 'for~good~profit' != perform passphrase
+        then error( "We don't serve voluntarily!")
+        console.info<| "Destroying enemies!!!"
+      }
+
+    }
+
+    # %% #
+    namespace un'peacekeepers () {
+
+      method auth'attack'by( army'force ) {
+        if 'for~world~peace' != perform passphrase
+        then error( "We don't serve evil!")
+        army'force.launch'missiles()
+      }
+
+    }
+
+    # %% # The 1st piece can work alone like this
+    {@
+      effect passphrase = 'for~good~profit'
+
+      private'force.launch'missiles()
+    @}
+
+    # %# But no simple composition of them can work together right
+
+    # %% # Neither this
+    {@
+      effect passphrase = 'for~good~profit'
+
+      un'peacekeepers.auth'attack'by( private'force )
+    @}
+
+    # %% # Nor this
+    {@
+      effect passphrase = 'for~world~peace'
+
+      un'peacekeepers.auth'attack'by( private'force )
+    @}
+
+    # %#
+
+    # Some times you can coordinate the vendors to use distinct names, but not always; Or you can persuade the vendor whichever closer to you, to honor the other's choice that assumed unchangable; Yet that's not always possible, especially after complexity within those components scales up.
+
+
+    # Well, it would not be a problem, if all parties used symbolic effect names in the first place
+
+    # %% #
+    namespace private'force () {
+      symbol @passphrase
+
+      method launch'missiles() {
+        if 'for~good~profit' != perform @passphrase
+        then error( "We don't serve voluntarily!")
+        console.info<| "Destroying enemies!!!"
+      }
+
+    }
+
+    # %% #
+    namespace un'peacekeepers () {
+      symbol @passphrase
+
+      method auth'attack'by( army'force ) {
+        if 'for~world~peace' != perform @passphrase
+        then error( "We don't serve evil!")
+        army'force.launch'missiles()
+      }
+
+    }
+
+
+    # %% # Then they can be composed right this way:
+    {@
+      effect @( private'force.passphrase ) = 'for~good~profit'
+      effect @( un'peacekeepers.passphrase ) = 'for~world~peace'
+
+      un'peacekeepers.auth'attack'by( private'force )
+    @}
+    # %#
+
+  }
 
 }
