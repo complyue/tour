@@ -6,16 +6,18 @@ export edh'lang'cmp'details = bookmark()
 
 {## Target Audience
  # - For developers familiar with some other Object-Oriented, dynamic scripting language
- #} {; import * './grammar'
+
+If you are familiar with any other Object-Oriented, dynamic, scripting language, like Python, JavaScript, Smalltalk etc, this is for you. You just need to know the differences and a few important gotchas, could save you a great deal of time going over some basic concepts.
+
+Familiarity with Haskell is a great plus, as the base Đ interpreter is written in Haskell, and many Đ language constructs are influenced by Haskell.
+
+ #} {;
   {## Target Audience #}
   export edh'lang'cmp'audience = bookmark()
 
-  # If you are familiar with any other Object-Oriented, dynamic, scripting language, like Python, JavaScript, Smalltalk etc. , this is for you. You just need to know the differences and a few important gotchas, could save you a great deal of time going over some basic concepts.
-
-  # Familiarity with Haskell is a great plus, as the base Đ interpreter is written in Haskell, and many Đ language constructs are influenced by Haskell.
-
-  # But if you don't know another Object-Oriented dynamic scripting language, some jargons here might not click for you, then please resort to:
-  edh'grammar'details # <- follow this link to detailed tour of Đ grammar
+  # But if you don't know another Object-Oriented dynamic scripting language, some jargons here might not click for you, then please read the chapter of Đ grammar instead
+  import * './grammar'
+  edh'grammar'details # <- follow this bookmark to there
 
   # Alternatively, you can learn Python first if you prefer.
 }
@@ -24,7 +26,7 @@ export edh'lang'cmp'details = bookmark()
 {## Overview
  # - General reason of most design choices
 
-The Đ grammar is designed with a major goal of interoperation by scripting, for IPC (Inter-Process Communication) across processes of heterogeneous runtime implementations.
+The Đ grammar is designed with a major goal of interoperation by scripting, for IPC (Inter-Process Communication) across processes of heterogeneous runtime implementations. So as to finally integrate massive scale of software compoonents (possibly independently developed by many vendors) into live systems.
 
 While some constructs from Haskell, Go, Python and others, are introduced
 for purpose of ergonomics. E.g.
@@ -100,13 +102,12 @@ So it should be no surprise to you, that Đ comes with its own formatter, yet of
 {## Optional Semicolons and Commas
  # - Semicolons and commas are technically optional
 
-Examples ought to be enough, and just idiomatic guidelines:
+Just examples ought to be enough, plus guidelines for idiomatics:
 
-* Avoid semicolons without good reasons
-* Place trailing commas where possible
+ * Avoid semicolons - unless for disambiguation
+ * Place trailing commas where possible - unless it's more concise without it
 
-Note semicolons can be really technically omitted in Đ, not the case like in JavaScript that the language does:
-  > Automatic Semicolon Insertion <
+Note semicolons can be really technically omitted in Đ, not the case like in JavaScript, that the language does [Automatic Semicolon Insertion]
   https://tc39.es/ecma262/#sec-automatic-semicolon-insertion
 
  #} {;
@@ -166,9 +167,6 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
 
   {## Cases Disambiguation Needed
    # - However, you'd better be reminded of necessary disambiguations
-
-These examples should work for you.
-
    #} {;
 
     {## Disambiguate Unintended Indexing / Calling #}
@@ -192,7 +190,7 @@ These examples should work for you.
 
     # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
 
-    # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exceptin of branches' early break, though, about that later)
+    # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exception of branches' early break, though, and about that later)
     # %% # And an empty block evals to `nil`, check this to be true
     {; } is nil
     # %#
@@ -210,8 +208,8 @@ These examples should work for you.
     }
 
 
-    # Finally, a comma to disambiguate ArgsPack (a super type of Python tuple), from parenthese-quoted single expression
-    # %% # A single argument pack
+    # Finally, a comma to disambiguate ArgsPack (a super type of tuple like in Python), from parenthese-quoted single expression
+    # %% # A single arguments pack
     ; ( 3*7, )
     # %% # A parenthese-quoted expression
     ; ( 3*7 )
@@ -253,37 +251,43 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 
 
 {## Common Part with Pervasive Languages
- # - Good interoperability with Python/JavaScript etc. at source level
+ # - Đ has good interoperability with Python/JavaScript etc. at source level
 
-Đ shares some common syntax with most programming languages (e.g. Python, JavaScript), where parentheses pair is the call-making operator, and expressions consist of named references plus prefix/infix/postfix operators with precedences and associativities, and parentheses again used to override precedence.
+Đ shares some common syntax with many popular programming languages (e.g. Python, JavaScript), in a nutshell:
+
+ * Parentheses pair is the call-making operator
+ * Expressions consist of named references, plus prefix/infix/postfix operators with certain precedence and fixity/associativity
+ * Parentheses used to override precedence
 
  #} {;
 
   {## Common Syntax
-   # - Đ syntax common to some languages
+   # - Đ syntax common to many popular languages
    #} {;
     {## Đ Syntax Common To Some Languages #}
     export edh'common'syntax = bookmark()
 
-    # %%
     # `console` hooks to the interpreter program's stdio
     # `console.print()` does exactly what you think it should
-    console.print( 'Đ code can have usual looking of Python, JavaScript etc.' )
-
     # %%
+    console.print( 'Đ code can have usual looking of Python, JavaScript etc.' )
+    # %#
+
     # As a code cell is run by a REPL, the result of evaluation will be printed,
     # so you don't really need `console.print()` that often
-    1 + 2 - 3 * 7
-
     # %%
-    # When precedence rule doesn't work outright, parentheses comes to rescue
+    1 + 2 - 3 * 7
+    # %#
+
+    # When precedence rule doesn't work outright, parenthese comes to rescue
+    # %%
     1 + ( 2 - 3 ) * 7
     # %#
   }
 
 
   {## Module System
-   # - Đ module system is somewhat like the Node.js module system, with roughly ES6 module import/export syntax, and some Python module naming convention, combined together
+   # - Đ module system is somewhat like the Node.js module system, ES6 import/export syntax, Python module loading semantics and some naming convention, combined together
 
   https://nodejs.org/api/modules.html
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
@@ -303,9 +307,9 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
    #} {;
 
     {## String Literals
-     # - Almost all possible forms can be written
+     # - Almost all possible forms are valid here
 
-In era without code syntax highlighting, multi-line strings can be adversely confusing, but nowadays no text editor can claim itself being a code editor without proper syntax highlighting. So Đ allows a string literal to span multi lines anyway, dunno if this can trip someone up, but be aware.
+In an era without code syntax highlighting, multi-line strings can be adversely confusing, but nowadays no text editor can claim itself being a code editor without proper syntax highlighting. So Đ allows a string literal to span multi lines anyway, dunno if this can trip someone up, but be aware.
 
      #} {;
       {## String Literals #}
@@ -361,7 +365,7 @@ will be at the end of a source line."""
       }
     }
 
-    {## Fractional Numbers
+    {## Rational Decimal Numbers
      # - Don't take floating point numbers for granted
 
 Floating point arithmetic is intrinsic to numbers in most computer programming languages of today, see:
@@ -399,8 +403,8 @@ Python `float` and JavaScript `number` are all subject to those gotchas.
 The single quote character (') can appear in an identifier, only if it's not the first character.
      #} {;
 
-      # %%
       # In Haskell and Math, a suffix ' is used to denote something slightly different from the symbol without it:
+      # %%
       let ( x, y ) = ( 7, 3 )
       let ( q, q' ) = ( x / y, x // y )
       'Is ' + q' + ' equal to ' + q + " ? That's " + ( q'==q ) + ' of course!'
@@ -445,13 +449,15 @@ Prefixing the name of the variable with character(s) to indicate the use make of
 
 
 {## Terminology Differences
- # - Something similar things are called differently
-
+ # - Some similar things are named differently
  #} {;
 
   {## Procedure instead of Function
    # - There are procedures, but no function
 
+A *function* in mathematics has well defined input and output, it can refer to nothing outside of its input. Functional programming langauges e.g. Haskell, reflects such constraint well. But unfortunately many procedural / imperative programming langauges, tracing back to C and other ancestors, defined their "function"s with ability to access global / closure "variable"s (The "variable" there is albeit another misconception agsinst mathematical variables), so side-effects can be there out of trivial reasonability by programmers in the day, leading to more bugs in software developed comercially.
+
+It's not a big deal for Đ the language has stopped refering to impure computations (with side-effects) as "function"s, but more conforming conception is a good start to put effect tracking as a focus for the programming tools, looking forward for greater quality in the software developed as the result.
 
    #} {;
     {## Procedure instead of Function #}
@@ -463,7 +469,10 @@ Prefixing the name of the variable with character(s) to indicate the use make of
   {## Attribute instead of Variable
    # - There are attributes, but no variable
 
-Variable in most programming languages is a misconception, ...
+There is no such a concept/term of "variable" in Đ. The "variable" concept in conventional programming languages is misleading or conflicting when you could possibly have mathematical concepts in the domain model of your business. More properly it should be called "assignable" as suggested in:
+  https://existentialtype.wordpress.com/2013/07/22/there-is-such-a-thing-as-a-declarative-language
+
+Although attributes of entities in Đ are inherently meant to be assigned (as well as to be observed), they can not stand alone without a backing entity. Unlike in conventional programming languages, where a "variable" can be assigned individually.
 
    #} {;
     {## Attribute instead of Variable #}
@@ -479,14 +488,12 @@ Variable in most programming languages is a misconception, ...
  # - The usual lexical scoping works similar to Python and JavaScript, yet with subtle differences
  #} {;
 
-
   {## Value Association Key
    # - What's called *variable identifier* or *variable name* elsewhere
 
    #} {;
     {## Value Association Keys #}
     export edh'val'asso'keys = bookmark()
-
 
     {## Usual Keys
      # - Just like how *variable*s can be named in other programming languages such as Python
@@ -496,7 +503,7 @@ Variable in most programming languages is a misconception, ...
 
     }
 
-    {## Symbolic Keys
+    {## Symbolic Names
      # - In favor of mythology - or, integration of effectful components from independent vendors
      #} {;
 
@@ -504,22 +511,125 @@ Variable in most programming languages is a misconception, ...
       #   https://developer.mozilla.org/en-US/docs/Glossary/Symbol
 
       # Đ takes this idea further, by giving it dedicated syntax:
-      # %%
+      # %% # Symbol definition
       symbol @secret'stuff
+      # %% # Assign to symbolic attribute
+      ; @secret'stuff = 'a bit of mysterious'
+      # %% # Obtain a symbolic attribute
+      ; @secret'stuff
+      # %% # In an apk
+      namespace secret'ns ( @secret'stuff= 'not that real', ) {
+        # In assignment with at-notations
+        this.@secret'stuff ++= ', but real enough'
+      }
+      # %% # Obtain symbolic via at-notation
+      secret'ns.@secret'stuff
       # %#
 
-      # It is particularly necessary when a shared scope must be used to serve effectful artifacts collected from various vendors independent of each others, where coordination for name clashing prevention can hardly be done. If they don't use symbolic identifiers for their effects, name clashing is of high tendency.
 
-      # %% # e.g.
-      effect import * 'net/effects'
-      effect import * 'dim/effects'
+      {## Idiomatic for Effect Naming
+       # - To avoid name clashing for effects across frameworks / libraries
+
+In an integrated system, there are times you need to compose effects from independently developed components (by different vendors e.g.), no mechanism can effectively coordinate a clashing-free naming convention, if only alphanumeric names are legitimate.
+
+       #} {;
+
+        # For example, these 2 pieces both want to demand an effectful passphrase via the alphanumeric name `passphrase`
+
+        # %% #
+        namespace private'force () {
+
+          method launch'missiles() {
+            if 'for~good~profit' != perform passphrase
+            then error( "We don't serve voluntarily!")
+            console.info<| "Destroying enemies!!!"
+          }
+
+        }
+
+        # %% #
+        namespace un'peacekeepers () {
+
+          method auth'attack'by( army'force ) {
+            if 'for~world~peace' != perform passphrase
+            then error( "We don't serve evil!")
+            army'force.launch'missiles()
+          }
+
+        }
+
+        # %% # The 1st piece can work alone like this
+        {@
+          effect passphrase = 'for~good~profit'
+
+          private'force.launch'missiles()
+        @}
+
+        # %# But no simple composition of them can work together right
+
+        # %% # Neither this
+        {@
+          effect passphrase = 'for~good~profit'
+
+          un'peacekeepers.auth'attack'by( private'force )
+        @}
+
+        # %% # Nor this
+        {@
+          effect passphrase = 'for~world~peace'
+
+          un'peacekeepers.auth'attack'by( private'force )
+        @}
+
+        # %#
+
+        # Some times you can coordinate the vendors to use distinct names, but not always; Or you can persuade the vendor whichever closer to you, to honor the other's choice that assumed unchangable; Yet that's not always possible, especially after complexity within those components scales up.
+
+
+        # Well, it would not be a problem, if all parties used symbolic effect names in the first place
+
+        # %% #
+        namespace private'force () {
+          symbol @passphrase
+
+          method launch'missiles() {
+            if 'for~good~profit' != perform @passphrase
+            then error( "We don't serve voluntarily!")
+            console.info<| "Destroying enemies!!!"
+          }
+
+        }
+
+        # %% #
+        namespace un'peacekeepers () {
+          symbol @passphrase
+
+          method auth'attack'by( army'force ) {
+            if 'for~world~peace' != perform @passphrase
+            then error( "We don't serve evil!")
+            army'force.launch'missiles()
+          }
+
+        }
+
+
+        # %% # Then they can be composed right this way:
+        {@
+          effect @( private'force.passphrase ) = 'for~good~profit'
+          effect @( un'peacekeepers.passphrase ) = 'for~world~peace'
+
+          un'peacekeepers.auth'attack'by( private'force )
+        @}
+        # %#
+
+      }
+
       # %#
-
     }
 
 
-    {## Quaint Keys
-     # - Technically, any string can be used
+    {## Quaint Names
+     # - Technically, any test can be used as attribute name
      #} {;
 
       # %% # TODO this will fail at runtime, as no REPL with els host modules yet
