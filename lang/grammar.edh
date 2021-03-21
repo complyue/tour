@@ -1583,12 +1583,40 @@ Note the named version of a value may or may not "equal" to the original version
       l = [ 3, 2, ]
       l' = l
       l is l'
-      # %#
-
-      # Dicts, objects etc. are in similar cases w.r.t. identity equality.
+      # %# Dicts are in similar cases w.r.t. identity equality.
 
 
       # A value serving as an immutable container, such as an apk or a pair, may contain mutable values as its items, the identity equality cascades into those items intuitively.
+
+
+      {## Object Identity
+       # - The magic `__id__` attribute
+
+Each object carries a unique identifier per constructed, but an object can state an alternative identity by providing a magic `__id__` attribute. Especially note that given objects are mutable per se, there is no technical limitation for the `__id__` attribute of an object to change over lifetime of the object, but such changes will induce undefined behavior, e.g. when the object is used as a dict key.
+
+       #} {;
+        {## Object Identity #}
+        export edh'obj'identity = bookmark()
+
+        # The `data` class will automatically install a magic `__id__` attribute for each instance, so iif constructed for the same class, and with identical data fields, multiple such instances will be considered identical, despite they carry different intrinsic unique object identifiers per constructed.
+
+        # %% # For a simple example
+        data P(x, y) pass
+
+        # %% #
+        p = P(3, 2)
+
+        # %% # The alternative identity of a data class instance is an apk of the data class object and all the named data fields
+        p.__id__
+
+        # %% # You can see what the identifier is finally reduced to
+        id(p)
+
+        # %% # So these objects will appear identical
+        p is P(3, 2)
+        # %#
+
+      }
     }
 
 
@@ -1605,27 +1633,37 @@ The common sense of "equality" assumes snapshot semantics when comparing two mut
       [ 3, 2, ] == [ 3, 2, ]
       # %# See they are considered equal now?
 
-      # %% # Objects can override instant equality test via its `__eq__()` magic method implementation
-      class D {
-        method __init__(x as this.x, y as this.y) pass
-        method __eq__(other) case other of {
-          # A match pattern is used here,
-          # it does instance check with field extraction at the same time
-          { D(x= otherX, y= otherY) } -> {
-            this.x == otherX and this.y == otherY
+
+      {## Object Equality
+       # - The magic `__eq__()` method
+
+Objects can implement the magic `__eq__()` method to override instant equality test semantics in cases it is involved.
+
+       #} {;
+        {## Object Equality #}
+        export edh'obj'equality = bookmark()
+
+        # %% # For a simple example
+        class D {
+          method __init__(x as this.x, y as this.y) pass
+          method __eq__(other) case other of {
+            # A match pattern is used here,
+            # it does instance check with field extraction at the same time
+            { D(x= otherX, y= otherY) } -> {
+              this.x == otherX and this.y == otherY
+            }
+            _ -> false
           }
-          _ -> false
         }
+
+        # %% # So these two distint objects can be considered instantly equal
+        D(3, 2) == D(3, 2)
+
+        # %% # While they are not identically equal
+        D(3, 2) is not D(3, 2)
+
+        # %# Note that an object can state an alternative identity with its magic `__id__` attribute, we didn't implement that in above.
       }
-      # %% # So these two distint objects can be considered instantly equal
-      D(3, 2) == D(3, 2)
-      # %% # While they by no means can be identically equal
-      D(3, 2) is D(3, 2)
-      # %% # The data class syntax is sorta syntactic sugar with such purpose in mind:
-      data D'(x, y) pass
-      # %% # The `D'` class defined this way automatically implements a `__eq__()` method, so:
-      D'(3, 2) == D'(3, 2)
-      # %# Actually there're more with a data class, e.g. a automatic `__repr__()` implementation.
 
       # Note that identity equality always implies instant equality, but not vice versa.
     }
@@ -1950,7 +1988,7 @@ Dict is a mutable type, optimized for O(1) key lookup as well as sequential scan
 
 Especially note that the scan order of dict entries is insertion order, not key sorting order.
 
-Also note that identity equality is used for keys of a dict, that means a dict can contain multiple instantly equal keys those not identical. Especially note that as a result, even if you implement the `__eq__()` magic for objects (responding to instant equality tests), those objects with instant equal semantics won't overwrite eachothers, when serving as keys in a dict.
+Also note that identity equality is used for keys of a dict, that means a dict can contain multiple instantly equal keys those not identical. Especially note that as a result, even if you implement the `__eq__()` magic for objects (responding to instant equality tests), those objects with instant equal semantics won't overwrite eachothers, when serving as keys in a dict. You may want to provide the magic `__id__` attribute (should be immutable though) for each object with alternative identity, for them to serve as proper dict keys.
 
        #} {;
         {## Dict #}
