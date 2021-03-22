@@ -30,22 +30,29 @@ All role classes should suport instance construction from a keyword argument nam
 
   # %% #
 
+  class SomeData { extends Role
+
+  }
+
+  # %% #
+
   {##
    # Let an object assuming a role class
 
-A role class should construct instances with a keyword argument named `delegate`, or it should override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
+A role class should construct instances with a symbolic keyword argument from the symbol `Role.@ddo`, additionally, it can override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
 
    #}
   operator 10 (~assuming~) (lhv, rhv) {
     default rhv( @(Role.ddo)= lhv )
   }
 
+
   # %% #
   data D() pass
 
   # %% #
   o = D()
-  ; o ~assuming~ Role
+  ; o ~assuming~ SomeData
 
   # %#
 
