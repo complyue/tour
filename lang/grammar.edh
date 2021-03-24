@@ -3954,7 +3954,7 @@ Any number of method procedures can be defined for a class.
         }
 
         {##
-         # The `d` property getter
+         # The readonly `d` property
 
 Properties are syntatic sugar for private data of an object to be accessed like attributes.
 
@@ -3976,7 +3976,7 @@ This is the getter method of property `c`.
         method c() this._c
 
         {##
-         # The `c` property setter
+         # The writable `c` property
 
 With a setter method, a property look & feels like a usual attribute, i.e. can be assigned as well as read.
 
