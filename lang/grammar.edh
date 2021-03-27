@@ -1794,7 +1794,7 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
 
 
     {## Numeric Values
-     # - Decimal as you've been familar with
+     # - Some special numbers
      #} {;
       {## Numeric Values #}
       export edh'numeric'values = bookmark()
@@ -1912,6 +1912,64 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
      #} {;
       {## Notable Value Types #}
       export edh'notable'types = bookmark()
+
+      {## Rational Decimal Number
+       # - Native numbers are rational decimals as familiar in real life
+       #} {;
+        {## Rational Decimal Number #}
+        export edh'rat'decimal = bookmark()
+
+        # %% # Numbers can contain arbitrary number of decimal digits, more digits just take more memory to store them, the precision will never by truncated
+        x = 1234567890.123456789012345678901234567890123456789012345678901234567890123456789
+
+        # %% # even after arithmetic calculations
+        x * 3
+
+        # %% # Noticed it? When displayed, scientific notation will be used, but numeric values remains identical regardless of different representations
+        123.45 is 1.2345e2
+
+        # %% # Non-canonical scientific notations work too
+        12.345e1 is 0.12345e3
+
+        # %% # But scientific notation won't be used when the exponent is less than 5 (and > -5)
+        12345.6789 ++ ' vs ' ++ 123456.789
+
+        # %% # Integral numbers are no different
+        12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+
+        # %% # Fractional numbers are reduced but never approximated
+        12 / 14
+
+        # %% # Unless you explicitly truncate it
+        ; ( 12 / 14 ).trunc
+        # %# Note negative numbers will be truncated toward zero (instead of negative infinity)
+
+        # %% # Or round it
+        ; ( 12 / 14 ).round
+        # %# Note negative numbers will be rounded toward zero (instead of negative infinity)
+
+        # %% # Half rounds to even
+        1.5.round
+        # %% #
+        2.5.round
+        # %# see: https://en.wikipedia.org/wiki/Rounding#Round_half_to_even
+
+        # %% # Improper fractions will be kept as is (not turned into mixed fraction) after reduced
+        235 / 85
+
+        # %% # Integral division can be done with the (//) operator
+        235 // 85
+
+        # %% # A trick to approximate with 5 digits after the decimal point
+        ; ( 1e5 * 235 / 85 ).round / 1e5
+
+        # %% # There's a builtin method using this trick
+        ; (235/85).toFixed(5)
+
+        # %#
+
+      }
+
 
       {## ArgsPack (apk) - the Super Tuple
        # - The super type of tuple with named elements
