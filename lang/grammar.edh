@@ -5032,7 +5032,7 @@ Each scope is backed by an entity with various attribute values identified by di
 
  #} {;
   {## Hierarchical Scopes, Static & Dynamic #}
-  export bookmark'identifier = bookmark()
+  export edh'scope'hierarchies = bookmark()
 
   {## Static / Lexical Scoping
    # - Scope hierarchy per source code organization

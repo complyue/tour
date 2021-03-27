@@ -564,16 +564,17 @@ Although attributes of entities in Đ are inherently meant to be assigned (as we
 }
 
 
-{## Lexical Structure & Closure
- # - Similar to Python, JavaScript and etc.
+{## Code Structure & Semantics
+ # - Similar to Python, JavaScript, etc. but with subtle differences
 
 Đ source code is organized as modules with respective source files, exporting artifacts for reuse, while importing artifacts from others, quite similar to Python codebases or JavaScript codebases consisting of ES6 modules.
 
 Closure in Đ is more coarse grained - entire scopes, instead of individual "variable"s are enclosed. It makes Đ programs more potent to resource leaks, so more care should be taken by the programmer, to clear references to resource values as soon as not needed anymore.
 
  #} {;
-  {## Lexical Structure & Closure #}
-  export edh'lexi'struct'clo = bookmark()
+  {## Code Structure & Semantics #}
+  export edh'code'struct = bookmark()
+
 
   {## Name / Identifier
    # - The so called *variable identifier* or *variable name* elsewhere
@@ -662,26 +663,95 @@ Special characters don't get in the way for you to use strings containing them a
   }
 
 
-  {## Scopes, Entities, and Attributes
-   # - No variable, only entities with attributes backing scopes
+  {## Attribute Deletion
+   # - By assigning `nil` to it`
+
+Instead of Python's `del` statement and JavaScript's `delete` operator, assignment with `nil` does that job in Đ
+
    #} {;
+    {## Attribute Deletion #}
+    export edh'attr'deletion = bookmark()
 
-    # There is not such a thing called variable in Đ ...
-    edh'term'attr'stead'var
+    # %% # A usual assignment
+    x = 3
 
+    # %% # Deleting it
+    x = nil
+
+    # %% # Try read it
+    x
+
+    # %# See? Not in scope after deletion.
 
   }
 
 
-  {## Modules
-   # - Similar to Python Modules
+  {## Scope and Call Stack
+   # - Lexical (static) scoping & effect (dynamic) scoping
 
-Each `.edh` file is an Đ module
+Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. but with gotchas.
+
+Đ also does dynamic scoping for effect tracking, which is not done in similar languages.
 
    #} {;
-    {## Modules #}
-    export edh'modules = bookmark()
+    {## Scope and Call Stack #}
+    export edh'scope'callstack = bookmark()
 
+    edh'scope'hierarchies # <- follow this bookmark to the detailed description in the grammar chapter
+
+    {## Lexical Attribute Resolution & Shadowing
+     # - Similar to "variable" resolution in Python, JavaScript etc.
+
+Direct attribute obtaining is very close to "variable" reading in similar languages, that inner scope attribute with the same name will shadow those live in outer scopes. But it is more dynamic in Đ - the attribute can be deleted from the inner scope, then your reads will immediately resolve to an outer attribute previously shadowed - this is not the case with either Python or JavaScript.
+
+But you have no way to assign attributes into an outer scope (there are workarounds though), scoped assignments (not with dot-notation as target) will always go into current scope. There is neither `nonlocal` hints as in Python, nor explicit "variable" declaration (the `var` keyword) as in JavaScript. Prevalent dynamic namespace objects should be the norm in Đ code, to convey artifacts meant to be assigned by code run in inner scopes, via dot-notations.
+
+     #} {;
+      {## Lexical Attribute Resolution & Shadowing #}
+      export edh'lexi'resolv = bookmark()
+
+      # %% # We demonatrate it with a scoped block here
+      x = 'outer-value'
+      {@
+        console.print$ 'Inside, before local attr definition, x is: ' ++ x
+        # Upon entering a scoped block, a new lexical inner scope (backed by a separate entity) is created right away, then attributes can be defined locally. And an attribute present in an inner scope shadows all ones with the same name from outer scopes.
+        x = 'inner-value'
+        console.print$ 'Inside, after local attr definition, x is: ' ++ x
+        x = nil
+        console.print$ 'Inside, after local attr deleted, x is: ' ++ x
+      @}
+      console.print$ 'Outside, x is: ' ++ x
+      # %# Upon leaving a scoped block, all artifacts ever defined into the block scope are, discarded
+
+      # Note the shadowing of samely named attributes from outer scopes is an anti-pattern, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
+
+
+      # %% # Ad-hoc defined namespaces can serve as the container of attributes assignable by any code having read access to the namespace object
+
+      namespace state (n= 10) pass
+
+      method count'down() state.n -= 1
+
+      # %% # See it works
+      count'down()
+      state.n
+
+      # %#
+    }
+
+
+    {## Effect Tracking by Dynamic Scoping
+     # - A unique feature of Đ
+
+Dynamic scoping - attribute resolution against the calling stack of caller frames - is seldom seen in modern programming languages anymore, but Đ is doing it for effect tracking, with solution to its historical problems.
+
+     #} {;
+      {## Effect Tracking by Dynamic Scoping #}
+      export edh'eff'tracking'by'dyn'scoping = bookmark()
+
+      edh'dyn'scoping # <- follow this bookmark to the detailed description in the grammar chapter
+
+    }
 
   }
 
@@ -689,124 +759,85 @@ Each `.edh` file is an Đ module
   {## Namespaces
    # - Similar to TypeScript namespace
 
-An Đ namespace is a special object defined with dedicated syntax
-
-Namespaces are important in Đ, as alternative solutions to certain problems solved differently in other languages.
+An Đ namespace is a special object defined with dedicated syntax. It's fairly norm to create namespaces ad-hoc during a procedure call, which carries more dynamic semantics, in addition to more "statically" define namespaces at top level of module initialization.
 
    #} {;
     {## Namespaces #}
     export edh'namespaces = bookmark()
 
-    # Alternative to Python nonlocal semantics
+    edh'namespaces # <- follow this bookmark for the detailed syntax and description in the grammar chapter
 
-    # Alternative to JavaScript hoisting, - for a piece of code in need of calling a later defined procedure, wrap it in a method procedure of the ns, defined earlier
+    # Alternative to Python `nonlocal` "variables", namespaces live in outer scope can hold attributes meant to be assigned by some code run in inner scopes.
+
+    # Alternative to JavaScript hoisting, a procedure can be defined earlier to contain code wanting to call later defined other procedures.
 
   }
 
 
   {## Scoped Blocks
-   # - A usual block doesn't create a scope, but there is special syntax
-   #} {;
-    {## Scoped Blocks #}
-    export edh'scoped'blocks = bookmark()
+   # - A usual block doesn't create a nested scope, use special syntax to do that
 
+Like in Python, JavaScript etc. a usual nested block of code doesn't create a nested scope to run.
 
-  }
-
-
-  {## Lexical Scoping Rules
-   # - Close to that of Python/JavaScript, yet with subtle difference
+You have to use a dedicated "function" in Python or JavaScript to create nested scopes, but Đ offers special syntax to do it easily.
 
    #} {;
-    {## Lexical Scoping Rules #}
-    export edh'lexi'rules = bookmark()
+    edh'scoped'blocks # <- follow this bookmark to the detailed description in the grammar chapter
 
-    edh'lexi'scoping # <- follow this bookmark to the detailed rules in the grammar chapter
+    # %% # A scoped block is denoted by a pair of curly braces augmented with at (@) symbol, it evaluates to result of the last statement (usually an expression statement) in it
 
-    {## Attribute Reading
-     # - An attribue can be addressed off any scope enclosing the access point
+    y = nil # Let's clear `y` out of the REPL top scope for sure
 
-The resolution is from inner-most scope to outer-most scope (which is the world root namespace), which ever matched by attribute key becomes the resolution result
+    { # This starts a usual block
 
-     #} {;
-      {## Attribute Reading #}
-      export edh'attr'read = bookmark()
+      x = 3 # This goes into the REPL top scope, as evaluated in a usual block
 
+      {@ # This starts a scoped block
 
-    }
+        y = 7 # This goes into the scope created by the scoped block
 
+        x * y # This provides the result value for the whole scoped block, as last expression in it
 
-    {## Attribute Writing
-     # - Direct assignment always update the inner-most current scope
+      @} # This ends the scoped block. Note `y` is not in scope since here on
 
-There is no way to directly write to any scope other than current scope in context
+    } # This ends the usual block
 
-     #} {;
-      {## Attribute Writing #}
-      export edh'attr'write = bookmark()
-
-
-    }
-
-
-    {## Attribute Deletion
-     # - Instead of Python's `del` statement and JavaScript's `delete` operator, assignment with `nil` does the trick in Đ
-
-
-     #} {;
-      {## Attribute Deletion #}
-      export edh'deletion = bookmark()
-
-    }
-
-    {## Closures
-     # - Closures are way more coarse grained in Đ
-
-A closure/procedure captures the full lexical scope hierarchy at the point it is defined.
-
-     #} {;
-      {## Closures #}
-      export edh'closures = bookmark()
-
-
-      {## Compared to Python `nonlocal` Variables
-       # - Đ is more dynamic than Python
-
-Đ attribute access
-
-       #} {;
-        {## Compared to Python `nonlocal` Variables #}
-        export edh'more'dyn'than'py'nonlocal = bookmark()
-
-
-      }
-
-    }
+    # %% # The nested scope created by a scoped block goes out after execution left that block
+    x + y
+    # %# See the error? `y` is not in scope here
 
   }
 
 }
 
 
-{## Pattern Matching
- # - A concise way to organize arbitrary number of control branches
+{## Coarse Grained Closure
+ # - A procedure always captures the full lexical context where it is defined
+
+As a consequence of the way attributes are resolved lexically, a procedure remembers the full hierarchy of its lexical outer scopes as in where it is defined. We say a procedure captures its enclosing context as a closure.
+
+Note that Đ closure is rather coarse grained compared to many other programming languages, closures there usually capture individual "variables" accessible to them when defined, while in Đ it is actually the entities behind the lexical scopes get captured.
 
  #} {;
-  {## Pattern Matching #}
-  export edh'pattern'matching = bookmark()
+  {## Coarse Grained Closure #}
+  export edh'closure = bookmark()
+
+  # Such closure semantics is designed to allow dynamic evaluation/execution of Đ snippets anywhere anytime, honoring entities being integral units of information, without individual attributes teared apart.
+
+  # But it may lead to unintentional resource leaks, especially if you've been used to closures in other mainstream programming languages.
+
+  # TODO demonstrate gotchas of resource leaking due to the coarse grained closure.
+
+}
 
 
-  {## Guard Conditions
-   # - Guard a match with certain conditions
+{## Pattern Matching
+ # - With syntax closer to Haskell than Python
 
+ Đ pattern matching syntax is closer to that of Haskell rather than Python. And the syntax is actually not hard-coded by the language grammar, and can be customized with an alternative implementation of the branch (->) operator. The pattern syntax is no different than vanilla Đ expressions, just interpreted differently.
 
-   #} {;
-    {## Guard Conditions #}
-    export edh'pattern'guard = bookmark()
-
-
-  }
-
+ #} {;
+  edh'pattern'matching # <- follow this bookmark to detailed syntax and description in the grammar chapter
 }
 
 
