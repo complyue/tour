@@ -70,7 +70,7 @@ for purpose of ergonomics. E.g.
 }
 
 
-{## Đ Code is Formatted-on-Save
+{## Format-on-Save
  # - There is an official code formatter for Đ
 
 You may already know what an opinionated code formatter is, such as Black for Python, Prettier for JavaScript (and HTML, CSS etc.), an Ormolu for Haskell:
@@ -82,9 +82,13 @@ So it should be no surprise to you, that Đ comes with its own formatter, yet of
   https://github.com/e-wrks/edh-vscode-formatter
   https://marketplace.visualstudio.com/items?itemName=ComplYue.edh-vscode-formatter
 
+And note that Đ formatter is by default invoked on saving of `.edh` source files, Go tooling works this way, while other mainstream languages don't.
+
  #} {;
 
   # Home page of the formatter should have described the rules and your rights (freedom) well,  after modification, save or right-click to select "Format Document", then you'll see what the formatter thinks.
+
+  # Hint: With VSCode, the default shortcut key for "Format Document", on macOS is Shift+Option+F and Ctrl+Shift+I on Linux
 
   # %% # try play with this cell:
   #    add/remove spaces, break it into multip lines, you name it
@@ -250,21 +254,21 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 }
 
 
-{## Common Part with Pervasive Languages
+{## Common Parts with Pervasive Languages
  # - Đ has good interoperability with Python/JavaScript etc. at source level
 
 Đ shares some common syntax with many popular programming languages (e.g. Python, JavaScript), in a nutshell:
 
  * Parentheses pair is the call-making operator
- * Expressions consist of named references, plus prefix/infix/postfix operators with certain precedence and fixity/associativity
- * Parentheses used to override precedence
+ * Expressions consist of named references, joined together by prefix/infix/postfix operators with certain precedence and fixity/associativity
+ * Parentheses for precedence override
 
  #} {;
 
   {## Common Syntax
    # - Đ syntax common to many popular languages
    #} {;
-    {## Đ Syntax Common To Some Languages #}
+    {## Đ Common Syntax #}
     export edh'common'syntax = bookmark()
 
     # `console` hooks to the interpreter program's stdio
@@ -287,17 +291,93 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
 
 
   {## Module System
-   # - Đ module system is somewhat like the Node.js module system, ES6 import/export syntax, Python module loading semantics and some naming convention, combined together
-
-  https://nodejs.org/api/modules.html
-  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
-  https://docs.python.org/3/tutorial/modules.html
-
+   # - Blend of several popular things
    #} {;
     {## Module System #}
     export edh'modu'system = bookmark()
 
-    # You've seen enough `import/export` appeared in this and other `.edh` files  by far
+    {## Node.js Package Directory Hierarchy
+     # - Directory layout for package deployment
+
+  https://nodejs.org/api/modules.html
+
+But you use `epm` to initialize EPM homes, install / update / remove pakcages in each home manually, instead of the full-automatic `npm` tool.
+
+  https://github.com/e-wrks/epm
+
+     #} {;
+      {## Node.js Package Directory Hierarchy #}
+      export edh'pkg'layout = bookmark()
+    }
+
+
+    {## ES6 import/export Syntax
+     # - Dedicated `import` and `export` keyword
+
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+
+You use explicit `export` keyword to decorate artifact definitions (e.g. assignments, procedure/class declarations), for them to be importable by other modules (or objects).
+
+The `import` keyword is used to denote an import expression, the expression evaluates to the object resolved as the source for import, and with a side effect of artifacts exported from that object to be received into current scope, however specified by the arguments receiver part of the import expression.
+
+     #} {;
+      {## ES6 import/export Syntax #}
+      export edh'imp'exp'syntax = bookmark()
+
+      # Note that the import/export mechanism works with any object in Đ, module objects as well
+      edh'imp'exp # <- follow this bookmark to the section describing the detailed syntax and semantics in the grammar chapter
+
+    }
+
+
+    {## Python Module File Naming Convention
+     # - Special module files like `__init__.edh` and `__main__.edh`
+
+  https://docs.python.org/3/tutorial/modules.html
+
+Đ module files ends with `.edh` extension name, special cases include:
+
+ * `__init__.edh` can stand for the import target as its parent directory, relative imports within it work more intuitively than a file module with its parent folder's name plus the `.edh` suffix.
+
+ * `__main__.edh` stands for the entry module source file, when its parent directory is resolved as the entry module of an interpreter process.
+
+Note that `__main__.edh` is the only valid entry module file name, unlike Python, otherwise named module file will never be run as an entry module.
+
+     #} {;
+      {## Python Module File Naming Convention #}
+      export bookmark'identifier = bookmark()
+    }
+
+
+    {## Python Module Semantics
+     # - Strict loading and meta artifacts
+
+The module loading semantics is similar to Python, every statements at top levels will be strictly executed in a sequence. The cyclic importing (with possibly multiple levels of indirections) cases are also similar to those in Python.
+
+     #} {;
+      {## Python Module Semantics #}
+      export edh'modu'loading'meta'arts = bookmark()
+
+      edh'modu'load'cyc # <- follow this bookmark for detailed describption of loading semantics, including cyclic loading cases
+
+
+      {## Reflective Attributes in a Module
+       # - Every module object contains some meta attribute to reflect its source information
+       #} {;
+
+        # %% # It should at lease contain the `__name__` attribute, similar to Python
+        __name__
+
+        # %% # File modules should contain `__file__` for absolute file path of the source file as well, similar to Python
+        __file__
+
+        # %% # Also `__path__` to be used as basis for relative import from within the very module, this is beyond Python
+        __path__
+
+        # %#
+      }
+
+    }
 
   }
 
@@ -368,7 +448,8 @@ will be at the end of a source line."""
     {## Rational Decimal Numbers
      # - Don't take floating point numbers for granted
 
-Floating point arithmetic is intrinsic to numbers in most computer programming languages of today, see:
+Floating point arithmetic is intrinsic to numbers represented natively in most computer programming languages of today, see:
+
 > What Every Programmer Should Know About Floating-Point Arithmetic
   https://floating-point-gui.de/
 
@@ -389,22 +470,25 @@ Python `float` and JavaScript `number` are all subject to those gotchas.
       7 // 3
       # %#
 
+      edh'rat'decimal # <- follow this bookmark to the detailed section in the grammar chapter
+
       # Takeaway is:
-      #   Numbers in Đ are lossless (within extent of rational numbers)
+      #   Numbers in Đ are lossless (to the extent of rational numbers)
       # Well please keep in mind that comes at a rather high cost, both spacial and time complexity are much higher to work with numbers in Đ, than in other languages.
 
       # The overhead is justified for ergonomics concerns where human errors can be disastrous, and raw machine performance should be pursued by perfessionals and by meaning means, such as the approach of `hasdim` you'll see at:
       import * 'dim/tour' into Nothing
     }
 
+
     {## Single Quote in Identifiers
      # - It came from Haskell, and Math in turn
 
 The single quote character (') can appear in an identifier, only if it's not the first character.
+
      #} {;
 
-      # In Haskell and Math, a suffix ' is used to denote something slightly different from the symbol without it:
-      # %%
+      # %% # In Haskell and Math, a suffix ' is used to denote something slightly different from the symbol without it:
       let ( x, y ) = ( 7, 3 )
       let ( q, q' ) = ( x / y, x // y )
       'Is ' + q' + ' equal to ' + q + " ? That's " + ( q'==q ) + ' of course!'
@@ -434,13 +518,12 @@ Hungarian (Apps) notation: cntNumberOfPeople
 Prefixing the name of the variable with character(s) to indicate the use make of a variable within the application - in my example, I have used cnt to incicate it's a counter ... and in my old Fortran programs you'll find "JPxxxxx" all over th eplace to indicate an integer pointer.
 
        #} {;
-        # %%
-        # In Đ more usages of ' can be seen, such as word delimiters in a long identifier, maybe a whole new naming convention, but dunno its name:
+
+        # %% # In Đ more usages of ' can be seen, such as word delimiters in a long identifier, maybe a whole new naming convention, but dunno its name:
         number'of'people :: non'negative!int!DecimalType
         number'of'people = 5
-        # %#
-        # Note about (::) and (!), they are annotation operators in Đ, will be
-        # explained later
+        # %# Note about (::) and (!), they are annotation operators in Đ, will be explained later
+
       }
     }
   }
