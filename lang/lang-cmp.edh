@@ -538,14 +538,13 @@ Prefixing the name of the variable with character(s) to indicate the use make of
   {## Procedure instead of Function
    # - There are procedures, but no function
 
-A *function* in mathematics has well defined input and output, it can refer to nothing outside of its input. Functional programming langauges e.g. Haskell, reflects such constraint well. But unfortunately many procedural / imperative programming langauges, tracing back to C and other ancestors, defined their "function"s with ability to access global / closure "variable"s (The "variable" there is albeit another misconception agsinst mathematical variables), so side-effects can be there out of trivial reasonability by programmers in the day, leading to more bugs in software developed comercially.
+A *function* in mathematics has well defined input and output, it can refer to nothing outside of its immutable input (though with enclosed implicit parameters included). Functional programming langauges e.g. Haskell, reflects such constraint well. But unfortunately many procedural / imperative programming langauges, tracing back to C and other ancestors, defined their "function"s with ability to access mutable global / closure "variable"s (The "variable" there is albeit another misconception agsinst mathematical variables), so side-effects can be there out of trivial reasonability by programmers in the day, leading to more bugs in software developed comercially.
 
-It's not a big deal for Đ the language has stopped refering to impure computations (with side-effects) as "function"s, but more conforming conception is a good start to put effect tracking as a focus for the programming tools, looking forward for greater quality in the software developed as the result.
+It's not a big deal for Đ the language to have stopped refering to impure computations (with side-effects and mutable input) as "function"s, but more conforming conception is a good start to put effect tracking as a focus for the programming tools, looking forward for greater quality in the software developed as the result.
 
    #} {;
     {## Procedure instead of Function #}
     export edh'term'proc'stead'func = bookmark()
-
   }
 
 
@@ -560,168 +559,105 @@ Although attributes of entities in Đ are inherently meant to be assigned (as we
    #} {;
     {## Attribute instead of Variable #}
     export edh'term'attr'stead'var = bookmark()
-
-
   }
 
 }
 
 
-{## Lexical Structure & Closures
- # - The usual lexical scoping works similar to Python and JavaScript, yet with subtle differences
- #} {;
+{## Lexical Structure & Closure
+ # - Similar to Python, JavaScript and etc.
 
-  {## Value Association Key
-   # - What's called *variable identifier* or *variable name* elsewhere
+Đ source code is organized as modules with respective source files, exporting artifacts for reuse, while importing artifacts from others, quite similar to Python codebases or JavaScript codebases consisting of ES6 modules.
+
+Closure in Đ is more coarse grained - entire scopes, instead of individual "variable"s are enclosed. It makes Đ programs more potent to resource leaks, so more care should be taken by the programmer, to clear references to resource values as soon as not needed anymore.
+
+ #} {;
+  {## Lexical Structure & Closure #}
+  export edh'lexi'struct'clo = bookmark()
+
+  {## Name / Identifier
+   # - The so called *variable identifier* or *variable name* elsewhere
+
+All data in an Đ world is stored as attributes associated with certain entities under some names. Both objects and scopes are backed by entities, the naming mechnism works at the entity level, so stays the same for both objects and scopes.
 
    #} {;
-    {## Value Association Keys #}
-    export edh'val'asso'keys = bookmark()
+    {## Name / Identifier #}
+    export edh'name'identifer = bookmark()
 
-    {## Usual Keys
+    {## Usual, Alphanumeric Names
      # - Just like how *variable*s can be named in other programming languages such as Python
      #} {;
 
-      # Most programming languages allow only alphanumeric strings as variable identifiers, with limited choices of special characters (such as the usual underscore (`_`), and `$` in Java)
+      # Most programming languages allow only alphanumeric strings as "variable" identifiers, with limited choices of special characters (such as the usual underscore (`_`), and `$` in Java)
+
+      # Đ allows underscore (_) and the single-quote character (') in alphanumeric names, this is following Haskell, and more scientific naming friendly.
+
+      edh'alphanum'names # <- follow this bookmark to the detailed secion in the grammar chapter
 
     }
 
+
     {## Symbolic Names
-     # - In favor of mythology - or, integration of effectful components from independent vendors
+     # - Cross component encapsulation of implementation details
+
+JavaScript introduced symbol, which is allowed as identifier of object properties:
+  https://developer.mozilla.org/en-US/docs/Glossary/Symbol
+
+Đ takes this idea further, gives it bigger purpose, and dedicated syntax.
+
+Like other dynamic programming languages such as Python, JavaScript, Đ objects (and scopes) are openly accessible, but with symbol key values eligible as symbolic attribute names, Đ programming interfaces can have multiple level of encapsulation ability, that even more flexible than what's supported by Java, C++ and similar languages.
+
+Java has private/protected/public and the implicit package qualification to limit access to fields of a class, C++ has private/protected/public qualification plus friend declarations. In Đ, you define symbols to be used as the name of such fields (attributes of objects / scopes), then you can export the symbol key values differently than how the class (or namespace etc.) is exported. Other components can import these keys and use them to access such symbolic fields, as if they are public, or those fields will appear private/hidden to them. Different contracts with different sets of available symbols can be defined and exposed to different parties, for different levels of knowledge & access to the same codebase of implementation details.
+
      #} {;
 
-      # JavaScript introduced symbol allowed as identifier of object properties:
-      #   https://developer.mozilla.org/en-US/docs/Glossary/Symbol
+      edh'symbolic'names # <- follow this bookmark to the detailed description of symbolic names and at-notations in the grammar chapter
 
-      # Đ takes this idea further, by giving it dedicated syntax:
-      # %% # Symbol definition
+
+      # %% # The `symbol` keyword is used to define new symbol keys
       symbol @secret'stuff
-      # %% # Assign to symbolic attribute
+
+      # %% # Directly assign to symbolic attribute into current scope
       ; @secret'stuff = 'a bit of mysterious'
-      # %% # Obtain a symbolic attribute
+
+      # %% # Directly obtain a symbolic attribute from current scope
       ; @secret'stuff
-      # %% # In an apk
-      namespace secret'ns ( @secret'stuff= 'not that real', ) {
-        # In assignment with at-notations
-        this.@secret'stuff ++= ', but real enough'
-      }
-      # %% # Obtain symbolic via at-notation
-      secret'ns.@secret'stuff
-      # %#
 
+      # %% # The at-notation works as argument name, as well as attribute name in dot-notation
+      namespace shared'ns ( @secret'stuff= 'This is public to whoever knows the key', ) {
 
-      {## Idiomatic for Effect Naming
-       # - To avoid name clashing for effects across frameworks / libraries
-
-In an integrated system, there are times you need to compose effects from independently developed components (by different vendors e.g.), no mechanism can effectively coordinate a clashing-free naming convention, if only alphanumeric names are legitimate.
-
-       #} {;
-
-        # For example, these 2 pieces both want to demand an effectful passphrase via the alphanumeric name `passphrase`
-
-        # %% #
-        namespace private'force () {
-
-          method launch'missiles() {
-            if 'for~good~profit' != perform passphrase
-            then error( "We don't serve voluntarily!")
-            console.info<| "Destroying enemies!!!"
-          }
-
-        }
-
-        # %% #
-        namespace un'peacekeepers () {
-
-          method auth'attack'by( army'force ) {
-            if 'for~world~peace' != perform passphrase
-            then error( "We don't serve evil!")
-            army'force.launch'missiles()
-          }
-
-        }
-
-        # %% # The 1st piece can work alone like this
-        {@
-          effect passphrase = 'for~good~profit'
-
-          private'force.launch'missiles()
-        @}
-
-        # %# But no simple composition of them can work together right
-
-        # %% # Neither this
-        {@
-          effect passphrase = 'for~good~profit'
-
-          un'peacekeepers.auth'attack'by( private'force )
-        @}
-
-        # %% # Nor this
-        {@
-          effect passphrase = 'for~world~peace'
-
-          un'peacekeepers.auth'attack'by( private'force )
-        @}
-
-        # %#
-
-        # Some times you can coordinate the vendors to use distinct names, but not always; Or you can persuade the vendor whichever closer to you, to honor the other's choice that assumed unchangable; Yet that's not always possible, especially after complexity within those components scales up.
-
-
-        # Well, it would not be a problem, if all parties used symbolic effect names in the first place
-
-        # %% #
-        namespace private'force () {
-          symbol @passphrase
-
-          method launch'missiles() {
-            if 'for~good~profit' != perform @passphrase
-            then error( "We don't serve voluntarily!")
-            console.info<| "Destroying enemies!!!"
-          }
-
-        }
-
-        # %% #
-        namespace un'peacekeepers () {
-          symbol @passphrase
-
-          method auth'attack'by( army'force ) {
-            if 'for~world~peace' != perform @passphrase
-            then error( "We don't serve evil!")
-            army'force.launch'missiles()
-          }
-
-        }
-
-
-        # %% # Then they can be composed right this way:
-        {@
-          effect @( private'force.passphrase ) = 'for~good~profit'
-          effect @( un'peacekeepers.passphrase ) = 'for~world~peace'
-
-          un'peacekeepers.auth'attack'by( private'force )
-        @}
-        # %#
+        # Assign symbolic object attribute with dot-notation
+        this.@secret'stuff ++= ", but private to ones don't."
 
       }
+
+      # %% # Obtain symbolic object attribute value via dot-notation
+      shared'ns.@secret'stuff
 
       # %#
     }
 
 
     {## Quaint Names
-     # - Technically, any test can be used as attribute name
+     # - Technically, any text can be used as attribute name
+
+Special characters don't get in the way for you to use strings containing them as attribute identifiers. This comes handy in some cases, e.g. LSP (Language Server Protocol) service names tend to have slash `/` characters in it, but the Đ language server defines such service methods with verbatimly such names in the code.
+
      #} {;
 
-      # %% # TODO this will fail at runtime, as no REPL with els host modules yet
-      import ( @'textDocument/didChange', **_ ) 'els/services'
-      desc$ @'textDocument/didChange'
+      edh'quaint'names # <- follow this bookmark to the detailed section in the grammar chapter
+
+      # %% # Assign an attribute with a dash in its name
+      shared'ns.@'full-time' = true
+
+      # %% # Obtain such an attribute
+      shared'ns.@'full-time'
+
+      # %% # Check all attributes there
+      dir$ shared'ns
+
       # %#
-
     }
-
 
   }
 
@@ -779,11 +715,13 @@ Namespaces are important in Đ, as alternative solutions to certain problems sol
 
 
   {## Lexical Scoping Rules
-   # - Close to Python/JavaScript, yet with subtle difference
+   # - Close to that of Python/JavaScript, yet with subtle difference
 
    #} {;
     {## Lexical Scoping Rules #}
     export edh'lexi'rules = bookmark()
+
+    edh'lexi'scoping # <- follow this bookmark to the detailed rules in the grammar chapter
 
     {## Attribute Reading
      # - An attribue can be addressed off any scope enclosing the access point
