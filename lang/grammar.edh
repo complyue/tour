@@ -3893,8 +3893,8 @@ But Đ made it for composition to have the look & feel of inheritance, with boil
   {## Objects & Inheritance #}
   export edh'objs'inheritance = bookmark()
 
-  # The Đ Object System is an advanced topic in another chapter
-  import * './advanced/objs' # <- details of Đ Object System
+  # The Đ Object System is an advanced topic a dedicated chapter
+  import * './advanced/objs' # <- follow this import source to that chapter
 
 
   {## Data Classes

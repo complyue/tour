@@ -808,81 +808,62 @@ You have to use a dedicated "function" in Python or JavaScript to create nested 
 
   }
 
-}
 
-
-{## Coarse Grained Closure
- # - A procedure always captures the full lexical context where it is defined
+  {## Coarse Grained Closure
+   # - A procedure always captures the full lexical context where it is defined
 
 As a consequence of the way attributes are resolved lexically, a procedure remembers the full hierarchy of its lexical outer scopes as in where it is defined. We say a procedure captures its enclosing context as a closure.
 
 Note that Đ closure is rather coarse grained compared to many other programming languages, closures there usually capture individual "variables" accessible to them when defined, while in Đ it is actually the entities behind the lexical scopes get captured.
 
- #} {;
-  {## Coarse Grained Closure #}
-  export edh'closure = bookmark()
+   #} {;
+    {## Coarse Grained Closure #}
+    export edh'closure = bookmark()
 
-  # Such closure semantics is designed to allow dynamic evaluation/execution of Đ snippets anywhere anytime, honoring entities being integral units of information, without individual attributes teared apart.
+    # Such closure semantics is designed to allow dynamic evaluation/execution of Đ snippets anywhere anytime, honoring entities being integral units of information, without individual attributes teared apart.
 
-  # But it may lead to unintentional resource leaks, especially if you've been used to closures in other mainstream programming languages.
+    # But it may lead to unintentional resource leaks, especially if you've been used to closures in other mainstream programming languages.
 
-  # TODO demonstrate gotchas of resource leaking due to the coarse grained closure.
+    # TODO demonstrate gotchas of resource leaking due to the coarse grained closure.
 
-}
-
-
-{## Pattern Matching
- # - With syntax closer to Haskell than Python
-
- Đ pattern matching syntax is closer to that of Haskell rather than Python. And the syntax is actually not hard-coded by the language grammar, and can be customized with an alternative implementation of the branch (->) operator. The pattern syntax is no different than vanilla Đ expressions, just interpreted differently.
-
- #} {;
-  edh'pattern'matching # <- follow this bookmark to detailed syntax and description in the grammar chapter
-}
+  }
 
 
-{## Object-Oriented, but Not Entirely
- # - Everything is a Value (instead of Object) in Đ
+  {## Control Flows
+   # - Commonplace ones and more
 
-Everything is an Object in Python / Smalltalk, but although Đ is as *Object-Oriented* as Python, *NOT* everything is an object here, such as numbers, strings, and procedures. And there are a handful of special values.
-
-Đ implements an object system with compositional Multiple-Inheritance with Multiple-Prototype Chains.
-
- #} {; import * './advanced/objs' # <- navigate to elaboration of Đ Object System
-
-  {## Data Classes
-   # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
-
-Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines in pattern matching use cases, closely mimics ADT, predating PEP-634 (which is upcoming in Python 3.10).
 
    #} {;
-    {## Data Classes #}
-    export edh'data'classes = bookmark()
+    {## Control Flows #}
+    export edh'ctrl'flows = bookmark()
+
+
+    {## Pattern Matching
+     # - With syntax closer to Haskell rather than Python
+
+ Đ pattern matching syntax is closer to that of Haskell rather than Python. And unlike other languages, Đ pattern syntax is actually not hard-coded by the language grammar, it can be customized with an alternative implementation of the branch (->) operator, or even a fresh new operator functioning similarly. The pattern expression is just a regular Đ expression at left-hand-side of such an operator.
+
+     #} {;
+      edh'pattern'matching # <- follow this bookmark to detailed syntax and description in the grammar chapter
+    }
+
+  }
+
+
+  {## Interpreter Procedures
+   # - Natural way to eval expression in caller's scope
+
+
+   #} {;
+    {## Interpreter Procedures #}
+    export edh'interpreter'proc = bookmark()
 
 
   }
 
 
-  {## Beyond `this` Reference
-   # - Compositional object structure
-
-Đ follows JavaScript/Java/C++ to use `this` keyword, instead of Python's `self`, however this is not a simple choice end here.
-
-
-`that` reference solves a problem akin to the slicing problem of C++
-  https://en.wikipedia.org/wiki/Object_slicing
-
-
-   #} {;
-    {## Beyond `this` Reference #}
-    export edh'compositional'objs = bookmark()
-
-
-  }
-
-
-  {## Identity Test Corrected
-   # - Object identity has some flaws, value semantics can fix that
+  {## Fancy Operators
+   # - Like in mathematics, symbolic notations usually come more concise
 
 
    #} {;
@@ -890,27 +871,101 @@ Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines
   }
 
 
-  {## Modules and Namespaces are Objects
-   # - There are builtin classes for module and namespace respectively
+  {## Decorator
+   # - Python decorator goes more general in Đ
 
+Python decorator syntax makes application of higher order functions more ergonmic.
+
+Inspired by Haskell, Đ introduces the procedure call ($) operator (called function application operator in Haskell), it works in places where Python decorators would, though with a little different syntax.
+
+While it works even more generally, for utility procedures like `show()` `repr()` etc. to be used with similar syntax.
 
    #} {;
-    {## Modules and Namespaces are Objects #}
-    export edh'modu'ns'be'obj = bookmark()
+    {## Decorator #}
+    export edh'decorator = bookmark()
 
+    {#
+     # Take a typical Python `property` decorator as example
+
+```python
+
+class P:
+
+  def __init__(self, x):
+    self._x = x
+
+  @property
+  def x(self):
+    return self._x
+
+  @x.setter
+  def x(self, new_x):
+    self._x = new_x
+
+o = P(3)
+
+o.x = 5
+
+o.x
+
+```
+
+Written equivalently in Đ like the following:
+
+     #}
+
+    # %% #
+    class P {
+
+      method __init__( x as this._x ) pass
+
+      property$
+      method x() this._x
+
+      setter$
+      method x( new'x ) {
+        this._x = new'x
+      }
+
+    }
+
+    o = P(3)
+
+    o.x = 5
+
+    o.x
+
+    # %#
 
   }
 
-}
 
+  {## Equal vs Identical
+   # - Beyond the `==` operator
 
-{## Notable Aspects of Đ Value System
- # - Everything is a value in Đ, something is different
- #} {; import * './advanced/vals'
+ Most programming languages use the `==` operator for equality tests, there are more for the whole story.
+
+ In Python, there is also the `is` operator for identity test, it uses memory address for major cases, with some special treatment, e.g. w.r.t. int objects.
+
+ In JavaScript, there is also the `===` operator for uncoercing equality test, solving misfortune with the coercing `==` operator.
+
+Identity equality and instant equality should be separately reasoned about, especially when immutable values and mutable values are both under consideration. Equality can change after objects get mutated, but many programming languages don't address this semantics enough, leaving gotchas for unworried programmers to create buggy software.
+
+And it's actually a bit more complicated in Đ as named values (term definitions) is also involved.
+
+   #} {;
+    {## Equal vs Identical #}
+    export edh'equal'vs'identical = bookmark()
+
+    edh'equalities # <- follow this bookmark to the detailed description in the grammar chapter
+  }
+
 
   {## Named Values / Term Definitions
    # - Got the familiar (:=) operator for definition
-   #} { edh'term'def # <- follow this bookmark to learn more details or just run following cells to get some feel
+   #} {;
+    edh'term'def # <- follow this bookmark to details in the grammar chapter,
+    # or just run following cells to get the feel
 
     # %% # make sure to run this cell before the ones following it
     π := 3.14
@@ -937,8 +992,9 @@ Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines
 
   {## Đ Vocabulary for Nullability
    # - nil, null, None, Nothing and friends
-   #} { edh'nullability # <- follow this bookmark to learn more details
-    # or just run following cells to get some feel
+   #} {;
+    edh'nullability # <- follow this bookmark to details in the grammar chapter,
+    # or just run following cells to get the feel
 
     # %% # `nil` will not be printed by REPL
     nil
@@ -993,200 +1049,364 @@ Beyond PEP-557 features in a dedicated syntax, Đ data classes especially shines
     # %#
   }
 
+}
 
-  {## Applicability Semantics
-   # - We talk about the lack thereof, actually
-   #} { import * './advanced/appl' # <- navigate to elaboration of Đ Applicability Semantics
 
-    edh'na'semantics # <- follow this bookmark to learn more details
+{## Object-Oriented, along with Simpler Values
+ # - Everything is a Value (instead of Object) in Đ
 
-    # %% # NA stands for Not/Applicable, it's a literal constant in Đ
-    NA
+Everything is an Object in Python / Smalltalk, Đ seeks to be as *Object-Oriented* as Python, but *NOT* everything is an object here, such as numbers, strings, and procedures. Also, intrinsic mutable containers, namely dict and list are not object in Đ, along with immutable containers, namely pairs and arguments packs.
 
-    # %% # How is it technically working?
-    show( NA )
+ #} {;
 
-    # %% # The actually `NA` value is a defined constant term, with the value in turn being a *default* expression of literal `nil`, so it is technically a shorthand of `NA := default nil`
-    default nil
-    # %#
+  # The Đ Object System is an advanced topic a dedicated chapter
+  import * './advanced/objs' # <- follow this import source to that chapter
 
-    # More about *default* expressions later, but you just see its repr now for some intuition
+  # A brief introduction lives in the grammar chapter as well, for its compositional multiple inheritance, and how both class based inheritance and prototype based inheritance are supported.
+  edh'objs'inheritance # <- follow this bookmark to the details in the grammar chapter
+
+
+  {## Class Based Inheritance similar to Python
+   # - Class based, C3 linearized multiple inheritance, with magic methods
+
+Except customizable meta class, Đ mimics all aspects of Python's object system, including C3 linearization w.r.t. multiple inheritance, properties, and magic methods with `NotImplemented` semantics.
+
+   #} {;
+    {## Class Based Inheritance similar to Python #}
+    export edh'oo'similar'to'py = bookmark()
+
+    edh'cls'inheritance # <- follow this bookmark to the details in the grammar chapter
+
+    # TODO typical Python class hierarchy and the Đ translation here
+
+
+    {## Data Classes
+     # - Python PEP-557 (Data Classes) got dedicated syntax in Đ
+
+Đ supports all features of Python "Data Classes", yet with the dedicated `data` keyword for syntax
+  https://www.python.org/dev/peps/pep-0557
+
+Beyond PEP-557 features, Đ data classes especially shines in pattern matching use cases, the `__match__()` magic method allows a data class to parse arbitrary values into data instances, and a pattern can extract just data fields of interest from the result, comes rather convenient.
+
+     #} {;
+      edh'data'classes # <- follow this bookmark to the details in the grammar chapter
+    }
+
+
+    {## Magic Methods
+     # - Python equivalent ones and more
+
+
+     #} {;
+      {## Magic Methods #}
+      export edh'magic'mths = bookmark()
+
+
+      {## Applicability Semantics
+       # - Resembling `NotImplemented` in Python, and more
+       #} {;
+        # The Đ Applicability Semantics is an advanced topic a dedicated chapter
+        import * './advanced/appl' # <- follow this import source to that chapter
+
+        {## Defaulting Values
+         # - Not/Applicable is 1st class value
+         #} {;
+          {## Defaulting Values #}
+          export edh'defaulting'values = bookmark()
+
+          # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
+          show$ NA
+
+          # Artitrary defaulting values can be created dynamically, with an expression providing the value used for default. Such values are usually returned from operator procedures, so objects can override their behavior with magic methods, when operated by the operator, while a default implementation is provided by the operator procedure, which is effective when no magic methods present.
+          # %%
+          operator 0 (+*+) (lhv, rhv) {
+            return default lhv ++ ' *** ' ++ rhv
+          }
+          # %%
+          3*7 +*+ 'is a lucky number'
+
+          # %%
+          class N {
+            method __init__( val as this.__repr__ ) pass
+          }
+
+          class M { extends N
+            method (+*+) (other) {
+              return this ++ ' --- ' ++ other
+            }
+          }
+          # %%
+          n = N(3*7)
+          m = M(3*7)
+          # %%
+          n +*+ 'is a lucky number'
+          # %%
+          m +*+ 'is a lucky number'
+          # %#
+
+          # %# Applicability & defaulting semantics are advanced topics described in another chapter
+          ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
+            edh'na'semantics # <- follow this bookmark to the specific section there
+          }
+        }
+
+      }
+
+    }
+
   }
 
 
-  {## Expression Values and Scope Wrapprs
-   # - Here is why Đ is even More dynamic than Python
+  {## Prototype Based Inheritance similar to JavaScript
+   # - Prototype based multiple inheritance
+
+Đ supports prototype based inheritance like JavaScript does, and even better, multiple prototype chains work as well.
+
    #} {;
-    {## Expression Values and Scope Wrappers #}
-    export edh'exprs = bookmark()
+    {## Prototype Based Inheritance similar to JavaScript #}
+    export edh'oo'similar'to'js = bookmark()
 
-    {## Scope Wrappers
-     # - A scope can be wrapped as an object to do reflection in Đ
+    edh'proto'inheritance # <- follow this bookmark to the details in the grammar chapter
 
-`scope` is a builtin class.
+    # TODO typical JavaScript class hierarchy and the Đ translation here
 
-     #} {;
-      {## Scope Wrappers #}
-      export edh'scope'wrappers = bookmark()
+  }
 
-      # %% # without argument, it creates an object wrapping the scope where it's called from
-      method f() {
-        method g() {
-          let ( a, b, ) = ( 7, 3, )
-          scope()
-        }
-        let ( c, d, ) = ( 2, 8, )
-        return g() @=> g = nil # dispose g after one-time used
+
+  {## Beyond `this` or `self` Reference
+   # - Compositional object structure
+
+Đ follows JavaScript/Java/C++ to use `this` keyword, instead of Python's conventional `self`, however this is not just a keyword difference.
+
+There is additionally `that` reference in Đ, it solves [Object Schizophrenia](https://en.wikipedia.org/wiki/Schizophrenia_(object-oriented_programming)) problem. As well it solves problem akin to the [Slicing problem](https://en.wikipedia.org/wiki/Object_slicing) of C++, you just need to pass `that` instead of `this` around.
+
+Intrinsically, Đ objects are compositional instances, the structure reflects the [Composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance) principle, composition and inheritance are actually unified in Đ object system.
+
+   #} {;
+    {## Beyond `this` or `self` Reference #}
+    export edh'compositional'objs = bookmark()
+
+    edh'mth'binding # <- follow this bookmark to the details in the grammar chapter
+  }
+
+
+  {## Object Identity Made Right
+   # - Objects are wrongly assumed to be identified by memory address
+
+Check out this flaw of Python:
+
+```python
+>>> x = 101
+>>> y = 101
+>>> x is y
+True
+
+>>> x = 1001
+>>> y = 1001
+>>> x is y
+False
+```
+
+There is no similar problem with Đ in the first place, as numbers are not object at all, they are immutable values identified soly by the value itself.
+
+Further more, Đ allows an alternative identity value to be associated with an object, as its magic `__id__` attribute (which should never change identity of course).
+
+Data classes take advantage of this mechanism, so two data instances are considered identical iif they are of the same data class, and all their data fields are identical respectively.
+
+   #} {;
+
+    # %% # The `id()` utility in Đ resembls that in Python, but works more correctly
+    data P(x, y) pass
+
+    origin = P(0, 0)
+    id$ origin
+
+    # %% # Under the hood, a data class assigns the magic `__id__` attribute automatically
+    origin.__id__
+
+    # %% # So identity equality test works reasonable right
+    origin is P(0, 0)
+
+    # %#
+  }
+
+}
+
+
+{## Expression Values and Scope Wrapprs
+ # - Here is why Đ is even More dynamic than Python
+
+Đ fosters dynamic evaluation of any expression, anytime, anywhere.
+
+Expression is a 1st class type of values in Đ.
+
+A scope can be wrapped as an object, for reflective evaluation of Đ expressions, or direct attribute manipulation to be done as in that scope.
+
+ #} {;
+  edh'exprs'in'scopes # <- follow this bookmark to the details in grammar chapter
+
+  {## The `expr` Expression
+   # - Literal expressions
+
+An arbitrary expression following the `expr` keyword will create a literal value of `ExprType`.
+
+At the time an `expr` is defined, immediate values can be interpolated into the defined literal expression value, each immediate expression quoted within a pair of curly braces augmented with '$' will be evaluated at the `expr` definition time, and interpolated as literal values embedded in the result expression.
+
+   #} {;
+    {## The `expr` Expression #}
+    export edh'expr'expr = bookmark()
+
+    # %% # It can be assigned as an attribute of current scope like any other values
+    x = expr a + b * c
+
+    type$ x
+    # %# See its type
+
+    # %% # Its textual representation is its original source text
+    repr$ x
+
+    # %# An expression created this way will have its original source reserved, to serve as its `repr`.
+
+
+    # %% # To demonstrate the interpolation
+    let ( a, b, c, ) = ( 3, 7, 5, )
+    x' = expr a + {$ b*c $} * c
+
+    repr$ x'
+    # %# See how the expression between `{$` and `$}` is eagerly evaluated and interpolated
+
+    # A literal value interpolated will give its `repr` in place of the original `{$ $}` segment, for `repr` of the whole literal expression value.
+
+    # %% # Check it evaluated in the reflective way
+    scope().eval( x' )
+
+    # %# Note that `scope().eval()` is described in the next section below
+
+  }
+
+
+  {## Scope Wrappers
+   # - Scopes wrapped as objects
+
+`scope` is a class, thus an object constructor, comes with the Đ runtime.
+
+   #} {;
+    {## Scope Wrappers #}
+    export edh'scope'wrappers = bookmark()
+
+
+    # Without argument, everytime you call `scope()`, it creates an object wrapping the scope of the calling site.
+
+    # %% # Let's use a hierarchy of nested procedure scopes for the demonstration
+    method f() {
+      # Put these into the outer procedure scope
+      let ( c, d, ) = ( 2, 8, )
+
+      # Call an ad-hoc arrow procedure to get its procedure scope wrapped, for later observation of lexical structure of scopes with that as the tip
+      return ()|() => {
+        # Put these into the inner procedure scope
+        let ( a, b, ) = ( 7, 3, )
+
+        # Wrap and return current scope
+        return scope()
       }
-      s = f()
-      'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
-
-      # %% # if an object is passed as ctor argument, it creates an object wrapping that object's scope
-      class C pass
-      o = C()
-      s = scope(o)
-      s.put( a= 3, c= 2, b= 5, )
-      s.attrs()
-
-      # %#
     }
+    s = f()
+    'inner has ' ++ s.attrs() ++ ', outer has ' ++ s.outer.attrs()
+    # %#
+
+    # %% # Evaluate some expression in the outer scope and see how it's changed
+    s.outer.eval(expr
+      e = c / d
+    )
+    dir$ s.outer
+
+    # %% # Evaluate some expression in the inner scope and see how it's changed
+    s.eval(expr
+      e = 3*a - 5*b + c - 7*d
+    )
+    dir$ s
+    # %#
 
 
-    {## The `expr` Expression
-     # - Lambda without formal argument declaration
+    # %% # If an object is passed as ctor argument, it creates a wrapper object for the object scope of that object
+    class C pass
+    o = C()
+    s = scope(o)
+    s.attrs()
+    # %# It's empty as no attribute is defined by a bare object
 
-A procedure is always called against some object, it also has a formal declaration of its arguments, what if we strip off these properties? The result is: we get expressions.
+    # %% # We can put some attributes into it
+    s.put( a= 3, c= 7, b= 5, )
+    dir$ s
 
-Expression is 1st class in Đ, you can create expression values with literal form
+    # %% # Expression evaluation works with an object scope as well
+    s.eval(expr
+      d = a + b / c
+    )
+    dir$ s
+    # %#
 
-     #} {;
-      {## The `expr` Expression #}
-      export edh'expr'expr = bookmark()
-
-      # %%
-      x = expr a + b * c
-
-      # %#
-
-    }
+  }
 
 
-    {## Expression Arguments to Procedures
-     # - Arguments are passed in expr form, to interpreter procedures and 3af operator procedures
+  {## Expression Arguments to Procedures
+   # - Arguments are passed in expr form, to interpreter procedures and 3-arg operator procedures
 
 For an interpreter procedure or an infix operator procedure with 3 positional arguments, the first argument will be wrapped scope object of its caller, and rest arguments are all expression values.
 
-     #} {;
-      {## Expression Arguments to Procedures #}
-      export edh'expr'args = bookmark()
+   #} {;
+    {## Expression Arguments to Procedures #}
+    export edh'expr'args = bookmark()
 
-      # %%
-      x' = makeExpr( a + b * c )
-      # %%
-      s.eval( x' )
-      # %#
+    # %%
+    x' = makeExpr( a + b * c )
 
-    }
+    repr$ x'
+    # %# See its textual representation is in AST form, with rather verbose source location information, no original source text is reserved for expressions created this way
+
+    # %% # While it can be reflectively evaluated as well
+    s.eval( x' )
+
+    # %#
+
+  }
 
 
-    {## Code as Data
-     # - A runnable piece of Đ code is just data from the perspective of the host language/runtime
+  {## Code as Data
+   # - A runnable piece of Đ code is just data from the perspective of the host language/runtime
 
 Đ host procedures (written in Haskell) see Đ AST directly.
 
-     #} {;
-      {## Code as Data #}
-      export edh'host'proc'exprs = bookmark()
+TODO expand this section.
 
-
-    }
-
+   #} {;
+    {## Code as Data #}
+    export edh'host'proc'exprs = bookmark()
   }
 
 }
 
 
-{## Fancy Operators
- # - Like in mathematics, symbolic notations usually come more concise
+{## Iteration & Narration
+ # - Different ways to express the program's job doing
+
+
  #} {;
-  {## Đ Operators #}
-  export edh'operators = bookmark()
+  {## Iteration & Narration #}
+  export edh'iter'narr = bookmark()
 
-  {## Call Making
-   # - Beyond parentheses as the call-operator
-   #} {;
-    {## Call Making #}
-    export edh'call'making'op = bookmark()
-
-
-    # %%
-    console.print$ 'The low-precedence, procedure-call operator `($)` '
-    ++ 'can be used for a little stranger syntax.'
-
-    # %% May be even more strange
-    show$ ($)
-    # %#
-    # Run above cell, you should see:
-    #  intrinsic: infixr -5 ($)
-
-    # You'd feel familiar if you know about Haskell, `$` is a right-associative, infix operator, of precedence -5 (which is rather low) in Đ (not the core language, but a custom operator from the default batteries technically). The semantics/behavior of ($) is procedure-call in Đ, rather like ($) as the function-application operator in Haskell.
-
-    # To address an operator, you quote it with a pair of parentheses just like in Haskell, so `show$ ($)` should be interpreted as calling procedure `show` with the value of ($) operator procedure (which is first class value in Đ) as the only argument.
-
-    # %% For better understanding, it can be written like this, which is more usual
-    op = ($)
-    show( op )
-
-    # %%
-    console.print$ 'Though the (+) operator works to concatenate strings for'
-    + ' Python interoperability, the (++) operator is more idiomatic in Đ'
-    ++ ' for string concatenation, resembling Haskell.'
-
-    ; # As you have learned, a semicolon is usually necessary before a starting parentheses, to disambiguate from procedure-call-making, which binds the tightest
-    # %% # The pipe operator (|) is flipped ($) operator
-    ($) |show
-    # %% # This is equivalent to:
-    show$ ($)
-    # %% # Checkout what the (|) operator is
-    show$ (|)
-    # %#
-
-    # Note the (|) operator resembles UNIX pipe, while its semantics is more close to the (&) operator in Haskell, which is flipped ($) operator.
-
-  }
-
-  {## Exception Handling
-   # - Operators + Pattern Matching, instead of `try/catch/finally`
-
-   #} {;
-    {## Exception Handling #}
-    export edh'exc'hndl'op = bookmark()
-
-
-  }
-
-  {## Other Interesting Operators
-   # - Misc
-   #} {;
-    {## Other Interesting Operators #}
-    export edh'misc'ops = bookmark()
-
-    # Some other operators of interest:
-
-    # %%
-    show$ (::)
-    # %%
-    show$ (!)
-
-    # %#
-  }
 
 }
 
 
-{## More or Less Functional than You'd Expect
- # - Roots in Haskell, Go, Python, and JavaScript
+{## Effect Tracking
+ # - Tracking effects like Haskell does, but dynamically and the procedural way
 
 
  #} {;
+  {## Effect Tracking #}
+  export edh'eff'tracking = bookmark()
+
+
 }
