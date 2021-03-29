@@ -871,6 +871,43 @@ Note that Đ closure is rather coarse grained compared to many other programming
   }
 
 
+  {## Partially Applied Procedure
+   # - No currying, but `partial()` resembles that in Python
+
+We are not currying Đ procedures, but we have `partial()` resembling that in Python.
+
+   #} {;
+    {## Partially Applied Procedure #}
+    export edh'partial = bookmark()
+
+    # %% # Take this simple procedure for example
+    method f( a, b, c, ) {
+      console.print( 'This is f()', a=a, b=b, c=c, )
+    }
+
+    # You can partially apply it like this
+    f1 = partial ( 1, 2 ) ( f )
+
+    # Or this more idiomatic form
+    let f2 = f|partial( 1, 2 )
+
+    # Or instead of a `let` statement, write it like this:
+    f3 = ( f|partial( 1, 2 ) )
+    # %# Note the pipe (|) operator has a rather low precedence -5, which is even lower than the assign (=) operator's precedence 0, so if not writing it as a `let` statement, parenthesis is necessary
+
+    # %% #
+    f1( 3 )
+
+    # %% #
+    f2( 5 )
+
+    # %% #
+    f3( 7 )
+
+    # %#
+  }
+
+
   {## Decorator
    # - Python decorator goes more general in Đ
 
@@ -937,6 +974,27 @@ Written equivalently in Đ like the following:
 
     # %#
 
+
+    # %% # A decorator is usually written in the host language, but as well, it can be written in Đ the surface language, in form of an interpreter procedure
+
+    interpreter decor( callerScope, fe ) case callerScope.eval( fe ) of { f } -> {
+      callerScope.eval( expr method @(f.name) ( ***apk ) {
+          console.info<| 'Calling procedure `' ++ {$ f.name $} ++ '` with: ' ++ apk
+          {$ f $} ( ***apk )
+      } )
+    }
+
+    # %% # And used like this
+
+    decor$
+    method g ( a, b, c ) {
+      console.info<| 'This is g(), we have: ' ++ ( a=a, b=b, c=c, )
+    }
+
+    # %% # The decorated procedure can be used straight forward
+    g( 1, 2, 3 )
+
+    # %#
   }
 
 

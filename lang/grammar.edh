@@ -5416,6 +5416,9 @@ There are cases it's desirable to cease the side-effect of attribute creation in
 
 {## Dynamic Effect Tracking
  # - Tracking effects dynamically, the procedural way
+
+Dynamic effecting tracking is not sound, bears pretty all the shortcomings of a dynamic typing language / runtime. It is not a replacement of, but a bridge to, more formal effect systems with static typing and analysis tools. The monadic effect system is widely recognized and practiced with industrial strength, but with less ideal ergonomics to scale to wider commercial adoptions; algebraic effects & handlers seems more promising, but yet to be practically implemented and battle-tested, before widely adopted.
+
  #} {;
   {## Dynamic Effect Tracking #}
   export edh'eff'tracking = bookmark()

@@ -28,9 +28,9 @@ Greetings! TL;DR - Just click:
 
 ### Đ Slogan
 
-> Reactive Events Integration with Effects Tracked
+> Reactive Events Integration with Dynamic Effect Tracking
 
-**Đ (Edh)** stands for _Event Distributing & Hosting_, the surface language is an _Object-Oriented_, _Dynamic_ _Scripting_ programming language, serving interoperation between distributed processes as well as computations within a local process, possibly integrated together from independently developed software components. Massive **Concurrency** is very expected, and that's automatically mapped to **Parallelism** upon provisioned hardware infrastructure.
+**Đ (Edh)** is an _Object-Oriented_, _Dynamic Typing_, _Scripting_ programming language, meant to serve as a user interface language for human-machine interactions, as well as the surface langauge for interoperations between distributed processes. Interoperations between software components within a local process are better supported as well.
 
 Source code in **Đ (Edh)** - the _surface language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
 

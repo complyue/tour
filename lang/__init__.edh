@@ -4,11 +4,11 @@
 {## What's Đ
  # - A Business Integration language, as well as a User Interface language
 
-**Đ (Edh)** is an _Object-Oriented_, _Dynamic_ _Scripting_ programming language, serving as the surface langauge for interoperation between distributed processes as well as computations within a local process. Where massive **Concurrency** and auto mapping to **Parallelism** are very expected.
+**Đ (Edh)** is an _Object-Oriented_, _Dynamic Typing_, _Scripting_ programming language, meant to serve as a user interface language for human-machine interactions, as well as the surface langauge for interoperations between distributed processes. Interoperations between software components within a local process are better supported as well.
 
 Source code in **Đ (Edh)** - the _guest language_, run _interpreted_ atop certain runtime environment programmed in another, more versatile programming language, i.e. the _host langauge_, currently being [GHC](https://haskell.org/ghc)/[Haskell](https://haskell.org). [Julia](https://julialang.org), [Go](https://golang.org), [Python](https://python.org), and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) are hopefully to be supported in the future.
 
-**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language design, raw machine performance as well as a prosperous ecosystem and etc. are less a goal, they are offloaded to efforts by the _host language_ and/or _runtime_ .
+**Ergonomics** (i.e. _Human Performance_) comes 1st in **Đ (Edh)**'s language design, raw machine performance, safty in program execution etc. as well as a prosperous ecosystem are less a goal, they are offloaded to efforts by the _host language_ and/or _runtime_ .
 
 Đ seeks to be a Business Integration language, as well as a User Interface language, it is born for two main goals:
 
