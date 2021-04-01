@@ -8,13 +8,11 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
-      # prepare user local bin, add to PATH
-      mkdir -p ~/.local/bin
-      echo 'export PATH=$(cd ~/.local/bin; pwd):"$PATH"' > ~/.bashrc.d/999-usr-local
-      . ~/.bashrc.d/999-usr-local
+      # prepare ws/bin
+      mkdir -p /workspace/bin
       # install epm
-      curl -o ~/.local/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
-      chmod a+x ~/.local/bin/epm
+      curl -o /workspace/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
+      chmod a+x /workspace/bin/epm
       # prepare /workspace as an epm home
       cd /workspace
       epm init \
@@ -30,10 +28,15 @@ tasks:
       stack update
       stack install
     command: |
+      # make sure ws bin in PATH
+      echo 'export PATH=/workspace/bin:"$PATH"' > ~/.bashrc.d/999-ws-bin
+      . ~/.bashrc.d/999-ws-bin
+      # update packages in root epm home
       cd /workspace/edh-universe
       epm up
       epm i
       epm x gen-hie > hie.yaml
+      # update executables from Edh packages
       stack update
       stack install
       gp open '/workspace/tour/welcome.edh'
