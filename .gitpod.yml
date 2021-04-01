@@ -8,6 +8,14 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
+      # prepare user local bin, add to PATH
+      mkdir -p ~/.local/bin
+      echo 'export PATH=$(cd ~/.local/bin; pwd):"$PATH"' > ~/.bashrc.d/999-usr-local
+      . ~/.bashrc.d/999-usr-local
+      # install epm
+      curl -o ~/.local/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
+      chmod a+x ~/.local/bin/epm
+      # prepare /workspace as an epm home
       cd /workspace
       epm init \
        -B https://github.com/e-wrks \
@@ -15,15 +23,18 @@ tasks:
        -B http://github.com/complyue \
         nedh els sedh hasdim haskit
       cd /workspace/edh-universe
-      stack update
-      stack install
       # do HLS a favor
       stack install implicit-hie
       epm x gen-hie > hie.yaml
-    command: |
+      # build & install executables from Edh packages
       stack update
+      stack install
+    command: |
       cd /workspace/edh-universe
       epm up
+      epm i
+      epm x gen-hie > hie.yaml
+      stack update
       stack install
       gp open '/workspace/tour/welcome.edh'
 
