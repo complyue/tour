@@ -21,10 +21,10 @@ tasks:
       stack install implicit-hie
       epm x gen-hie > hie.yaml
     command: |
-      # stack update
-      # cd /workspace/edh-universe
-      # epm up
-      # stack install
+      stack update
+      cd /workspace/edh-universe
+      epm up
+      stack install
       gp open '/workspace/tour/welcome.edh'
 
 vscode:
