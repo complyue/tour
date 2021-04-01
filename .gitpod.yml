@@ -8,13 +8,11 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
-      # prepare ws/bin
+      # prepare ws/bin, install epm there, for later upgrade without docker image rebuilt
       mkdir -p /workspace/bin
-      # install epm
+      # /workspace/bin/epm should have been symbolinked to /usr/local/bin/epm
       curl -o /workspace/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
       chmod a+x /workspace/bin/epm
-      echo 'export PATH=/workspace/bin:"$PATH"' > ~/.bashrc.d/999-ws-bin
-      . ~/.bashrc.d/999-ws-bin
       # prepare /workspace as an epm home
       cd /workspace
       epm init \
@@ -30,9 +28,6 @@ tasks:
       stack update
       stack install
     command: |
-      # make sure ws bin in PATH
-      echo 'export PATH=/workspace/bin:"$PATH"' > ~/.bashrc.d/999-ws-bin
-      . ~/.bashrc.d/999-ws-bin
       # update packages in root epm home
       cd /workspace/edh-universe
       epm up

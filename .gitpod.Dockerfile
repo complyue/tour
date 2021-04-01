@@ -13,3 +13,6 @@ USER root
 
 # install haskell stack
 RUN curl -sSL https://get.haskellstack.org/ | sh
+
+# make workspace's epm available globally
+RUN ln -s /workspace/bin/epm /usr/local/bin/epm
