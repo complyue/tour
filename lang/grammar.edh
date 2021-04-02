@@ -2681,7 +2681,7 @@ A scoped block can help in such situations, it is just a drop-in replacement for
       console.print$ 'Outside, x is: ' ++ x
       # %# Out of a scoped block, all artifacts ever defined inside are discarded
 
-      # Note the shadowing of samely named attributes from outer scopes is an anti-pattern, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
+      # Note it is an anti-pattern to shadow attributes living in outer scopes, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
     }
 
   }
@@ -5073,13 +5073,16 @@ And shadowing is a natural consequence when an attribute identified by some key 
         # Upon entering a scoped block, a new lexical inner scope (backed by a separate entity) is created right away, then attributes can be defined locally. And an attribute present in an inner scope shadows all ones with the same name from outer scopes.
         x = 'inner-value'
         console.print$ 'Inside, after local attr definition, x is: ' ++ x
+        # Dynamic deletion of an attribute works and matters here
         x = nil
         console.print$ 'Inside, after local attr deleted, x is: ' ++ x
+        # All attributes left in a scope will be discarded, after control leaves the scope (unless some procedures defined in the scope are sent out and kept live elsewhere, as those procedures _enclose_ their lexical contextual scopes)
+        x = 'inner-again'
       @}
       console.print$ 'Outside, x is: ' ++ x
-      # %# Upon leaving a scoped block, all artifacts ever defined into the block scope are, discarded
+      # %# No access to artifacts in an inner scope from outer
 
-      # Note the shadowing of samely named attributes from outer scopes is an anti-pattern, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
+      # Note it is an anti-pattern to shadow attributes living in outer scopes, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
     }
 
   }

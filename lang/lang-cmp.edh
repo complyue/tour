@@ -341,7 +341,7 @@ The `import` keyword is used to denote an import expression, the expression eval
 
  * `__main__.edh` stands for the entry module source file, when its parent directory is resolved as the entry module of an interpreter process.
 
-Note that `__main__.edh` is the only valid entry module file name, unlike Python, otherwise named module file will never be run as an entry module.
+Note that `__main__.edh` is the only valid entry module file name, unlike Python. An otherwise named module file will never be run as an entry module.
 
      #} {;
       {## Python Module File Naming Convention #}
@@ -536,7 +536,7 @@ Prefixing the name of the variable with character(s) to indicate the use make of
  #} {;
 
   {## Procedure instead of Function
-   # - There are procedures, but no function
+   # - There are procedures, but no functions
 
 A *function* in mathematics has well defined input and output, it can refer to nothing outside of its immutable input (though with enclosed implicit parameters included). Functional programming langauges e.g. Haskell, reflects such constraint well. But unfortunately many procedural / imperative programming langauges, tracing back to C and other ancestors, defined their "function"s with ability to access mutable global / closure "variable"s (The "variable" there is albeit another misconception agsinst mathematical variables), so side-effects can be there out of trivial reasonability by programmers in the day, leading to more bugs in software developed comercially.
 
@@ -549,7 +549,7 @@ It's not a big deal for Đ the language to have stopped refering to impure compu
 
 
   {## Attribute instead of Variable
-   # - There are attributes, but no variable
+   # - There are attributes, but no variables
 
 There is no such a concept/term of "variable" in Đ. The "variable" concept in conventional programming languages is misleading or conflicting when you could possibly have mathematical concepts in the domain model of your business. More properly it should be called "assignable" as suggested in:
   https://existentialtype.wordpress.com/2013/07/22/there-is-such-a-thing-as-a-declarative-language
@@ -567,9 +567,9 @@ Although attributes of entities in Đ are inherently meant to be assigned (as we
 {## Code Structure & Semantics
  # - Similar to Python, JavaScript, etc. but with subtle differences
 
-Đ source code is organized as modules with respective source files, exporting artifacts for reuse, while importing artifacts from others, quite similar to Python codebases or JavaScript codebases consisting of ES6 modules.
+Đ source code is organized as modules, some defined by code in the host programming language, some loaded from respective source files from the filesystem. Modules export artifacts for reuse, while importing artifacts from others, quite similar to Python codebases or JavaScript codebases consisting of ES6 modules.
 
-Closure in Đ is more coarse grained - entire scopes, instead of individual "variable"s are enclosed. It makes Đ programs more potent to resource leaks, so more care should be taken by the programmer, to clear references to resource values as soon as not needed anymore.
+Closure in Đ is more coarse grained - entire scopes, instead of individual "variable"s are enclosed. It makes Đ programs more potent to resource leaks though, so more care should be taken by the programmer, to clear references to resource values as soon as not needed anymore.
 
  #} {;
   {## Code Structure & Semantics #}
@@ -579,7 +579,7 @@ Closure in Đ is more coarse grained - entire scopes, instead of individual "var
   {## Name / Identifier
    # - The so called *variable identifier* or *variable name* elsewhere
 
-All data in an Đ world is stored as attributes associated with certain entities under some names. Both objects and scopes are backed by entities, the naming mechnism works at the entity level, so stays the same for both objects and scopes.
+All data in an Đ world is stored as attributes associated with certain entities under some name. Both (non-host) objects and scopes are backed by entities, the naming mechnism works at the entity level, so stays the same for both objects and scopes.
 
    #} {;
     {## Name / Identifier #}
@@ -606,7 +606,7 @@ JavaScript introduced symbol, which is allowed as identifier of object propertie
 
 Đ takes this idea further, gives it bigger purpose, and dedicated syntax.
 
-Like other dynamic programming languages such as Python, JavaScript, Đ objects (and scopes) are openly accessible, but with symbol key values eligible as symbolic attribute names, Đ programming interfaces can have multiple level of encapsulation ability, that even more flexible than what's supported by Java, C++ and similar languages.
+Like other dynamic programming languages such as Python, JavaScript, Đ objects (and scopes) are openly accessible, but with symbol key values eligible as symbolic attribute names, Đ programming interfaces can have multiple level of encapsulation, that even more flexible than what's supported by Java, C++ and similar languages.
 
 Java has private/protected/public and the implicit package qualification to limit access to fields of a class, C++ has private/protected/public qualification plus friend declarations. In Đ, you define symbols to be used as the name of such fields (attributes of objects / scopes), then you can export the symbol key values differently than how the class (or namespace etc.) is exported. Other components can import these keys and use them to access such symbolic fields, as if they are public, or those fields will appear private/hidden to them. Different contracts with different sets of available symbols can be defined and exposed to different parties, for different levels of knowledge & access to the same codebase of implementation details.
 
@@ -642,7 +642,7 @@ Java has private/protected/public and the implicit package qualification to limi
     {## Quaint Names
      # - Technically, any text can be used as attribute name
 
-Special characters don't get in the way for you to use strings containing them as attribute identifiers. This comes handy in some cases, e.g. LSP (Language Server Protocol) service names tend to have slash `/` characters in it, but the Đ language server defines such service methods with verbatimly such names in the code.
+Special characters don't get in the way for you to use strings containing them as attribute identifiers. This comes handy in some cases, e.g. LSP (Language Server Protocol) service names tend to have slash `/` characters in it, but the Đ language server defines such service methods with verbatimly such names in the code, while you have to use dynamic data structures for such implementations in other languages.
 
      #} {;
 
@@ -664,7 +664,7 @@ Special characters don't get in the way for you to use strings containing them a
 
 
   {## Attribute Deletion
-   # - By assigning `nil` to it`
+   # - By assigning `nil` to it
 
 Instead of Python's `del` statement and JavaScript's `delete` operator, assignment with `nil` does that job in Đ
 
@@ -675,13 +675,16 @@ Instead of Python's `del` statement and JavaScript's `delete` operator, assignme
     # %% # A usual assignment
     x = 3
 
+    # %% # Check it does be in scope
+    x
+
     # %% # Deleting it
     x = nil
 
-    # %% # Try read it
+    # %% # Try obtains it now
     x
 
-    # %# See? Not in scope after deletion.
+    # %# See? Not in scope anymore, after deletion.
 
   }
 
@@ -691,7 +694,7 @@ Instead of Python's `del` statement and JavaScript's `delete` operator, assignme
 
 Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. but with gotchas.
 
-Đ also does dynamic scoping for effect tracking, which is not done in similar languages.
+Đ also does dynamic scoping to foster effect tracking, which is never supported in similar languages.
 
    #} {;
     {## Scope and Call Stack #}
@@ -704,7 +707,7 @@ Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. bu
 
 Direct attribute obtaining is very close to "variable" reading in similar languages, that inner scope attribute with the same name will shadow those live in outer scopes. But it is more dynamic in Đ - the attribute can be deleted from the inner scope, then your reads will immediately resolve to an outer attribute previously shadowed - this is not the case with either Python or JavaScript.
 
-But you have no way to assign attributes into an outer scope (there are workarounds though), scoped assignments (not with dot-notation as target) will always go into current scope. There is neither `nonlocal` hints as in Python, nor explicit "variable" declaration (the `var` keyword) as in JavaScript. Prevalent dynamic namespace objects should be the norm in Đ code, to convey artifacts meant to be assigned by code run in inner scopes, via dot-notations.
+But you have no way to assign attributes into an outer scope (there are workarounds though), scoped assignments (not with dot-notation as target) will always go into current scope. There is neither `nonlocal` hints as in Python, nor explicit "variable" declaration (the `var` keyword) as in JavaScript. Prevalent dynamic namespace objects should be the norm in Đ code, to convey artifacts meant to be assigned by code running in inner scopes, via dot-notations.
 
      #} {;
       {## Lexical Attribute Resolution & Shadowing #}
@@ -717,13 +720,16 @@ But you have no way to assign attributes into an outer scope (there are workarou
         # Upon entering a scoped block, a new lexical inner scope (backed by a separate entity) is created right away, then attributes can be defined locally. And an attribute present in an inner scope shadows all ones with the same name from outer scopes.
         x = 'inner-value'
         console.print$ 'Inside, after local attr definition, x is: ' ++ x
+        # Dynamic deletion of an attribute works and matters here
         x = nil
         console.print$ 'Inside, after local attr deleted, x is: ' ++ x
+        # All attributes left in a scope will be discarded, after control leaves the scope (unless some procedures defined in the scope are sent out and kept live elsewhere, as those procedures _enclose_ their lexical contextual scopes)
+        x = 'inner-again'
       @}
       console.print$ 'Outside, x is: ' ++ x
-      # %# Upon leaving a scoped block, all artifacts ever defined into the block scope are, discarded
+      # %# No access to artifacts in an inner scope from outer
 
-      # Note the shadowing of samely named attributes from outer scopes is an anti-pattern, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
+      # Note it is an anti-pattern to shadow attributes living in outer scopes, the code above is for demonstration purpose only and not idiomatic. Scoped blocks should be just used to discard its scope attributes upon leaving, it's discouraged to override attributes available from outer scopes like that.
 
 
       # %% # Ad-hoc defined namespaces can serve as the container of attributes assignable by any code having read access to the namespace object
@@ -732,7 +738,7 @@ But you have no way to assign attributes into an outer scope (there are workarou
 
       method count'down() state.n -= 1
 
-      # %% # See it works
+      # %% # See it works (run this cell more times for better intuition)
       count'down()
       state.n
 
@@ -759,7 +765,7 @@ Dynamic scoping - attribute resolution against the calling stack of caller frame
   {## Namespaces
    # - Similar to TypeScript namespace
 
-An Đ namespace is a special object defined with dedicated syntax. It's fairly norm to create namespaces ad-hoc during a procedure call, which carries more dynamic semantics, in addition to more "statically" define namespaces at top level of module initialization.
+An Đ namespace is a special object defined with dedicated syntax. It's fairly norm to create namespaces ad-hoc during a procedure call, which carries more dynamic semantics, in addition to more "statically" defined namespaces at top level of module initialization.
 
    #} {;
     {## Namespaces #}
@@ -769,7 +775,7 @@ An Đ namespace is a special object defined with dedicated syntax. It's fairly n
 
     # Alternative to Python `nonlocal` "variables", namespaces live in outer scope can hold attributes meant to be assigned by some code run in inner scopes.
 
-    # Alternative to JavaScript hoisting, a procedure can be defined earlier to contain code wanting to call later defined other procedures.
+    # Alternative to JavaScript hoisting, a procedure can be defined earlier to contain code wanting to call other procedures defined later.
 
   }
 
@@ -777,14 +783,14 @@ An Đ namespace is a special object defined with dedicated syntax. It's fairly n
   {## Scoped Blocks
    # - A usual block doesn't create a nested scope, use special syntax to do that
 
-Like in Python, JavaScript etc. a usual nested block of code doesn't create a nested scope to run.
+Unlike in C and its offsprings, rather like in Python, JavaScript, Go etc. a usual (indentation denoted in Python, curly brace denoted in JS and Go) block in Đ does not create a nested scope.
 
-You have to use a dedicated "function" in Python or JavaScript to create nested scopes, but Đ offers special syntax to do it easily.
+You have to use an ad-hoc'ly called "function" in Python, JS or Go, to create nested scopes, sth what you do with just curly braces in C family languages (including Java, C++ etc.). Đ offers special syntax to do it easily.
 
    #} {;
     edh'scoped'blocks # <- follow this bookmark to the detailed description in the grammar chapter
 
-    # %% # A scoped block is denoted by a pair of curly braces augmented with at (@) symbol, it evaluates to result of the last statement (usually an expression statement) in it
+    # %% # A scoped block is denoted by a pair of curly braces augmented with at (@) symbol. As with a usual scope, it evaluates to result of the last statement (usually an expression statement) in it
 
     y = nil # Let's clear `y` out of the REPL top scope for sure
 
@@ -800,7 +806,7 @@ You have to use a dedicated "function" in Python or JavaScript to create nested 
 
       @} # This ends the scoped block. Note `y` is not in scope since here on
 
-    } # This ends the usual block
+    } # This ends the usual block, with the result from that of the inner scoped block, as the scoped block is the last statement of this usual block
 
     # %% # The nested scope created by a scoped block goes out after execution left that block
     x + y
@@ -814,7 +820,7 @@ You have to use a dedicated "function" in Python or JavaScript to create nested 
 
 As a consequence of the way attributes are resolved lexically, a procedure remembers the full hierarchy of its lexical outer scopes as in where it is defined. We say a procedure captures its enclosing context as a closure.
 
-Note that Đ closure is rather coarse grained compared to many other programming languages, closures there usually capture individual "variables" accessible to them when defined, while in Đ it is actually the entities behind the lexical scopes get captured.
+Note that Đ closure is rather coarse grained compared to many other programming languages, closures elsewhere usually capture individual "variables" accessible to them when defined, while in Đ it is actually the entities behind the lexical scopes get captured.
 
    #} {;
     {## Coarse Grained Closure #}
