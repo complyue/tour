@@ -1,0 +1,16 @@
+{##
+ # Host Computation Wrapping
+ #}
+
+
+{## Currying Haskell Computation Objects
+ # - Wrapping host computations in a Haskell based Đ runtimes
+
+Everything is a computation in Haskell. Haskell computations (functions or lazy values) can be wrapped as host Đ objects, with applied arguments and optionally effectful arguments defined for such an object.
+
+ #} {;
+  {## Currying Haskell Computation Objects #}
+  export edh'wrap'haskell'comput = bookmark()
+
+
+}

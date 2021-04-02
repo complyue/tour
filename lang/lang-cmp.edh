@@ -877,13 +877,13 @@ Note that Đ closure is rather coarse grained compared to many other programming
   }
 
 
-  {## Partially Applied Procedure
-   # - No currying, but `partial()` resembles that in Python
+  {## Partially Apply Procedures
+   # - `partial()` resembles the same utility in Python
 
-We are not currying Đ procedures, but we have `partial()` resembling that in Python.
+We are not currying Đ procedures, but we have `partial()` resembling the utility with related purpose as in Python.
 
    #} {;
-    {## Partially Applied Procedure #}
+    {## Partially Apply Procedures #}
     export edh'partial = bookmark()
 
     # %% # Take this simple procedure for example
@@ -901,7 +901,7 @@ We are not currying Đ procedures, but we have `partial()` resembling that in Py
     f3 = ( f|partial( 1, 2 ) )
     # %# Note the pipe (|) operator has a rather low precedence -5, which is even lower than the assign (=) operator's precedence 0, so if not writing it as a `let` statement, parenthesis is necessary
 
-    # %% #
+    # %% # Usage of the partially called procedure is identical
     f1( 3 )
 
     # %% #
@@ -909,6 +909,9 @@ We are not currying Đ procedures, but we have `partial()` resembling that in Py
 
     # %% #
     f3( 7 )
+
+    # %# Note that as well as in Python, partially call with keyword arguments works as well, and partial calls can even be chained, with gradually more arguments.
+    # TODO code cells to demo that
 
     # %#
   }
@@ -921,7 +924,7 @@ Python decorator syntax makes application of higher order functions more ergonmi
 
 Inspired by Haskell, Đ introduces the procedure call ($) operator (called function application operator in Haskell), it works in places where Python decorators would, though with a little different syntax.
 
-While it works even more generally, for utility procedures like `show()` `repr()` etc. to be used with similar syntax.
+And it works even more generally here. In addition to ($), there is also the pipe (|) operator with just the oparands flipped, so utility procedure usages like `show( xx )` `repr( xx )` etc. can be written with sugar syntax like `show$ xx`, `repr$ xx`, and `xx |show` `xx |repr`.
 
    #} {;
     {## Decorator #}
@@ -1119,11 +1122,11 @@ And it's actually a bit more complicated in Đ as named values (term definitions
 {## Object-Oriented, along with Simpler Values
  # - Everything is a Value (instead of Object) in Đ
 
-Everything is an Object in Python / Smalltalk, Đ seeks to be as *Object-Oriented* as Python, but *NOT* everything is an object here, such as numbers, strings, and procedures. Also, intrinsic mutable containers, namely dict and list are not object in Đ, along with immutable containers, namely pairs and arguments packs.
+Everything is an Object in Python / Smalltalk, Đ seeks to be as *Object-Oriented* as Python, but *NOT* everything is an object here, such as numbers, strings, and procedures. Also, intrinsic mutable containers, namely dict and list are not object in Đ; neither for immutable containers, namely pairs and arguments packs.
 
  #} {;
 
-  # The Đ Object System is an advanced topic a dedicated chapter
+  # The Đ Object System is an advanced topic in a dedicated chapter
   import * './advanced/objs' # <- follow this import source to that chapter
 
   # A brief introduction lives in the grammar chapter as well, for its compositional multiple inheritance, and how both class based inheritance and prototype based inheritance are supported.
@@ -1207,11 +1210,6 @@ Beyond PEP-557 features, Đ data classes especially shines in pattern matching u
           # %%
           m +*+ 'is a lucky number'
           # %#
-
-          # %# Applicability & defaulting semantics are advanced topics described in another chapter
-          ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
-            edh'na'semantics # <- follow this bookmark to the specific section there
-          }
         }
 
       }
@@ -1288,7 +1286,7 @@ Data classes take advantage of this mechanism, so two data instances are conside
     # %% # Under the hood, a data class assigns the magic `__id__` attribute automatically
     origin.__id__
 
-    # %% # So identity equality test works reasonable right
+    # %% # So identity equality test works reasonably right
     origin is P(0, 0)
 
     # %#
