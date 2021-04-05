@@ -2835,13 +2835,13 @@ The loop-source evaluates to some container in this case, it may be:
     }
 
 
-    {## Arguments/List/Dict Comprehension
+    {## Apk/List/Dict Comprehension
      # - Comprehend items into containers
 
 The comprehension (=<) operator can be used to pump iterated result values from a for-loop into a result container.
 
      #} {;
-      {## Arguments/List/Dict Comprehension #}
+      {## Apk/List/Dict Comprehension #}
       export edh'loop'comprehension = bookmark()
 
       # %% # Positional args comprehension

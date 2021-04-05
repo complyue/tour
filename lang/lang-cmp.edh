@@ -835,6 +835,51 @@ Note that Đ closure is rather coarse grained compared to many other programming
   }
 
 
+  {## Builtin Data Structures
+   # - There are similar intrinsic data types as in Python, JavaScript and ets.
+
+
+   #} {;
+    {## Builtin Data Structures #}
+    export edh'builtin'data'structs = bookmark()
+
+    {## ArgsPack - the Super Tuple
+     # - Arguments pack is positional arguments plus keyword arguments
+
+
+     #} {;
+      {## ArgsPack - the Super Tuple #}
+      export edh'apk'super'tuple = bookmark()
+
+
+    }
+
+
+    {## List
+     # - Array in Javascript, list in Python
+
+
+     #} {;
+      {## List #}
+      export edh'list'vs'js'py = bookmark()
+
+
+    }
+
+
+    {## Dict
+     # - Object in JavaScript, dict in Python
+
+
+     #} {;
+      {## Dict #}
+      export edh'dict'vs'js'py = bookmark()
+
+
+    }
+
+  }
+
   {## Control Flows
    # - Commonplace ones and more
 
@@ -846,7 +891,7 @@ Some syntaxes also follow Haskell, e.g. the if-then-else expression, as well as 
     {## Control Flows #}
     export edh'ctrl'flows = bookmark()
 
-    {## if-then-else and Tenary Operator
+    {## If Expression and Tenary Operator
      # - About binary choices
 
 In C as well as Python, JavaScript etc., the if-else construct is a statement, when a result is expected from either of two expressions, based on a certain condition, there usually exists a form of tenary operator (though with different syntax) in different languages to do the job.
@@ -855,7 +900,9 @@ In Haskell, all control flow constructs are expressions, Haskell's `if <cond> th
 
 In Python, `and` plus `or` operator can work together to simulate C's tenary operator, just more flexible, as it can take advantange of its dynamically typed nature.
 
-     #} {; export edh'binary'choices = bookmark()
+     #} {;
+      {## If Expression and Tenary Operator #}
+      export edh'binary'choices = bookmark()
 
       # %% # Đ follows Haskell in the if-then-else construct, both semantically and syntatically
       verbosity = if console.logLevel <= console.debug then 2 else 1
@@ -874,6 +921,75 @@ In Python, `and` plus `or` operator can work together to simulate C's tenary ope
       # %% # The tenary operator of C can be simulated with `and` plus `or` combined, this is the only (obvious) idiomatic way in Python, but you could prefer if-then-else in Đ as an equivalent idiomatic way. Compare this with the equivalent cell above
       verbosity = console.logLevel <= console.debug and 2 or 1
 
+      # %#
+    }
+
+
+    {## For Loop
+     # - Remotely the traditional for loop
+
+Đ has a for-from-do loop construct. On the surface, the semantics is quite the same as with a traditional for loop in C, Python, JavaScript and etc.
+
+But the syntax involves the `from` keyword and an extra `do` keyword, becomes quite different from Python's `in` keyword and JavaScript's `of` keyword, which already being different from C's freeform for loop.
+
+Deeper in the semantics, `from` is chosen to carry the implication that the source of iteration is remote to current looping context, and is processed in streaming fashion. The source is possibly infinite (e.g. the event stream of Bitcoin quotes) or very large (e.g. all historic bid records of a stock) to be loaded at its entirety, The `do` keyword then emphasis that the loop body is executed locally in contrast.
+
+Such intuition is very true when looping against an event sink (from a producer procedure or not), and also quite true when looping against some effectful generator procedure resolved dynamically, i.e. unknown to the looping site.
+
+     #} {;
+
+      # %% # An Đ `for` loop can do exactly the same things as in Python, JavaScript and etc.
+      for i from [3, 2, 5,] do console.print(i)
+
+      # %% # Moreover, it can loop against unpredictable streams
+      msgSink = sink
+      # Spawn a separate thread to do the loop so REPL still usable along with the loop
+      go for msg from msgSink do console.info<| 'Got msg: ' ++ msg
+
+      # %% # Messages can be posted from anywhere
+      void msgSink <- "You're great!"
+
+      # %% # And any sort of messages is possible
+      void msgSink <- 7/11
+
+
+      # %% # Generators yield the values to be looped
+      generator g() {
+        yield 3
+        yield 2
+        yield 5
+      }
+
+      for i from g() do console.print(i)
+
+      # %#
+
+      # The detailed syntax and more examples are described in the grammar chapter
+      edh'for'loop # <- follow this bookmark to the secion there
+
+    }
+
+
+    {## Apk/List/Dict Comprehension
+     # - Comprehend items into containers
+
+Both Haskell and Python have list comprehension syntax, Python further has dict and set comprehension syntax.
+
+In Đ the comprehension (=<) operator can be used to pump iterated result values from a for-loop into a result container.
+
+     #} {;
+
+      # %% # Positional args comprehension
+      ; () =< for i from range(3:9) do i*i
+
+      # %% # Keyword args comphrehension
+      ; () =< for i from range(3:9) do ( @( "square'of'" ++ i )= i*i, )
+
+      # %% # List comprehension
+      ; [] =< for i from range(3:9) do i*i
+
+      # %% # Dict comprehension
+      {} =< for i from range(3:9) do ( "square-of-" ++ i ): i*i
       # %#
     }
 
