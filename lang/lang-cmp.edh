@@ -838,10 +838,44 @@ Note that Đ closure is rather coarse grained compared to many other programming
   {## Control Flows
    # - Commonplace ones and more
 
+Semantically, Đ is heavily influnced by the functional Haskell langauge, i.e. most control flow constructs are expressions, contrasting to Python, JavaScript, Go and other C influnced languages, where control flow constructs are mostly statements not evaluating to results but just side-effects.
+
+Some syntaxes also follow Haskell, e.g. the if-then-else expression, as well as the semantics.
 
    #} {;
     {## Control Flows #}
     export edh'ctrl'flows = bookmark()
+
+    {## if-then-else and Tenary Operator
+     # - About binary choices
+
+In C as well as Python, JavaScript etc., the if-else construct is a statement, when a result is expected from either of two expressions, based on a certain condition, there usually exists a form of tenary operator (though with different syntax) in different languages to do the job.
+
+In Haskell, all control flow constructs are expressions, Haskell's `if <cond> then <truthful> else <falsy>` construct is more like C's tenary operator `<cond> ? <truthful> : <falsy>` rather than C's if-else construct (which is a statement).
+
+In Python, `and` plus `or` operator can work together to simulate C's tenary operator, just more flexible, as it can take advantange of its dynamically typed nature.
+
+     #} {; export edh'binary'choices = bookmark()
+
+      # %% # Đ follows Haskell in the if-then-else construct, both semantically and syntatically
+      verbosity = if console.logLevel <= console.debug then 2 else 1
+
+      # One thing unlike Haskell, the `else` part can be omitted in Đ, this is possible because Đ is dynamically typed, the whole expression can evaluate to `nil` in case the condition is not met and no `else` clause presents. While in Haskell no meaningful default can be implied so you have to always write an `else` clause. It's not idiomatic Đ though, to omit the `else` part when the `if` expression is used as right-hand-side operand of an assignment, as `nil` carries attribute deletion semantics in assignment, it is burdensome to reason about the intention, with both update and deletion of the attribute possible with a single assignment.
+
+      # %% # The `else` part can be idiomatically omitted, when the result of the `if` expression is not used at all
+      if verbosity > 1 then console.print( "I'm chatty.")
+
+
+      # Đ has `and` and `or` operator working almost verbatimly the same as those in Python
+      # %% # The above cell can be written like this as well, both are idiomatic
+      verbosity > 1 and console.print( "I'm chatty.")
+
+
+      # %% # The tenary operator of C can be simulated with `and` plus `or` combined, this is the only (obvious) idiomatic way in Python, but you could prefer if-then-else in Đ as an equivalent idiomatic way. Compare this with the equivalent cell above
+      verbosity = console.logLevel <= console.debug and 2 or 1
+
+      # %#
+    }
 
 
     {## Pattern Matching
