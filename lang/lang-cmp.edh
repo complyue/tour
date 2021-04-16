@@ -707,7 +707,7 @@ Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. bu
 
 Direct attribute obtaining is very close to "variable" reading in similar languages, that inner scope attribute with the same name will shadow those live in outer scopes. But it is more dynamic in Đ - the attribute can be deleted from the inner scope, then your reads will immediately resolve to an outer attribute previously shadowed - this is not the case with either Python or JavaScript.
 
-But you have no way to assign attributes into an outer scope (there are workarounds though), scoped assignments (not with dot-notation as target) will always go into current scope. There is neither `nonlocal` hints as in Python, nor explicit "variable" declaration (the `var` keyword) as in JavaScript. Prevalent dynamic namespace objects should be the norm in Đ code, to convey artifacts meant to be assigned by code running in inner scopes, via dot-notations.
+Then you have no way to assign attributes into an outer scope (workaround exists though), scoped assignments (not with dot-notation as target) will always go into current scope. There is neither `nonlocal` hints as in Python, nor explicit "variable" declaration (the `var` keyword) as in JavaScript. Prevalent dynamic namespace objects should be the norm in Đ code for this reason, to convey artifacts meant to be assigned by code running in inner scopes, via dot-notations (which is the workaround).
 
      #} {;
       {## Lexical Attribute Resolution & Shadowing #}
@@ -752,9 +752,6 @@ But you have no way to assign attributes into an outer scope (there are workarou
 Dynamic scoping - attribute resolution against the calling stack of caller frames - is seldom seen in modern programming languages anymore, but Đ is doing it for effect tracking, with solution to its historical problems.
 
      #} {;
-      {## Effect Tracking by Dynamic Scoping #}
-      export edh'eff'tracking'by'dyn'scoping = bookmark()
-
       edh'dyn'scoping # <- follow this bookmark to the detailed description in the grammar chapter
 
     }
@@ -783,14 +780,14 @@ An Đ namespace is a special object defined with dedicated syntax. It's fairly n
   {## Scoped Blocks
    # - A usual block doesn't create a nested scope, use special syntax to do that
 
-Unlike in C and its offsprings, rather like in Python, JavaScript, Go etc. a usual (indentation denoted in Python, curly brace denoted in JS and Go) block in Đ does not create a nested scope.
+Unlike in C and its offsprings, but rather like in Python, JavaScript, Go etc. a usual block (indentation denoted in Python, curly brace denoted in JS and Go) in Đ does not create a nested scope.
 
 You have to use an ad-hoc'ly called "function" in Python, JS or Go, to create nested scopes, sth what you do with just curly braces in C family languages (including Java, C++ etc.). Đ offers special syntax to do it easily.
 
    #} {;
     edh'scoped'blocks # <- follow this bookmark to the detailed description in the grammar chapter
 
-    # %% # A scoped block is denoted by a pair of curly braces augmented with at (@) symbol. As with a usual scope, it evaluates to result of the last statement (usually an expression statement) in it
+    # %% # A scoped block is denoted by a pair of curly braces augmented with at (@) symbol. As with a usual block, it evaluates to result of the last statement (usually an expression statement) in it
 
     y = nil # Let's clear `y` out of the REPL top scope for sure
 
@@ -820,7 +817,7 @@ You have to use an ad-hoc'ly called "function" in Python, JS or Go, to create ne
 
 As a consequence of the way attributes are resolved lexically, a procedure remembers the full hierarchy of its lexical outer scopes as in where it is defined. We say a procedure captures its enclosing context as a closure.
 
-Note that Đ closure is rather coarse grained compared to many other programming languages, closures elsewhere usually capture individual "variables" accessible to them when defined, while in Đ it is actually the entities behind the lexical scopes get captured.
+Note that Đ closure is rather coarse grained compared to many other programming languages, closures elsewhere usually capture individual "variables" they actually access as statically witnessed; while in Đ it is actually the entities behind the lexical scopes get captured, so dynamic access is possible to whatever in there at runtime.
 
    #} {;
     {## Coarse Grained Closure #}
@@ -837,38 +834,120 @@ Note that Đ closure is rather coarse grained compared to many other programming
 
   {## Builtin Data Structures
    # - There are similar intrinsic data types as in Python, JavaScript and ets.
-
-
    #} {;
     {## Builtin Data Structures #}
     export edh'builtin'data'structs = bookmark()
 
     {## ArgsPack - the Super Tuple
-     # - Arguments pack is positional arguments plus keyword arguments
+     # - The super type of tuple with named elements
 
+The apk type is a super type of the "tuple" type, Python, Haskell and many other languages have a tuple type.
+
+An apk with only positional arguments carries exactly the same semantics of a "tuple".
+
+An apk with only named arguments is comparable to the "namedtuple" in Python, but it is structurally typed in Đ, while "namedtuple" is nomially typed in Python per se.
+
+Then in Đ positional arguments and named arguments can be combined together in a single apk.
 
      #} {;
       {## ArgsPack - the Super Tuple #}
       export edh'apk'super'tuple = bookmark()
 
+      # %% # Positional only apk
+      ; ( 3, 2, 5, )
 
+      # %% # Named/Keyword only apk
+      ; ( a=3, c= 'Hello', b= 'World!', )
+
+      # %% # Apk with both positional and named arguments
+      ; ( 3, 2, 5, x= 9, s= "There's more.", )
+
+      # %# Apk is immutable and there are implications wrt equality, (un/re)packing, argument deletion etc.
+      edh'apk # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+    }
+
+
+    {## Vector
+     # - Like Array in Javascript, list in Python, with preliminary vectorization (but not for performance)
+
+Vector is a mutable type, optimized for index based random access, and supports preliminary vectorization with several operations get broadcasted element-wise.
+
+     #} {;
+      {## Vector #}
+      export edh'vector'vs'js'py = bookmark()
+
+      # %% # Vector constructor takes all positional arguments, so arg unpacking and apk comphrehension can be used to initialize a Vector
+      v = Vector( *()=< for i from range(10) do i )
+
+      # %% # A Vector can be sliced with a <start>:<stop> pair
+      # Note that <start> is inclusive and <stop> is exclusive, which is the same syntax and semantics as in Python
+      v[3:8]
+
+      # %% # Reversed slicing works too, but notice the inclusive/exclusive semantics
+      v[7:2]
+
+      # %% # Custom step can be specified
+      # Note this is still the same syntax and semantics as in Python
+      v[3:8:2]
+
+      # %% # But you'd make sure the stepping is monotonic, this will fail e.g.
+      v[7:2:2]
+
+      # %% # This is the correct spec
+      # Note a subtle difference from Python here, minus (:) has to be separated from colon (:), or edh
+      v[7:2: -2]
+
+      # %% # Constructing a simple vector
+      v = Vector( 3, 2, 5, )
+
+      # %% # Broadcasted (+) operation
+      v + 100
+
+      # %% # The same when at rhs
+      100 + v
+
+      # %% # Broadcasted (++) operation
+      v ++ 5
+
+      # %% # The same when at rhs
+      5 ++ v
+
+      # %% # Broadcasted comparison
+      v >= 3
+
+      # %% # Masking with comparison result
+      v[ v >= 3 ]
+
+      # %% # Conditional update masked with comparison result
+      v[ v >= 3 ] += 100
+      v
+
+      # %% # Another conditonal update example with string operation
+      v[ v > 10 ] ++= ", which is too large"
+      v
+
+      # %% # TODO impl. and demo. `.map()` `.update()` etc.
+
+      # %# Vector demonstrates how host objects and magic methods work
+      edh'vector # <- follow this bookmark for the detailed syntax and description in the grammar chapter
     }
 
 
     {## List
-     # - Array in Javascript, list in Python
-
+     # - Like list in Haskell, but mutable
 
      #} {;
       {## List #}
-      export edh'list'vs'js'py = bookmark()
+      export edh'list'vs'hs = bookmark()
 
 
+      # %# List is mutable and optimized for prepend and sequential scan.
+      edh'list # <- follow this bookmark for the detailed syntax and description in the grammar chapter
     }
 
 
     {## Dict
-     # - Object in JavaScript, dict in Python
+     # - Like Object in JavaScript, dict in Python
 
 
      #} {;

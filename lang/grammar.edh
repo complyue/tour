@@ -1974,13 +1974,13 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       {## ArgsPack (apk) - the Super Tuple
        # - The super type of tuple with named elements
 
-We already described ArgsPack in the section for syntax of arguments packing, actually the apk type is a super type of the "tuple" type, which is well know in many programming languages.
+We already described ArgsPack in the section for syntax of arguments packing, actually the apk type is a super type of the "tuple" type, which is well known in many programming languages.
 
 An apk with only positional arguments carries exactly the same semantics of a "tuple".
 
-An apk with only named arguments corresponds to the "namedtuple" in Python.
+An apk with only named arguments is comparable to the "namedtuple" in Python, but it is structurally typed in Đ, while "namedtuple" is nomially typed in Python per se.
 
-While in Đ positional arguments and named arguments can be combined together.
+Then in Đ positional arguments and named arguments can be combined together in a single apk.
 
        #} {;
         {## ArgsPack (apk) #}
@@ -2008,6 +2008,73 @@ While in Đ positional arguments and named arguments can be combined together.
 
         # Idiomatic usage has already been covered in a previous section about arguments packing
         edh'args'un'packing # <- follow this bookmark to that section
+      }
+
+
+      {## Vector
+       # - Mutable array with preliminary vectorization (but not for performance)
+
+Vector is a mutable type, optimized for index based random access, and supports preliminary vectorization with several operations get broadcasted element-wise.
+
+       #} {;
+        {## Vector #}
+        export edh'vector = bookmark()
+
+        # %% # Vector constructor takes all positional arguments, so arg unpacking and apk comphrehension can be used to initialize a Vector
+        v = Vector( *()=< for i from range(10) do i )
+
+        # %% # A Vector can be sliced with a <start>:<stop> pair
+        # Note that <start> is inclusive and <stop> is exclusive, which is the same syntax and semantics as in Python
+        v[3:8]
+
+        # %% # Reversed slicing works too, but notice the inclusive/exclusive semantics
+        v[7:2]
+
+        # %% # Custom step can be specified
+        # Note this is still the same syntax and semantics as in Python
+        v[3:8:2]
+
+        # %% # But you'd make sure the stepping is monotonic, this will fail e.g.
+        v[7:2:2]
+
+        # %% # This is the correct spec
+        # Note a subtle difference from Python here, minus (:) has to be separated from colon (:), or edh
+        v[7:2: -2]
+
+        # %% # Constructing a simple vector
+        v = Vector( 3, 2, 5, )
+
+        # %% # Broadcasted (+) operation
+        v + 100
+
+        # %% # The same when at rhs
+        100 + v
+
+        # %% # Broadcasted (++) operation
+        v ++ 5
+
+        # %% # The same when at rhs
+        5 ++ v
+
+        # %% # Broadcasted comparison
+        v >= 3
+
+        # %% # Masking with comparison result
+        v[ v >= 3 ]
+
+        # %% # Conditional update masked with comparison result
+        v[ v >= 3 ] += 100
+        v
+
+        # %% # Another conditonal update example with string operation
+        v[ v > 10 ] ++= ", which is too large"
+        v
+
+        # %% # TODO impl. and demo. `.map()` `.update()` etc.
+
+        # %% # List out all its (magic) methods
+        dir$ Vector
+        # %#
       }
 
 
