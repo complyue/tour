@@ -2012,7 +2012,7 @@ Then in Đ positional arguments and named arguments can be combined together in 
 
 
       {## Vector
-       # - Mutable array with preliminary vectorization (but not for performance)
+       # - Mutable array with preliminary vectorization
 
 Vector is a mutable type, optimized for index based random access, and supports preliminary vectorization with several operations get broadcasted element-wise.
 
@@ -2072,9 +2072,10 @@ Vector is a mutable type, optimized for index based random access, and supports 
 
         # %% # TODO impl. and demo. `.map()` `.update()` etc.
 
-        # %% # List out all its (magic) methods
+        # %% # List out all its methods
         dir$ Vector
-        # %#
+        # %# Note many methods in it are magic methods
+        ;() => edh'magic'mths # <- follow this bookmark to the section describing what's magic methods and how it works
       }
 
 

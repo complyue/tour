@@ -868,7 +868,7 @@ Then in Đ positional arguments and named arguments can be combined together in 
 
 
     {## Vector
-     # - Like Array in Javascript, list in Python, with preliminary vectorization (but not for performance)
+     # - Like Array in Javascript, list in Python, with preliminary vectorization
 
 Vector is a mutable type, optimized for index based random access, and supports preliminary vectorization with several operations get broadcasted element-wise.
 
@@ -896,6 +896,13 @@ Vector is a mutable type, optimized for index based random access, and supports 
       # %% # This is the correct spec
       # Note a subtle difference from Python here, minus (:) has to be separated from colon (:), or edh
       v[7:2: -2]
+
+      # Note the slice specificatons are pairs in Đ, unlike slice objects used in Python, so the syntax is not exactly the same as in Python. While in Python you can omit the value at either end of a slice index, e.g. `v[3:]` and `v[:8]`, you can't write that way in Đ.
+      # %% # You'd use the special `All` and `Any` value to indicate unknown index bounds
+      v[3:All]
+
+      # %% # `Any` has stronger element-wise sematics than `All`, but in many cases they are interchangable
+      v[Any:8]
 
       # %% # Constructing a simple vector
       v = Vector( 3, 2, 5, )
