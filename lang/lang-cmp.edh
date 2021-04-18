@@ -904,6 +904,9 @@ Vector is a mutable type, optimized for index based random access, and supports 
       # %% # `Any` has stronger element-wise sematics than `All`, but in many cases they are interchangable
       v[Any:8]
 
+      # %# Though greatly resembling Python indexing, the syntax and semantics are not verbatimly the same
+      edh'index'vals # <- follow this bookmark to the detailed description in the grammar chapter
+
       # %% # Constructing a simple vector
       v = Vector( 3, 2, 5, )
 
@@ -975,15 +978,92 @@ Vector is a mutable type, optimized for index based random access, and supports 
     {## Dict
      # - Like Object in JavaScript, dict in Python
 
+Đ dict is a hash map data structure, optimized for O(1) key lookup as well as sequential scan, just like Python dict and JavaScript Object. It is more like Python dict in Python 3.7 and later versions, that the entry order when iterated will preserve the order as they get inserted. Earlier versions of Python and JavaScript, as well as most mainstream programming languages, don't make such guarantee.
 
      #} {;
       {## Dict #}
       export edh'dict'vs'js'py = bookmark()
 
+      # %% # Đ dict literal syntax resembles that in Python
+      d = { 'c': 3, 'a': 2, 'b': 5, }
 
+      # %% # So does the `dict` constructor, it resembles Python too
+      d' = dict( c= 3, a= 2, b= 5, )
+
+      # %% # Dicts can be compared for instant equality test
+      d == d'
+
+      # %% # But two dicts are never identical
+      d' is not d
+
+      # %% # Though different references can point to the same dict value, which is a mutable container per se
+      d'' = d
+      d'' is d
+
+      # %% # `push()` and `pop()` can also be use with a dict
+      d = dict( c= 3, a= 2, b= 5, )
+      v = d.pop( 'a')
+      'After a=' ++ v ++ ' popped, d now is: ' ++ d
+
+      # %% #
+      d.push( 'a', 9 )
+      d
+
+      # %# Any Đ value can be used as dict key (including symbols), and there are implications as identity equality is used for dict keys in Đ
+      edh'dict # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+    }
+
+
+    {## Pair
+     # - More general slice as in Python
+
+Technically speaking, Đ pair is immutable singly linked append cons list, but it is mostly used in place of slices as in Python, as well as dict entry specifiers, instead of a general list.
+
+Unlike slice in Python, the colon (:) operator can construct new pairs in anywhere, not just as index within a pair of square brackets ([]). And technically it is not restricted in slice usage, but more general.
+
+     #} {;
+      {## Pair #}
+      export edh'pair'vs'py'slice = bookmark()
+
+      # %% #
+      let (a,b,c,) = (3,9,2)
+      ; ( 3:9:2 ) is ( a:b:c )
+
+      # %% # The (:) operator is left-associative, please intuit this difference so you don't get confused in similar situations
+      ( 3:(9:2) ) != ( (3:9):2 )
+
+      # %% # Though they have identical repr
+      repr( 3:(9:2) ) == repr( (3:9):2 )
+      # TODO maybe the repr should be fixed to avoid confusions
+
+      # %#
+      edh'pair # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+    }
+
+
+    {## Event Sink
+     # - Like broadcast TChan as in Haskell
+
+Đ event sink is more like a dynamic version of the broadcast `TChan` as in Haskell.
+
+The event stream through an event sink can be further iterated with for-loop in Đ, as well as each event value to be individually perceived in a preemptive fashion.
+
+     #} {;
+      {## Event Sink #}
+      export edh'evs'data'struct = bookmark()
+
+      # An event sink is the rendezvous point of events
+      edh'event'sink'values # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+
+      # For event stream iteration
+      edh'iter'events # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+
+      # For preemptive event handling
+      edh'perceive'events # <- follow this bookmark for the detailed syntax and description in the grammar chapter
     }
 
   }
+
 
   {## Control Flows
    # - Commonplace ones and more
