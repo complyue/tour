@@ -943,12 +943,31 @@ Vector is a mutable type, optimized for index based random access, and supports 
     {## List
      # - Like list in Haskell, but mutable
 
+Đ list is a builtin singly linked list data structure, it is optimized for prepend and sequential scan, quite like Haskell list. But while Haskell list is immutable, Đ list is mutable, meaning modification to an Đ list will be visible to any code holding a reference to the list.
+
      #} {;
       {## List #}
       export edh'list'vs'hs = bookmark()
 
+      # %% # The list literal syntax is quite like that in Python as well as Haskell
+      l = [ 3, 2, 5, ]
 
-      # %# List is mutable and optimized for prepend and sequential scan.
+      # %% # Đ prepand (:>) operator works like Haskell's single-colon syntax to prepand an element to a list. But unlike in Haskell, the underlying list value is actually modified, though the result feels like that in Haskell for the operation evalutes to the updated list, with the lhs element prepended.
+      9 :> l
+
+      # %% # Đ list is ploymorphic / heterogeous due to dyanamic nature of the langauge, i.e. values of different types can be stored in the same list
+      'Some text' :> l
+
+
+      # %% # `push()` and `pop()` can be use with a list for "stack" semantics
+      h = l.pop()
+      'After ' ++ h ++ ' popped, l now is: ' ++ l
+
+      # %% #
+      l.push(7)
+      l
+
+      # %#
       edh'list # <- follow this bookmark for the detailed syntax and description in the grammar chapter
     }
 
