@@ -5496,6 +5496,13 @@ Dynamic effecting tracking is not sound, bears pretty all the shortcomings of a 
 
   {## Technical Basics
    # - How it works in simple cases
+
+It would seem redundant & unwieldy for this simple scenario, but the key is the ability for effect-callouts to penetrate call frames across the stack, or all intermediate procedures would have to explictly list relevant arguments and merely pass them on to inner callees, which is unrealistic or at best a nightmare for realworld integration scenarios.
+
+A Monad can encapsulate all possible effects, and allow inner computations nested arbitrarily deep to callout these effects, so long as it is a monadic computation in the said Monad. Algebraic Effects & Handlers solve this problem as well, with more open constraints.
+
+*Dynamic Scoped Effects* as you've seen, solves it as well.
+
    #} {;
     # Effect System is an advanced topic in another chapter
     import * './advanced/effs'
@@ -5546,13 +5553,7 @@ Dynamic effecting tracking is not sound, bears pretty all the shortcomings of a 
 
     # %}
 
-    {#
-It would seem redundant & unwieldy for this simple scenario, but the key is the ability for effect-callouts to penetrate call frames across the stack, or all intermediate procedures would have to explictly list relevant arguments and merely pass them on to inner callees, which is unrealistic or at best a nightmare for realworld integration scenarios.
-
-A Monad can encapsulate all possible effects, and allow inner computations nested arbitrarily deep to callout these effects, so long as it is a monadic computation in the said Monad. Algebraic Effects & Handlers solve this problem as well, with more open constraints.
-
-*Dynamic Scoped Effects* as you've seen, solves it as well.
-     #}
+    # %#
   }
 
 
@@ -5651,8 +5652,8 @@ In an integrated system, there are times you need to compose effects from indepe
 
       un'peacekeepers.auth'attack'by( private'force )
     @}
-    # %#
 
+    # %#
   }
 
 }
