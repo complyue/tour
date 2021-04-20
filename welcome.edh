@@ -1,3 +1,18 @@
+# %% # If you see [ Run Cell | Run All ] above this line, you are good to take a sip of Đ now, just click [Run Cell] above, then press enter when a popup menu appears.
+
+let ( do's, don'ts, ) = (
+  [ 'feel it', 'experience it',
+    'keep things up-to-date', ],
+  [ "merely read it", 'literally remember it',
+    'leave yourself outdated', ],
+)
+
+for ( todo, to'not'do ) from zip( do's, don'ts ) do {
+  console.print$ 'Do ' ++ todo ++ ", don't " ++ to'not'do ++ '!'
+}
+
+# %#
+
 {##
  # Welcome to A Tour of Đ (Edh)
 
