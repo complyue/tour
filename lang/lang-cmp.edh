@@ -1030,7 +1030,7 @@ Unlike slice in Python, the colon (:) operator can construct new pairs in anywhe
       ; ( 3:9:2 ) is ( a:b:c )
 
       # %% # The (:) operator is left-associative, please intuit this difference so you don't get confused in similar situations
-      ( 3:(9:2) ) != ( (3:9):2 )
+      ; ( 3:(9:2) ) != ( (3:9):2 )
 
       # %% # Though they have identical repr
       repr( 3:(9:2) ) == repr( (3:9):2 )

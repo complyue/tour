@@ -2183,7 +2183,7 @@ Pair values are constructed with the infix (:) operator.
         show( (:) ) ++ ' vs ' ++ show( (is) )
 
         # %% # Also note about its left-associativity
-        ( 3:(2:5) ) != ( (3:2):5 )
+        ; ( 3:(2:5) ) != ( (3:2):5 )
 
         # %% # Though they have identical repr
         repr( 3:(2:5) ) == repr( (3:2):5 )
