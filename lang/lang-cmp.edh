@@ -1044,9 +1044,11 @@ Unlike slice in Python, the colon (:) operator can construct new pairs in anywhe
     {## Event Sink
      # - Like broadcast TChan as in Haskell
 
-Đ event sink is more like a dynamic version of the broadcast `TChan` as in Haskell.
+Đ event sink is more like a dynamic version of the broadcast `TChan` as in Haskell, it is less like channel as in Go, wrt the broadcasting nature.
 
-The event stream through an event sink can be further iterated with for-loop in Đ, as well as each event value to be individually perceived in a preemptive fashion.
+An Đ sink can have multiple producers and multiple consumers at the same time, each event value published into the sink are received by all consumers, i.e. the broadcast semantics. While a usual Haskell TChan or Go chan can also have multiple producers and multiple consumers, each particular message is only received by one consumer at most, i.e. the (possibly load-balanced) unicast semantics.
+
+The event publish (<-) operator in Đ resembles that in Go, and the event stream through an event sink can be further iterated with (possibly concurrent) for-loops, as well as each event value to be individually perceived in a preemptive fashion, by many Đ threads.
 
      #} {;
       {## Event Sink #}
@@ -1106,6 +1108,13 @@ In Python, `and` plus `or` operator can work together to simulate C's tenary ope
       # %% # The tenary operator of C can be simulated with `and` plus `or` combined, this is the only (obvious) idiomatic way in Python, but you could prefer if-then-else in Đ as an equivalent idiomatic way. Compare this with the equivalent cell above
       verbosity = console.logLevel <= console.debug and 2 or 1
 
+      # %% # Actually, if you are fond of Guards or MultiWayIf in Haskell, you'd probably like value matching against `true` in Đ like this
+      verbosity = case true of {
+        console.logLevel <= console.debug -> 2
+        _ -> 1
+      }
+      # %# The (->) operator is literally branch in Đ, it facilitates pattern matching (as well as value matching you see), to be described later
+
       # %#
     }
 
@@ -1117,24 +1126,28 @@ In Python, `and` plus `or` operator can work together to simulate C's tenary ope
 
 But the syntax involves the `from` keyword and an extra `do` keyword, becomes quite different from Python's `in` keyword and JavaScript's `of` keyword, which already being different from C's freeform for loop.
 
-Deeper in the semantics, `from` is chosen to carry the implication that the source of iteration is remote to current looping context, and is processed in streaming fashion. The source is possibly infinite (e.g. the event stream of Bitcoin quotes) or very large (e.g. all historic bid records of a stock) to be loaded at its entirety, The `do` keyword then emphasis that the loop body is executed locally in contrast.
+Deeper in the semantics, `from` is chosen to carry the implication that the source of iteration is remote to current looping context, and is processed in a streaming fashion. The source is possibly infinite (e.g. the event stream of Bitcoin/USD quotes) or very large (e.g. all historic bid records of a stock) to be loaded at its entirety, The `do` keyword then emphasis that the loop body is executed locally in contrast.
 
-Such intuition is very true when looping against an event sink (from a producer procedure or not), and also quite true when looping against some effectful generator procedure resolved dynamically, i.e. unknown to the looping site.
+Such intuition is very true when looping against an event sink (either from a producer procedure or not), and also quite true when looping against some effectful generator procedure resolved dynamically, i.e. unknown to the looping site.
 
      #} {;
 
-      # %% # An Đ `for` loop can do exactly the same things as in Python, JavaScript and etc.
+      # %% # An Đ `for` loop can do exactly the same things as in Python, JavaScript, and etc.
       for i from [3, 2, 5,] do console.print(i)
+      # %% #
+      for i from range(3) do console.print(i)
 
       # %% # Moreover, it can loop against unpredictable streams
       msgSink = sink
       # Spawn a separate thread to do the loop so REPL still usable along with the loop
       go for msg from msgSink do console.info<| 'Got msg: ' ++ msg
+      # Note the message through `console.print()` will be blocked during REPL's prompting for input, so here the log (<|) operation is preferably used instead
 
       # %% # Messages can be posted from anywhere
       void msgSink <- "You're great!"
+      # Note the publish (<-) operator (which is quite the same as in Go for publishing data into a channel), evaluates to its rhs operand, we use `void` here to supress output to stdout
 
-      # %% # And any sort of messages is possible
+      # %% # And any sort of messages is possible, such as a fractional number
       void msgSink <- 7/11
 
 
@@ -1146,12 +1159,10 @@ Such intuition is very true when looping against an event sink (from a producer 
       }
 
       for i from g() do console.print(i)
-
       # %#
 
       # The detailed syntax and more examples are described in the grammar chapter
       edh'for'loop # <- follow this bookmark to the secion there
-
     }
 
 
@@ -1185,29 +1196,37 @@ In Đ the comprehension (=<) operator can be used to pump iterated result values
  Đ pattern matching syntax is closer to that of Haskell rather than Python. And unlike other languages, Đ pattern syntax is actually not hard-coded by the language grammar, it can be customized with an alternative implementation of the branch (->) operator, or even a fresh new operator functioning similarly. The pattern expression is just a regular Đ expression at left-hand-side of such an operator.
 
      #} {;
+      # TODO demo diffs with Haskell/Python patterns
+
       edh'pattern'matching # <- follow this bookmark to detailed syntax and description in the grammar chapter
     }
 
   }
 
 
-  {## Interpreter Procedures
-   # - Natural way to eval expression in caller's scope
+  {## Customizable Operators
+   # - Operator definition like in Haskell, magic methods like in Python
 
+On one end of the spectrum, the programming language APL prefers symbolic operators over words from natural langues, while many programming languages support only a fixed set of symbolic operators, typically including basic arithmetic operators.
 
-   #} {;
-    {## Interpreter Procedures #}
-    export edh'interpreter'proc = bookmark()
+Functional programming languages tend to enjoy flexible operators more than procedural languages, you can see Haskell allows full customization of infix operators, C++ and Julia support only fixed set of operators while allowing operator overloading. Python as a multi-paradigm language, is some special in its magic method mechanism, allowing the operand object at each side of an infix operator to customize the operation separately, yet following some protocol (NotImplemented semantics) to cooperate with unknown partners, though also, there is only a fixed set of operators in Python, no new operator can be defined.
 
+Đ supports flexible infix operators quite like Haskell, and also supports object magic methods to customize operation behaviors like Python.
 
-  }
-
-
-  {## Fancy Operators
-   # - Like in mathematics, symbolic notations usually come more concise
-
+Actually with Đ defaulting semantics, operation customization is even more versatile then that in Haskell and Python.
 
    #} {;
+
+    # Đ infix operators are fully customizable
+    edh'infix'ops # <- follow this bookmark to detailed syntax and description in the grammar chapter
+
+    # Đ object magic methods is semantically like that in Python, but use more friendly names (operator symbols quoted in parentheses)
+    edh'infix'magics # <- follow this bookmark to detailed syntax and description in the grammar chapter
+
+    # Applicability & defaulting semantics are advanced topics described in another chapter
+    ; () => {; import * './advanced/appl' # <- navigate to there for elaboration
+      edh'na'semantics # <- follow this bookmark to the specific section there
+    }
 
   }
 

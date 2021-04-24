@@ -650,7 +650,7 @@ There are currently only two postfix operators, namely indexing `[]` and calling
 
 
     {## Customizable Infix Operators
-     # - In spirit of Haskell / C++
+     # - In spirit of Haskell
 
 All infix operators are defined as operator procedures, many of them are intrinsic (host) procedures, while others being Đ procedures. They all have a custom precedence & associativity/fixity respectively, and can be overridden by attribute shadowing at particular scopes.
 
