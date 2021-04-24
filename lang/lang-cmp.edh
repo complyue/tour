@@ -1166,6 +1166,50 @@ Such intuition is very true when looping against an event sink (either from a pr
     }
 
 
+    {## while Loop
+     # - Same as Python
+
+Despite the syntax wrt identation, `while` loop in Đ is exactly like that in Python.
+
+     #} {;
+      edh'while'loop # <- follow this bookmark to detailed syntax and description in the grammar chapter
+
+      # %% #
+      i = 3
+      while i < 9 {
+        console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
+        i += 1
+      }
+      # %#
+    }
+
+
+    {## go Routines
+     # - Like goroutines in Go
+
+Đ implements go routines with 1:1 mapping to Haskell/GHC RTS lightweight threads, in addition to usual coroutine features, Đ threads can preemptively perceive event sinks, as well as `defer` clenup actions, i.e. schedule those actions to run on thread termination.
+
+     #} {;
+      edh'go'routines # <- follow this bookmark to detailed syntax and description in the grammar chapter
+    }
+
+
+    {## Exception Handling
+     # - Like that in JavaScript and Python
+
+Despite the surface syntax - ($=>) operator instead of the `catch` keyword, and (@=>) operator instead of the `finally` keyword - single threaded exception handling in Đ has the same semantics and pragmatics like that in JavaScript and Python.
+
+While an exception handler on a forker thread can handle exceptions occurred in forkee threads spawned during its try action, if uncaught by the forkee thread itself.
+
+     #} {;
+      edh'exception'handling # <- follow this bookmark to detailed syntax and description in the grammar chapter
+
+      # Handling exceptions for forkee threads can help implement structured concurrency, there is an advanced topic describing why & how to implement structured concurrency
+      import * './advanced/concur'
+      edh'structured'concurrency # <- follow this bookmark to the section there
+    }
+
+
     {## Apk/List/Dict Comprehension
      # - Comprehend items into containers
 
@@ -1517,57 +1561,18 @@ Beyond PEP-557 features, Đ data classes especially shines in pattern matching u
     {## Magic Methods
      # - Python equivalent ones and more
 
+Đ object magic methods is semantically like that in Python, but unlike Python where only a fixed set of operators have corresponding specially named magic methods, in Đ all infix operators (even ones merely declared but not implemented), including custom defined new ones, can be customized with magic methods. To acommodate that, magic method name is the corresponding operator symbol quoted in a pair of parentheses, for objects at lhs of the operator; and for objects at rhs of the operator, a trailing dot (.) is added to the operator symbol, then quoted in parentheses to form the magic method name. As dot (.) is not a valid operator character in Đ, so it can not be ambiguous.
+
+Đ applicability semantics is richer then Python's mere `NotImplemented`, further with defaulting, operation customization is even more versatile then that in Haskell and Python.
 
      #} {;
-      {## Magic Methods #}
-      export edh'magic'mths = bookmark()
+      edh'magic'mths # <- follow this bookmark to the details in the grammar chapter
 
+      # `NA` in Đ resembling `NotImplemented` in Python, it is 1st class value, and its more expanded form - default expressions can be further used to indicate less preferred applicabilities
+      edh'defaulting'values # <- follow this bookmark to the details in the grammar chapter
 
-      {## Applicability Semantics
-       # - Resembling `NotImplemented` in Python, and more
-       #} {;
-        # The Đ Applicability Semantics is an advanced topic a dedicated chapter
-        import * './advanced/appl' # <- follow this import source to that chapter
-
-        {## Defaulting Values
-         # - Not/Applicable is 1st class value
-         #} {;
-          {## Defaulting Values #}
-          export edh'defaulting'values = bookmark()
-
-          # %% # `NA` means Not/Applicable, indicating a result defaulting to `nil`, which technically can't be defaulted, so will be propagated until caught as an error condition.
-          show$ NA
-
-          # Artitrary defaulting values can be created dynamically, with an expression providing the value used for default. Such values are usually returned from operator procedures, so objects can override their behavior with magic methods, when operated by the operator, while a default implementation is provided by the operator procedure, which is effective when no magic methods present.
-          # %%
-          operator 0 (+*+) (lhv, rhv) {
-            return default lhv ++ ' *** ' ++ rhv
-          }
-          # %%
-          3*7 +*+ 'is a lucky number'
-
-          # %%
-          class N {
-            method __init__( val as this.__repr__ ) pass
-          }
-
-          class M { extends N
-            method (+*+) (other) {
-              return this ++ ' --- ' ++ other
-            }
-          }
-          # %%
-          n = N(3*7)
-          m = M(3*7)
-          # %%
-          n +*+ 'is a lucky number'
-          # %%
-          m +*+ 'is a lucky number'
-          # %#
-        }
-
-      }
-
+      # The Đ Applicability Semantics is an advanced topic a dedicated chapter
+      import * './advanced/appl' # <- follow this import source to that chapter
     }
 
   }
@@ -1792,7 +1797,9 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
   {## Code as Data
    # - A runnable piece of Đ code is just data from the perspective of the host language/runtime
 
-Đ host procedures (written in Haskell) see Đ AST directly.
+Not as homoiconic as LISP family languages, but Đ code can define expressions as first class value and evaluate them in designated contexts as demonstrated above.
+
+Further more, Đ host procedures (written in Haskell) see Đ AST directly, ASTs can be parsed from source text, or generated on the fly then put to interpreted execution.
 
 TODO expand this section.
 

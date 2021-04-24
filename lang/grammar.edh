@@ -4821,7 +4821,7 @@ But note that for possible vectorized comparison between some objects, the class
       {## General Infix Operator Magics
        # - Responding to infix operators
 
-Almost all infix operators come with the default batteries can be overridden by magic methods. The mechanism and syntax are described in this section.
+All infix operators (even ones merely declared but not implemented) can be customized by object magic methods. The mechanism and syntax are described in this section.
 
        #} {;
         {## General Infix Operator Magics #}
