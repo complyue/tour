@@ -296,6 +296,32 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
     {## Module System #}
     export edh'modu'system = bookmark()
 
+    {## Runtime Module Representation
+     # - Almost the same as Python and JavaScript
+
+Đ has an explicit "World" concept & data structure, holding a world root scope, within which all shared "global" modules are defined, each module scope is an "inner" scope of the world root. In contrast, the Python and JavaScript runtime will populate each module with global artifacts, without any outer scope beyond those global modules.
+
+Except that, the runtime representation of Đ, Python and JavaScript are the same, i.e. each runtime module can hold various artifacts and change dynamically, shared modules can import eachothers via certain import path specifications.
+
+     #} {;
+      {## Runtime Module Representation #}
+      export edh'rt'modu'repr = bookmark()
+
+      # %% # Obtain scope of current repl module
+      s = scope()
+
+      # %% # The direct outer scope of a module should usually be the world root
+      worldRoot = s.outer
+
+      # %% # You can see what's living there, they are available to code in a module lexically
+      dir$ worldRoot
+
+      # %% # The world root scope is lexically outer most, no further outer scope from there
+      worldRoot.outer is nil
+
+      # %#
+    }
+
     {## Node.js Package Directory Hierarchy
      # - Directory layout for package deployment
 
@@ -352,7 +378,7 @@ Note that `__main__.edh` is the only valid entry module file name, unlike Python
     {## Python Module Semantics
      # - Strict loading and meta artifacts
 
-The module loading semantics is similar to Python, every statements at top levels will be strictly executed in a sequence. The cyclic importing (with possibly multiple levels of indirections) cases are also similar to those in Python.
+The module loading semantics is similar to Python, every statements at top levels will be strictly executed in a sequence. The cyclic importing (with possibly multiple levels of indirections) cases are also handled similar to how Python does it.
 
      #} {;
       {## Python Module Semantics #}
@@ -663,44 +689,76 @@ Special characters don't get in the way for you to use strings containing them a
   }
 
 
-  {## Attribute Deletion
-   # - By assigning `nil` to it
-
-Instead of Python's `del` statement and JavaScript's `delete` operator, assignment with `nil` does that job in Đ
-
-   #} {;
-    {## Attribute Deletion #}
-    export edh'attr'deletion = bookmark()
-
-    # %% # A usual assignment
-    x = 3
-
-    # %% # Check it does be in scope
-    x
-
-    # %% # Deleting it
-    x = nil
-
-    # %% # Try obtains it now
-    x
-
-    # %# See? Not in scope anymore, after deletion.
-
-  }
-
-
-  {## Scope and Call Stack
+  {## Scopes - Lexical & Dynamic
    # - Lexical (static) scoping & effect (dynamic) scoping
 
-Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. but with gotchas.
+Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. but with gotchas (described in the section below).
 
 Đ also does dynamic scoping to foster effect tracking, which is never supported in similar languages.
 
    #} {;
-    {## Scope and Call Stack #}
+    {## Scopes - Lexical & Dynamic #}
     export edh'scope'callstack = bookmark()
 
     edh'scope'hierarchies # <- follow this bookmark to the detailed description in the grammar chapter
+
+
+    {## Scope Backed by Entity & Attributes
+     # - A scope is backed by an entity
+
+A scope in Đ is even more dynamic than that in Python or JavaScript, there is no such a thing of "variable binding", since there is no "variable" in Đ in the first place. There are only "attributes in scope", and those attributes can be added/change/deleted dyanmically at runtime/anytime.
+
+Every scope is backed by a particular entity, be it a procedure scope, or an object scope - including module scopes and namespace scopes. Those "attributes in scope" are technically attributes belonging to the scope's backing entity. Further more, there are lexical scoping rules including shadowing.
+
+     #} {;
+      {## Scope Backed by Entity & Attributes #}
+      export edh'scope'backing = bookmark()
+
+      # For what's an entity
+      edh'entities # <- follow this bookmark to the detailed description in the grammar chapter
+
+
+      {## Attribute Deletion
+       # - By assigning `nil` to it
+
+Instead of Python's `del` statement or JavaScript's `delete` operator, assignment with `nil` does that job in Đ
+
+       #} {;
+        {## Attribute Deletion #}
+        export edh'attr'deletion = bookmark()
+
+        # %% # A usual assignment
+        x = 3
+
+        # %% # Check it does be in scope
+        x
+
+        # %% # Deleting it
+        x = nil
+
+        # %% # Try obtains it now
+        x
+
+        # %# See? Not in scope anymore, after deletion.
+
+        {## Implication
+         # - Prefer `case-of` to receive result from nil-prone expressions & procedures
+
+So you should use direct assignment to an attriute, only in cases of:
+
+  * You are sure the rhs result can not be `nil`
+  * Deletion of that attribute is expected, per conditions the rhs evaluates to `nil`
+
+In other cases, you want to use `case-of` to explicitly handle `nil` case, either with a `nil` value match, or with the default branch after other capturing branches.
+
+         #} {;
+          {## Implication #}
+          export edh'attr'del'implication = bookmark()
+        }
+      }
+
+    }
+
 
     {## Lexical Attribute Resolution & Shadowing
      # - Similar to "variable" resolution in Python, JavaScript etc.
@@ -738,7 +796,7 @@ Then you have no way to assign attributes into an outer scope (workaround exists
 
       method count'down() state.n -= 1
 
-      # %% # See it works (run this cell more times for better intuition)
+      # %% # See it works (repeat running this cell more times for better intuition)
       count'down()
       state.n
 
@@ -1159,6 +1217,34 @@ Such intuition is very true when looping against an event sink (either from a pr
       }
 
       for i from g() do console.print(i)
+
+      # %#
+
+
+      {## Đ Resource Manager #}
+      edh'res'manager = bookmark()
+
+      # %% # Interestingly, a generator procedure can be used to implement something coined as resource managers in Python, when Đ for-loop to be used as the `with: ` syntax as in Python
+
+      generator withResource( resArgs ) {
+        console.info<| 'allocating [' ++ resArgs ++ ']'
+        res = 'allocated [' ++ resArgs ++ ']'
+        {
+          # unlike in Python, a generator procedure in Đ can only be call by a for-from-do loop, and exceptions occurred in that do block will be propagated to the yield expression here
+          yield res
+        } @=> { # unlike generator in Python, this `finally` block is guaranteed to run in Đ
+          console.info<| 'releasing [' ++ resArgs ++ ']'
+        }
+      }
+
+      # the for-from-do loop can act like Python's `with`
+      for res from withResource( 'some-resource' ) do {
+        console.info<| 'using ' ++ res
+        throw IOError( 'some failure' )
+        break # or no exception but loop broken
+        return nil # or early return from the loop
+      }
+
       # %#
 
       # The detailed syntax and more examples are described in the grammar chapter
@@ -1651,6 +1737,30 @@ Data classes take advantage of this mechanism, so two data instances are conside
     # %#
   }
 
+
+  {## Virtual Attributes
+   # - For non-object values to have object look & feel
+   #} {;
+    edh'virtual'attrs # <- follow this bookmark to the details in the grammar chapter
+
+    # %% # Let's have a dict value, remind its type is `DictType`
+    d = { 'name': 'Yue', 'city': 'Chongqing', }
+    type(d)
+    # %% # Then obtain number of items in it as if there's a `size` attribute on it
+    d.size
+    # %% # This is possible because Đ does the translation under the hood, to something like:
+    __DictType_size__(d)
+    # %% # See the result is the same? Then checkout there really is such a method procedure:
+    show$ __DictType_size__
+    # %% # Also be noted that
+    d.push( 'year', 2021, )
+    # %% # is translated to
+    __DictType_push__(d)( 'year', 2021, )
+    # %% # Now you see the dict can be actually updated this way
+    d
+    # %# How convenient.
+  }
+
 }
 
 
@@ -1807,29 +1917,5 @@ TODO expand this section.
     {## Code as Data #}
     export edh'host'proc'exprs = bookmark()
   }
-
-}
-
-
-{## Iteration & Narration
- # - Different ways to express the program's job doing
-
-
- #} {;
-  {## Iteration & Narration #}
-  export edh'iter'narr = bookmark()
-
-
-}
-
-
-{## Effect Tracking
- # - Tracking effects like Haskell does, but dynamically and the procedural way
-
-
- #} {;
-  {## Effect Tracking #}
-  export edh'eff'tracking = bookmark()
-
 
 }

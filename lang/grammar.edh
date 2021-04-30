@@ -1350,7 +1350,7 @@ Special note that virtual attributes are readonly, i.e. can not be assigned as d
           {## Virtual Attributes #}
           export edh'virtual'attrs = bookmark()
 
-          # %% # Let's have dict value, remind its type is `DictType`
+          # %% # Let's have a dict value, remind its type is `DictType`
           d = { 'name': 'Yue', 'city': 'Chongqing', }
           type(d)
           # %% # Then obtain number of items in it as if there's a `size` attribute on it
