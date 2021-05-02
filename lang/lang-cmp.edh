@@ -706,9 +706,9 @@ Lexical scoping rules of Đ are comparable to that of Python, JavaScript etc. bu
     {## Scope Backed by Entity & Attributes
      # - A scope is backed by an entity
 
-A scope in Đ is even more dynamic than that in Python or JavaScript, there is no such a thing of "variable binding", since there is no "variable" in Đ in the first place. There are only "attributes in scope", and those attributes can be added/change/deleted dyanmically at runtime/anytime.
+A scope in Đ is more dynamic and long living than that in Python or JavaScript, there is no such thing as "variable declaration" or "variable binding" in Đ, since there is no "variable" in the first place. There are only "attributes in scope", an individual attribute can never stand alone, neither can it "escape" to some closures with its owning scope disposed. Attributes of a scope can be added/changed/deleted dyanmically at runtime at anytime, all these operations are accomplished by assignment, and an assignment in Đ always have an owned attribute as the target, especially the case of procedure scope attribute assignments, quite unlike assignments to "function local variables" as in other programming languages.
 
-Every scope is backed by a particular entity, be it a procedure scope, or an object scope - including module scopes and namespace scopes. Those "attributes in scope" are technically attributes belonging to the scope's backing entity. Further more, there are lexical scoping rules including shadowing.
+Every scope is backed by a particular entity, be it a procedure scope, or an object scope - including module scopes and namespace scopes. Those "attributes in scope" are technically attributes belong to the scope's backing entity. Further more, there are lexical scoping rules including shadowing.
 
      #} {;
       {## Scope Backed by Entity & Attributes #}
