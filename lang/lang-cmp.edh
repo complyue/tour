@@ -290,6 +290,33 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
   }
 
 
+  {## Chaining Comparison Operators
+   # - Resemble how Python does it
+   #} {;
+    edh'chain'cmp'ops # <- follow this bookmark to the description in the grammar chapter
+
+    # %% # Let's take these values for example
+    let (x, y, z,) = (1, 2, 3,)
+
+    # %% # It's quite like how Python supports it
+    ; ( x < y <= z ) is true
+    # %# Note `y` is only evaluated once there, as Python would do
+
+    # %% # You can also chain equality comparisons together
+    ; ( x != y == z ) is false
+    # %%
+    ; ( x != y == 2 ) is true
+
+    # %% # But it's not the same as in Python, Đ doesn't chain equality comparisons and ordering comparisons together, when mixed, the groups follow their `infixr 4` semantics, so this works:
+    true == x < y <= z
+
+    # %% # But this will err out:
+    x < y <= z == true
+
+    # %#
+  }
+
+
   {## Module System
    # - Blend of several popular things
    #} {;

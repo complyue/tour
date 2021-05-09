@@ -858,6 +858,40 @@ Both operands will be evaluated anyway, and it'll be runtime error if either lef
         3*7 <= 28
         # %#
 
+
+        {## Chaining
+         # - Chain a group of equality or ordering comparison operations together
+         #} {;
+          {## Chaining #}
+          export edh'chain'cmp'ops = bookmark()
+
+          # %% # Let's take these values for example
+          let (x, y, z,) = (1, 2, 3,)
+
+          # %% # You can chain ordering comparisons together, for brevity and Math feeling
+          ; ( x < y <= z ) is true
+
+          # %% # `x < y <= z` is desugared to:
+          {@
+            _x'eval'ed = x
+            _y'eval'ed = y
+            _x'eval'ed < _y'eval'ed and _y'eval'ed <= z
+          @}
+          # %# Please recognize the short-circuit implications and evaluation of `y` just once
+
+          # %% # You can also chain equality comparisons together
+          ; ( x != y == z ) is false
+          # %%
+          ; ( x != y == 2 ) is true
+
+          # %% # But when mixed, they follow their `infixr 4` semantics, so this works:
+          true == x < y <= z
+
+          # %% # But this will err out:
+          x < y <= z == true
+
+          # %#
+        }
       }
     }
 
