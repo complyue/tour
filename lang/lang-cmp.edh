@@ -307,7 +307,7 @@ Nevertheless you can change per user settings of your IDE, for a different soft 
     # %%
     ; ( x != y == 2 ) is true
 
-    # %% # But it's not the same as in Python, Đ doesn't chain equality comparisons and ordering comparisons together, when mixed, the groups follow their `infixr 4` semantics, so this works:
+    # %% # But it's not always the same as in Python, Đ does not chain equality comparisons and ordering comparisons together, when mixed, the groups follow their `infixr 4` semantics, so this works:
     true == x < y <= z
 
     # %% # But this will err out:
