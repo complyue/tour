@@ -1,0 +1,13 @@
+{## Intuitable Syntax/Semantics/Pragramatics
+ # - Even at cost of broken rules
+
+Đ is designed to be prevalently intuitable, i.e. capable of being intuitively sensed or understood. Also, the intuitions ought to be maintained for coherence.
+
+Such goals should remain in extending the semantics & programatics by its users (lib authors and/or end programmers), even at cost of broken rules, those rules typical appear machine-friendly, in lexing, parsing, interpreting etc.
+
+ #} {;
+  {## Intuitable Syntax/Semantics/Pragramatics #}
+  export edh'intuitable = bookmark()
+
+
+}
