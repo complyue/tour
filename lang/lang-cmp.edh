@@ -206,7 +206,7 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
     {; a=1 }
     # %#
 
-    # The idiomatic style is to put a semicolon right after the opening curly brace/bracket, when there are risks for it to be mis-interpreted/parsed as a dict literal:
+    # The idiomatic style is to put a semicolon right after the opening brace (curly bracket), when there are risks for it to be mis-interpreted/parsed as a dict literal:
     {;
       # It can still parse as dict literal with comments inside
     }

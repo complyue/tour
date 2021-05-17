@@ -284,7 +284,7 @@ In Đ code it's considered idiomatic to:
       {## Idioms #}
       export edh'semicolon'comma'idioms = bookmark()
 
-      # The idiomatic style is to put a semicolon right after the opening curly brace/bracket, when a block instead of dict literal intended:
+      # The idiomatic style is to put a semicolon right after the opening brace (curly bracket), when a block instead of dict literal intended:
       {;
         # It can still parse as dict literal with comments inside, if without the semicolon
       }
