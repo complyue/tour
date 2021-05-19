@@ -2055,7 +2055,7 @@ Vector is a mutable type, optimized for index based random access, and supports 
         export edh'vector = bookmark()
 
         # %% # Vector constructor takes all positional arguments, so arg unpacking and apk comphrehension can be used to initialize a Vector
-        v = Vector( *()=< for i from range(10) do i )
+        v = Vector( *()=< for i from 0:10 do i )
 
         # %% # A Vector can be sliced with a <start>:<stop> pair
         # Note that <start> is inclusive and <stop> is exclusive, which is the same syntax and semantics as in Python
@@ -2303,7 +2303,7 @@ Note that usual numeric index in Đ is 0-based, carrying _offset_ semantics as i
       export edh'index'vals = bookmark()
 
       # %% # Let's take a `Vector` which is indexable, e.g.
-      v = Vector( * ()=< for i from range(5) do i )
+      v = Vector( * ()=< for i from 0:5 do i )
       # %#
 
       # %% # Individual elements can be obtained via a numeric index
@@ -2358,7 +2358,7 @@ Otherwise, <step> defaults to 1 when <stop> is greater than <start>; or -1 when 
         export edh'slicers = bookmark()
 
         # %% # Taking this Vector e.g.
-        v = Vector( * ()=< for i from range(10) do i )
+        v = Vector( * ()=< for i from 0:10 do i )
 
         # %% # Slice it since 2, and up to 8, stepping 2
         v[ 2:8:2 ]
@@ -2816,14 +2816,7 @@ The loop-source is a generator procedure call in this case
       ; () => edh'generator'procs # <- follow this bookmark to that section
 
 
-      # The simplest example is to iterate through a range of numbers:
-      # %% # Note that `range()` below is a generator procedure, you can go to its definition to see how it's implemented
-      for i from range( 3:9 )
-      do console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
-      # %#
-
-
-      # Here is a slightly more complex example, you're supposed to observe:
+      # In this example, you're supposed to observe:
       #  * The generator procedure can take arbitrary arguments
       #  * `yield` is used from within the generator procedure to give out one item at a time, the item can go as a freeform ArgsPack. Note that the apk is packed with arguments packing semantics, which is described at:
       ; () => edh'args'un'packing # <- follow this bookmark to that section
@@ -2950,16 +2943,16 @@ The comprehension (=<) operator can be used to pump iterated result values from 
       export edh'loop'comprehension = bookmark()
 
       # %% # Positional args comprehension
-      ; () =< for i from range(3:9) do i*i
+      ; () =< for i from 3..8 do i*i
 
       # %% # Keyword args comphrehension
-      ; () =< for i from range(3:9) do ( @( "square'of'" ++ i )= i*i, )
+      ; () =< for i from 3..8 do ( @( "square'of'" ++ i )= i*i, )
 
       # %% # List comprehension
-      ; [] =< for i from range(3:9) do i*i
+      ; [] =< for i from 3..8 do i*i
 
       # %% # Dict comprehension
-      {} =< for i from range(3:9) do ( "square-of-" ++ i ): i*i
+      {} =< for i from 3..8 do ( "square-of-" ++ i ): i*i
       # %#
     }
 
@@ -3005,7 +2998,7 @@ All the lexical scopes are shared among forker and forkee threads, when race con
 
       # %% #
       c = 0
-      for _ from range(100) do go {
+      for _ from 1..100 do go {
         ai c += 1 # With the `ai` keyword, it is race free
       }
       # %% # Observe after a second, see its always 100 as expected
@@ -3014,7 +3007,7 @@ All the lexical scopes are shared among forker and forkee threads, when race con
 
       # %% #
       c = 0
-      for _ from range(100) do go {
+      for _ from 1..100 do go {
         c += 1 # Without the `ai` keyword here, some increments can be overwritten by others
       }
       # %% # Observe after a second, it'll probably be less than 100 if you have multiple CPU cores
@@ -3336,7 +3329,7 @@ Also note that _finalization_ code (i.e. statement(s) at rhs of the (@=>) operat
       }
 
       {
-        for forkee'id from range(3) do go async'some(forkee'id)
+        for forkee'id from 1..3 do go async'some(forkee'id)
       } @=> {
         console.info<| "The cleanup should only happen on the original thread."
       } $=> {@ # Use a scoped block for the catch, as this catch block can multi-shot on multiple descendant threads, it's a race condation to capture the thrown exception as a named attribute into a shared scope then use it along.
@@ -3486,20 +3479,18 @@ The `yield` expression can be intuited as calling the for-loop's do block (the l
     export edh'generator'procs = bookmark()
 
     # %% #
-    {## Iterating the factorial of numbers since 1 up to `n` as specified #}
-    generator withFactorialUpTo( n ) {
+    {## Iterating the factorial of numbers from 1 to `n` as specified #}
+    generator withFactorialTo( n ) {
       v = 1
-      for i from range( 1 : n+1 ) do {
+      for i from 1..n do {
         old'v = v
         v = i * v
         yield (i, v)
       }
     }
-    # %# Note `range()` used above is a generator procedure by itself
-    range # <- go to its definition to see the implementation as a sophisticated example
 
     # %% # It is used like this:
-    for (i, fv) from withFactorialUpTo(7)
+    for (i, fv) from withFactorialTo(7)
     do console.print$ i ++ '! = ' ++ fv
 
 
