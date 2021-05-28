@@ -136,15 +136,10 @@ Everything is a _value_ in Đ, every _value_ is of some _type_. Some types are i
 {## Immutable Scalars
  # - Just common place
  #} {;
-  # %% Numbers are of `DecimalType`
+  # %% Numbers are of `Decimal` type
   type( 3 )
-  # %% Strings are of `StringType`
+  # %% Strings are of `String` type
   type( 'Hello' )
-  # %% And Types are ... of `TypeType`
-  type( StringType )
-  # %% Unsurprisingly, `TypeType` is a Type Value too, as well as
-  # `DecimalType` and `StringType`
-  type( TypeType )
   # %#
 }
 

@@ -573,7 +573,7 @@ Prefixing the name of the variable with character(s) to indicate the use make of
        #} {;
 
         # %% # In Đ more usages of ' can be seen, such as word delimiters in a long identifier, maybe a whole new naming convention, but dunno its name:
-        number'of'people :: non'negative!int!DecimalType
+        number'of'people :: non'negative!int!Decimal
         number'of'people = 5
         # %# Note about (::) and (!), they are annotation operators in Đ, will be explained later
 
@@ -642,7 +642,7 @@ Prefixing the name of the variable with character(s) to indicate the use make of
       n = 0
       case type( g ) of {
 
-        GeneratorType -> for i from g(*** gargs ) do {
+        "Generator" -> for i from g(*** gargs ) do {
           yield ( n, i )
           n += 1
         }
@@ -1885,19 +1885,19 @@ Data classes take advantage of this mechanism, so two data instances are conside
    #} {;
     edh'virtual'attrs # <- follow this bookmark to the details in the grammar chapter
 
-    # %% # Let's have a dict value, remind its type is `DictType`
+    # %% # Let's have a dict value, remind its type is `Dict` type
     d = { 'name': 'Yue', 'city': 'Chongqing', }
     type(d)
     # %% # Then obtain number of items in it as if there's a `size` attribute on it
     d.size
     # %% # This is possible because Đ does the translation under the hood, to something like:
-    __DictType_size__(d)
+    __Dict_size__(d)
     # %% # See the result is the same? Then checkout there really is such a method procedure:
-    show$ __DictType_size__
+    show$ __Dict_size__
     # %% # Also be noted that
     d.push( 'year', 2021, )
     # %% # is translated to
-    __DictType_push__(d)( 'year', 2021, )
+    __Dict_push__(d)( 'year', 2021, )
     # %% # Now you see the dict can be actually updated this way
     d
     # %# How convenient.
@@ -1921,7 +1921,7 @@ A scope can be wrapped as an object, for reflective evaluation of Đ expressions
   {## The `expr` Expression
    # - Literal expressions
 
-An arbitrary expression following the `expr` keyword will create a literal value of `ExprType`.
+An arbitrary expression following the `expr` keyword will create a literal value of `Expr` type.
 
 At the time an `expr` is defined, immediate values can be interpolated into the defined literal expression value, each immediate expression quoted within a pair of curly braces augmented with '$' will be evaluated at the `expr` definition time, and interpolated as literal values embedded in the result expression.
 

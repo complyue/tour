@@ -769,7 +769,7 @@ You can use just the `operator` keyword to override an existing operator
         {## Strict Version
          # - (&&) / (||)
 
-Both operands will be evaluated anyway, and it'll be runtime error if either left or right hand side expression evaluates to a value of type other than `BoolType`.
+Both operands will be evaluated anyway, and it'll be runtime error if either left or right hand side expression evaluates to a value of type other than `Bool`.
 
          #} {;
           {## Strict Version #}
@@ -1105,7 +1105,7 @@ Note that Julia's symbol is still alphanumeric based, and is for AST manipulatio
         symbol @secret
         dir
         # %% # Its alphanumeric name can be used against current scope to obtain the value
-        type(secret) is SymbolType
+        type(secret) is "Symbol"
         # %# See above is true.
 
         # %% # Create a new attribute named after it, in the namespace, by assignment
@@ -1384,19 +1384,19 @@ Special note that virtual attributes are readonly, i.e. can not be assigned as d
           {## Virtual Attributes #}
           export edh'virtual'attrs = bookmark()
 
-          # %% # Let's have a dict value, remind its type is `DictType`
+          # %% # Let's have a dict value, remind its type is `Dict`
           d = { 'name': 'Yue', 'city': 'Chongqing', }
           type(d)
           # %% # Then obtain number of items in it as if there's a `size` attribute on it
           d.size
           # %% # This is possible because Đ does the translation under the hood, to something like:
-          __DictType_size__(d)
+          __Dict_size__(d)
           # %% # See the result is the same? Then checkout there really is such a method procedure:
-          show$ __DictType_size__
+          show$ __Dict_size__
           # %% # Also be noted that
           d.push( 'year', 2021, )
           # %% # is translated to
-          __DictType_push__(d)( 'year', 2021, )
+          __Dict_push__(d)( 'year', 2021, )
           # %% # Now you see the dict can be actually updated this way
           d
           # %# How convenient.
@@ -1561,7 +1561,7 @@ Note the named version of a value may or may not "equal" to the original version
     repr$ 𝛑
 
     # %% # After some manipulation (e.g. arithmetics), it may no longer be a term, even the ultimate value are identical to the original value
-    repr$ 𝛑 * 1 # Now just an immutable value of DecimalType
+    repr$ 𝛑 * 1 # Now just an immutable value of Decimal type
 
     # %% # Type of a term comes from its original value
     type( 𝛑 )
@@ -1604,7 +1604,7 @@ Note the named version of a value may or may not "equal" to the original version
       # Immutable values can be uniquely identified by its unchangable value, regardless of its original source.
       # %% # E.g.
       3 * 7 is 21
-      # %% # The complex ArgsPackType is immutable after all, though the order of arguments is siganificant in identity test. Especially note named arguments are ordered by original occurrence, not by sort order of the names or any otherwise.
+      # %% # The complex ArgsPack type is immutable after all, though the order of arguments is siganificant in identity test. Especially note named arguments are ordered by original occurrence, not by sort order of the names or any otherwise.
       ; ( a= 2, 3, 5, b= 7, ) is ( 3, a= 2, b= 7, 5, )
       # %% # Difference in arg order, either that of positional args or named args, change an apk's identity
       ; ( a= 2, 3, 5, b= 7, ) is ( 3, b= 7, 5, a= 2, )
@@ -1833,7 +1833,7 @@ All values are assumed to be able to tell if it is truthful, or on the contrary,
       {## Numeric Values #}
       export edh'numeric'values = bookmark()
 
-      # %% # `nan` means Not-A-Number, but of DecimalType, which is a numeric type
+      # %% # `nan` means Not-A-Number, but of Decimal type, which is a numeric type
       show$ nan
       # %% # `nan` is technically the result of 0 divided by 0
       0/0 is nan
@@ -3198,8 +3198,8 @@ The rhs handler expression can explicitly issue a `rethrow` statement to continu
 
       # %% #
       method f1(v) case v |type of {
-        DecimalType -> v*5
-        StringType -> {
+        "Decimal" -> v*5
+        "String" -> {
           throw IOError( "Can't open file " ++ v)
         }
         { bad'type } -> {
@@ -3372,7 +3372,7 @@ The general syntax to define a vanilla procedure is:
 
   method <procedure-name> <arg-spec> <procedure-body>
 
-The definition is an expression evaluates to a value of `MethodType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `Method` type, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
 Note that many other procedures share mostly the same syntax with the vanilla procedure definition, they just use different keywords and imply different semantics when called.
 
@@ -3418,7 +3418,7 @@ The general syntax to define an intetpreter procedure is:
 
   interpreter <procedure-name> ( callerScope, ***<rest-arg-spec> ) <procedure-body>
 
-The definition is an expression evaluates to a value of `InterpreterType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `Interpreter` type, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
 The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this procedure is called, and rest arguments will receive what the caller passes for the call, but they will be expression values without evaluated.
 
@@ -3466,7 +3466,7 @@ The general syntax to define a generator procedure is:
 
   generator <procedure-name> <arg-spec> <procedure-body>
 
-The definition is an expression evaluates to a value of `GeneratorType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `Generator` type, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
 A generator procedure can not be called like other procedures, the only place it can be called is by a for-loop, as the call expression between the `from` keyword and `do` keyword of the for-loop.
 
@@ -3565,7 +3565,7 @@ The general syntax to define a producer procedure is:
 
   producer <procedure-name> <arg-spec> <procedure-body>
 
-The definition is an expression evaluates to a value of `ProducerType`, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `Producer` type, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
    #} {;
     {## Producer Procedures #}
@@ -3669,9 +3669,9 @@ or
 
 Technically, it is the application of the arrow definition (=>) or (=>*) operators, thus an infix operation expression.
 
-With the (=>) operator, the expression evaluates to a value of `GeneratorType` (which is a bound generator arrow), if the body contains at least 1 `yield` expression; otherwise the result will be of `MethodType` (thus a vanilla arrow). The semantics when the result procedure is called, is identical to a generator procedure or a vanilla procedure accordingly.
+With the (=>) operator, the expression evaluates to a value of `Generator` type (which is a bound generator arrow), if the body contains at least 1 `yield` expression; otherwise the result will be of `Method` type (thus a vanilla arrow). The semantics when the result procedure is called, is identical to a generator procedure or a vanilla procedure accordingly.
 
-With the (=>*) operator, the expression evaluates to a value of `ProducerType` (which is a bound producer arrow). The semantics when the result procedure is called, is identical to a producer procedure.
+With the (=>*) operator, the expression evaluates to a value of `Producer` type (which is a bound producer arrow). The semantics when the result procedure is called, is identical to a producer procedure.
 
    #} {;
     {## Arrow Procedures #}
@@ -3766,7 +3766,7 @@ The general syntax to define a 2-arg operator procedure is:
 
   operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( <lhs-value>, <rhs-value> ) <procedure-body>
 
-The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `Operator` type, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
      #} {;
       {## Strict (2-arg) Operator Procedures #}
@@ -3810,7 +3810,7 @@ The general syntax to define a 3-arg operator procedure is:
 
   operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( callerScope, <lhs-expr>, <rhs-expr> ) <procedure-body>
 
-The definition is an expression evaluates to a value of `OperatorType`, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
+The definition is an expression evaluates to a value of `Operator` type, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
      #} {;
       {## Non-Strict (3-arg) Operator Procedures #}
@@ -4277,7 +4277,7 @@ An end object always holds the "HAS-A" relationship with each of its super objec
       b is not o
 
       # %% # And `b` is actually listed as one of `o`'s super object instances
-      b ?<= supers(o)
+      b is in supers(o)
       # %# Note the super instance of class `A` can be obtained similarly
 
     }
@@ -5331,7 +5331,7 @@ A scope can be wrapped as an object, for reflective evaluation of Đ expressions
   {## The `expr` Expression
    # - Literal expressions
 
-An arbitrary expression following the `expr` keyword will create a literal value of `ExprType`.
+An arbitrary expression following the `expr` keyword will create a literal value of `Expr` type.
 
 At the time an `expr` is defined, immediate values can be interpolated into the defined literal expression value, each immediate expression quoted within a pair of curly braces augmented with '$' will be evaluated at the `expr` definition time, and interpolated as literal values embedded in the result expression.
 

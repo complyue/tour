@@ -81,7 +81,7 @@ Well in Đ, object composition is used to implement inheritance in a less strict
   # %% # They are distinct instances
   b is not o
   # %% # And `b` is actually listed as one of `o`'s super object instances
-  b ?<= supers(o)
+  b is in supers(o)
   # %# Note the super instance of class `A` can be obtained similarly
 
 }
