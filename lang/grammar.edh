@@ -2198,6 +2198,45 @@ Also note that identity equality is used for keys of a dict, that means a dict c
       }
 
 
+      {## Range
+       # - Range with open/closed boundaries
+
+ Range is a simple container of two boundary values, meant to be used in `in`/`is in` range tests, as well as in bounded for-loops.
+
+Range values are constructed with the infix operators: (..) (^..) (..^) and (^..^), while the `^` character can be subvocally read as "up to", denoting its bound value being an open bound. These operators are inspired by Raku.
+
+       #} {;
+        {## Range #}
+        export edh'range = bookmark()
+
+        # %%
+        3.1 in 3..5
+
+        # %% # Closed bound is inclusive
+        3 in 3..5
+
+        # %% # Open bound is exclusive
+        3 in 3^..^5
+
+
+        # All the following loops have the same iterations
+
+        # %%
+        for i in 3..5 do console.print(i)
+
+        # %%
+        for i in 2^..5 do console.print(i)
+
+        # %%
+        for i in 3..^6 do console.print(i)
+
+        # %%
+        for i in 2^..^6 do console.print(i)
+
+        # %#
+      }
+
+
       {## Pair
        # - Singly linked append cons list
 
@@ -2799,6 +2838,10 @@ The general syntax is:
 
   for <loop-arguments> from <loop-source> do <loop-body>
 
+or
+
+  do <loop-body> for <loop-arguments> from <loop-source>
+
    #} {;
     {## for-from-do Loop #}
     export edh'for'loop = bookmark()
@@ -2943,29 +2986,31 @@ The comprehension (=<) operator can be used to pump iterated result values from 
       export edh'loop'comprehension = bookmark()
 
       # %% # Positional args comprehension
-      ; () =< for i from 3..8 do i*i
+      ; () =< do i*i for i from 3..8
 
       # %% # Keyword args comphrehension
-      ; () =< for i from 3..8 do ( @( "square'of'" ++ i )= i*i, )
+      ; () =< do ( @( "square'of'" ++ i )= i*i, ) for i from 3..8
 
       # %% # List comprehension
-      ; [] =< for i from 3..8 do i*i
+      ; [] =< do i*i for i from 3..8
 
       # %% # Dict comprehension
-      {} =< for i from 3..8 do ( "square-of-" ++ i ): i*i
+      {} =< do ( "square-of-" ++ i ): i*i for i from 3..8
       # %#
     }
 
   }
 
 
-  {## while Loop
+  {## while & do-while Loop
    # - Checked iterations
 
 The `while` loop can be used to repeat execution of its loop body again and again, so long as its condition hold, i.e. null test being false for the result as the condition expression evaluated each time.
 
+The `do-while` loop is the same except that the condition is tested at end of each iteration, so its first iteration is always executed.
+
    #} {;
-    {## while Loop #}
+    {## while & do-while Loop #}
     export edh'while'loop = bookmark()
 
     # %% #
@@ -2974,8 +3019,15 @@ The `while` loop can be used to repeat execution of its loop body again and agai
       console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
       i += 1
     }
-    # %#
 
+    # %% #
+    i = 3
+    do {
+      console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
+      i += 1
+    } while i < 9
+
+    # %#
   }
 
 

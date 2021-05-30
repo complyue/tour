@@ -19,7 +19,7 @@ Familiarity with Haskell is a great plus, as the base Đ interpreter is written 
   import * './grammar'
   edh'grammar'details # <- follow this bookmark to there
 
-  # Alternatively, you can learn Python first if you prefer.
+  # Alternatively, you can learn Python/JavaScript first if you prefer.
 }
 
 
@@ -28,8 +28,9 @@ Familiarity with Haskell is a great plus, as the base Đ interpreter is written 
 
 The Đ grammar is designed with a major goal of interoperation by scripting, for IPC (Inter-Process Communication) across processes of heterogeneous runtime implementations. So as to finally integrate massive scale of software compoonents (possibly independently developed by many vendors) into live systems.
 
-While some constructs from Haskell, Go, Python and others, are introduced
-for purpose of ergonomics. E.g.
+Đ tries to be syntatically compatible with JavaScript as much as possible, many JavaScript code snippets are valid Đ code in syntax (and even with similar semantics at times), together with Đ's expression interpolation feature, JavaScript code snippets can be defined with legitimate Đ `expr` expressions, with runtime values "interpolated" into them, then sent to the Browser or NodeJS servers for execution. Many Python snippets can be crafted and remotely executed in similar ways, when indentations & curly braces don't stay in the way.
+
+While some constructs from Haskell, Go, Python and others, are introduced into Đ for purpose of ergonomics. E.g.
 
 - custom infix operators, with arbitrary associativity and precedence
     * from Haskell, C++ etc.
@@ -109,14 +110,15 @@ And note that Đ formatter is by default invoked on saving of `.edh` source file
 Just examples ought to be enough, plus guidelines for idiomatics:
 
  * Avoid semicolons - unless for disambiguation
- * Place trailing commas where possible - unless it's more concise without it
+ * Place trailing commas where possible - unless it's more concise without it, e.g. there're only 3 terms or less, and you know that no new terms tend to be added following the last one.
 
 Note semicolons can be really technically omitted in Đ, not the case like in JavaScript, that the language does [Automatic Semicolon Insertion]
   https://tc39.es/ecma262/#sec-automatic-semicolon-insertion
 
  #} {;
 
-  # The following 5 cells have identical semantics and result value
+  # One-liner code block
+  # - The following 5 cells have identical semantics and result value
   # %%
   { a=5; b=3; c=9; }
   # %%
@@ -129,7 +131,8 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
   { a=5 b=3 c=9 }
   # %#
 
-  # The following 5 cells too, have identical semantics and result value
+  # Dict literal
+  # - The following 5 cells too, have identical semantics and result value
   # %%
   { 'a': 5, 'b': 3, 'c': 9, } # <- idiomatic one
   # %%
@@ -142,7 +145,8 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
   { 'a': 5 'b': 3 'c': 9 }
   # %#
 
-  # The following 5 cells too, have identical semantics and result value
+  # List literal
+  # - The following 5 cells too, have identical semantics and result value
   # %%
   ; [ 5, 3, 9, ] # <- idiomatic one
   # %%
@@ -155,7 +159,8 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
   ; [ 5 3 9 ]
   # %#
 
-  # The following 5 cells too, have identical semantics and result value
+  # Positional-only args pack literal
+  # - The following 5 cells too, have identical semantics and result value
   # %%
   ; ( 5, 3, 9, ) # <- idiomatic one
   # %%
@@ -187,16 +192,16 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
     # You may have noticed the semicolons everywhere, each following an opening curly brace too. Why are they there?
 
     # %% # Well, check out this:
-    type( {; } )
+    type( {;} )
     # %% # Then this:
     type( {} )
     # %#
 
     # The answer is: The semicolon inside `{;}` disambiguates it being a block (though empty) instead of an empty dict expressed as `{}`
 
-    # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed (with the exception of branches' early break, though, and about that later)
+    # FYI, in Đ, block is a type of expression (instead of statement as in C family languages). A block encloses arbitrary number of statements, and evaluates to the value of the last statement when executed. Tthough there are exceptional cases like early `return`, `break`, `continue`, and (->) branches, but about that later.
     # %% # And an empty block evals to `nil`, check this to be true
-    {; } is nil
+    {;} is nil
     # %#
 
     # Though you don't need a semicolon when there is at least 1 statement in a block, e.g.
@@ -208,7 +213,7 @@ Note semicolons can be really technically omitted in Đ, not the case like in Ja
 
     # The idiomatic style is to put a semicolon right after the opening brace (curly bracket), when there are risks for it to be mis-interpreted/parsed as a dict literal:
     {;
-      # It can still parse as dict literal with comments inside
+      # It can still parse as dict literal with comments inside, if not disambiguated
     }
 
 
@@ -544,7 +549,7 @@ The single quote character (') can appear in an identifier, only if it's not the
       # %% # In Haskell and Math, a suffix ' is used to denote something slightly different from the symbol without it:
       let ( x, y ) = ( 7, 3 )
       let ( q, q' ) = ( x / y, x // y )
-      'Is ' + q' + ' equal to ' + q + " ? That's " + ( q'==q ) + ' of course!'
+      'Is ' ++ q' ++ ' equal to ' ++ q ++ " ? That's " ++ ( q'==q ) ++ ' of course!'
       # %#
 
       # There are norms in Haskell for two or even more ' as the suffix, and technically it can appear anywhere except being the start of an identifier, it's the same in Đ
@@ -581,105 +586,6 @@ Prefixing the name of the variable with character(s) to indicate the use make of
     }
   }
 
-
-  {## Some Emulations
-   # - Emulating utilities in other languages
-   #} {;
-    {## Some Emulations #}
-    export edh'emulate'others = bookmark()
-
-    # %% # resembling `range` in Python
-    generator range( start, stop=None, step=None ) {
-
-      if stop is None && step is None then case start of {
-        # enable the hidden *Edhic* version of `range` using pair
-        { ( start:stop:step ) } -> { fallthrough }
-        { ( start:stop ) } -> { fallthrough }
-      }
-
-      if stop is None then { let ( stop, start ) = ( start, 0 ) }
-      start == stop -> { return nil }
-      n = start
-
-      start < stop -> {
-        if step is None
-        then step = 1
-        else if step <= 0 then {
-          console.warn <| 'step of ' ++ step ++ ' for range [' ++
-          start ++ ', ' ++ stop ++ ") won't converge"
-          return nil
-        }
-        while n < stop {
-          yield n
-          n += step
-        }
-      }
-
-      start > stop -> {
-        if step is None
-        then step = -1
-        else if step >= 0 then {
-          console.warn <| 'step of ' ++ step ++ ' for range [' ++
-          start ++ ', ' ++ stop ++ ") won't converge"
-          return nil
-        }
-        while n > stop {
-          yield n
-          n += step
-        }
-      }
-    }
-
-    # %% # resembling `enumerate` in Python
-
-    {##
-     # enumerating tuple/list/dict is quite the same, but to enumerate
-     # a generator, you need to pass the generator proc here followed by
-     # its args, instead of calling it your self. as generators in Edh
-     # can only be call by a for-from-do loop.
-     #}
-    generator enumerate( g, ***gargs ) {
-      n = 0
-      case type( g ) of {
-
-        "Generator" -> for i from g(*** gargs ) do {
-          yield ( n, i )
-          n += 1
-        }
-
-        if not null( gargs ) then
-        console.warn <| '`enumerate` can hanle one series only'
-
-        _ -> for i from g do {
-          yield ( n, i )
-          n += 1
-        }
-
-      }
-    }
-
-    # %% # resembling `replicate` in Haskell
-    method replicate( n, *args ) {
-      apk = ()
-      for _ from range( n ) do apk = ( apk=<args )
-      return apk
-    }
-
-    # %% # resembling `zip3` in Haskell
-    generator zip3( xs, ys, zs ) {
-      while true case xs of {
-        { x :> xs } -> case ys of {
-          { y :> ys } -> case zs of {
-            { z :> zs } -> {
-              yield ( x, y, z )
-            } return nil
-          } return nil
-        } return nil
-      }
-    }
-
-    # %#
-  }
 }
 
 
@@ -1060,8 +966,8 @@ Vector is a mutable type, optimized for index based random access, and supports 
       {## Vector #}
       export edh'vector'vs'js'py = bookmark()
 
-      # %% # Vector constructor takes all positional arguments, so arg unpacking and apk comphrehension can be used to initialize a Vector
-      v = Vector( *()=< for i from 0:10 do i )
+      # %% # Vector constructor takes all positional arguments, so arg unpacking together with apk comphrehension can be used to initialize a Vector
+      v = Vector( *()=< do i for i from 0:10 )
 
       # %% # A Vector can be sliced with a <start>:<stop> pair
       # Note that <start> is inclusive and <stop> is exclusive, which is the same syntax and semantics as in Python
@@ -1203,7 +1109,7 @@ Vector is a mutable type, optimized for index based random access, and supports 
 
 Technically speaking, Đ pair is immutable singly linked append cons list, but it is mostly used in place of slices as in Python, as well as dict entry specifiers, instead of a general list.
 
-Unlike slice in Python, the colon (:) operator can construct new pairs in anywhere, not just as index within a pair of square brackets ([]). And technically it is not restricted in slice usage, but more general.
+Unlike slice in Python, the colon (:) operator can construct new pairs in anywhere, not just as index enclosed by square brackets ([]). Also technically it is not restricted in slice usage, but more general.
 
      #} {;
       {## Pair #}
@@ -1258,6 +1164,7 @@ Semantically, Đ is heavily influnced by the functional Haskell langauge, i.e. m
 
 Some syntaxes also follow Haskell, e.g. the if-then-else expression, as well as the semantics.
 
+Though Đ at the same time tries to be syntatically compatible with JavaScript as much as possible, so some JavaScript styled syntaxes are also accepted, and some of them even carry the same or similar semantics. E.g. `then` can be omitted in an `if` expression, `from` keyword can appear in `import` expressions, `const` is allowed in places of `let` (but with same semantics), etc.
    #} {;
     {## Control Flows #}
     export edh'ctrl'flows = bookmark()
@@ -1306,9 +1213,9 @@ In Python, `and` plus `or` operator can work together to simulate C's tenary ope
     {## For Loop
      # - Remotely the traditional for loop
 
-Đ has a for-from-do loop construct. On the surface, the semantics is quite the same as with a traditional for loop in C, Python, JavaScript and etc.
+Đ has a for-from-do loop construct. On the surface, the semantics is quite the same of for-in loop as in Python, and for-of loop as in JavaScript.
 
-But the syntax involves the `from` keyword and an extra `do` keyword, becomes quite different from Python's `in` keyword and JavaScript's `of` keyword, which already being different from C's freeform for loop.
+But the syntax involves the `from` keyword and an extra `do` keyword, it becomes quite different from Python's `in` keyword and JavaScript's `of` keyword, which already being different from C's freeform for loop.
 
 Deeper in the semantics, `from` is chosen to carry the implication that the source of iteration is remote to current looping context, and is processed in a streaming fashion. The source is possibly infinite (e.g. the event stream of Bitcoin/USD quotes) or very large (e.g. all historic bid records of a stock) to be loaded at its entirety, The `do` keyword then emphasis that the loop body is executed locally in contrast.
 
@@ -1360,6 +1267,13 @@ Such intuition is very true when looping against an event sink (either from a pr
 
       for i from g() do console.print(i)
 
+
+      # %% # The `do` loop body can appear first
+      do console.print(i) for i in 3..5
+
+      # %% # Which reads nicer in comprehensions
+      [] =< do i*3 for i from 3..5
+
       # %#
 
 
@@ -1394,11 +1308,8 @@ Such intuition is very true when looping against an event sink (either from a pr
     }
 
 
-    {## while Loop
-     # - Same as Python
-
-Despite the syntax wrt identation, `while` loop in Đ is exactly like that in Python.
-
+    {## while & do-while Loop
+     # - Same as JavaScript and other C family languages, and Python partially
      #} {;
       edh'while'loop # <- follow this bookmark to detailed syntax and description in the grammar chapter
 
@@ -1408,6 +1319,14 @@ Despite the syntax wrt identation, `while` loop in Đ is exactly like that in Py
         console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
         i += 1
       }
+
+      # %% #
+      i = 3
+      do {
+        console.print( 'Square of ' ++ i ++ ' is ' ++ i*i )
+        i += 1
+      } while i < 9
+
       # %#
     }
 
@@ -1448,16 +1367,16 @@ In Đ the comprehension (=<) operator can be used to pump iterated result values
      #} {;
 
       # %% # Positional args comprehension
-      ; () =< for i from 3..8 do i*i
+      ; () =< do i*i for i from 3..8
 
       # %% # Keyword args comphrehension
-      ; () =< for i from 3..8 do ( @( "square'of'" ++ i )= i*i, )
+      ; () =< do ( @( "square'of'" ++ i )= i*i, ) for i from 3..8
 
       # %% # List comprehension
-      ; [] =< for i from 3..8 do i*i
+      ; [] =< do i*i for i from 3..8
 
       # %% # Dict comprehension
-      {} =< for i from 3..8 do ( "square-of-" ++ i ): i*i
+      {} =< do ( "square-of-" ++ i ): i*i for i from 3..8
       # %#
     }
 
