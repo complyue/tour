@@ -893,6 +893,101 @@ Both operands will be evaluated anyway, and it'll be runtime error if either lef
           # %#
         }
       }
+
+
+      {## In-range Test Operators
+       # - Check whether a value is in a range
+
+All these operators perform in-range tests:
+  (in)
+  (not in)
+  (is in)
+  (is not in)
+
+Wherein "not" is to negate the result, and "is" invokes identity equality test (or instant equality test is used) when involved.
+
+       #} {;
+        {## In-range Test Operators #}
+        export edh'in'rng'test = bookmark()
+
+        # For the immutable range type and its constructors,
+        ; () => edh'range # <- follow this bookmark to the dedicated section later in this chapter
+
+
+        {## Contiguous Ranges
+         # - Both range value and slice value (without stepping) works this way
+         #} {;
+          {## Contiguous Ranges #}
+          export edh'conti'range'test = bookmark()
+
+          # %% # Using a closed range
+          5.1 in 3..7
+
+          # %% # Using an open range
+          5.1 not in 2^..^8
+
+          # %% # Using a "step-less" slice as a contiguous range
+          5.1 in 3:8
+
+          # %#
+        }
+
+
+        {## Discrete Ranges
+         # - Slice with explicit "step" is treated as a "discrete" range
+         #} {;
+          {## Discrete Ranges #}
+          export edh'discrete'range'test = bookmark()
+
+          # %% # Using a "stepping" slice as a discrete range
+          5 in 3:8:2
+
+          # %% # Notice how this is false?
+          5.1 in 3:8:1
+
+          # %% # Well, regarding how strings are comparable, there can be ranges of strings, and they should be considered "discrete" in a sense
+          'abf' in 'abc'..'abg'
+
+          # %#
+        }
+
+
+        {## Categorical Ranges
+         # - The "element-of" semantics
+
+Taking a container of values as a categorical range, this also forms "element-of" semantics in another sense.
+
+         #} {;
+          {## Categorical Ranges #}
+          export edh'cate'range'test = bookmark()
+
+          # %%
+          5 in (3, 5, 7,)
+
+          # %% # Wonder why this is true?
+          None in ( true, false, Nothing, )
+
+          # %% # Reminds that
+          ( None == Nothing ) is true
+          # %% # While
+          ( None is Nothing ) is false
+
+          # %% # Then you should understand why this is false
+          None is in ( true, false, Nothing, )
+
+          # %#
+
+          # %% # Gotcha!
+          None is in ( true, false, nil, )
+          # %% # But
+          None is not in [ true, false, nil, ]
+          # %% # Why? See:
+          ; ( true, false, nil, ) ++ ' vs ' ++ [ true, false, nil, ]
+          # %# `nil` is not allowed to appear in an ArgsPack, will be automatically replaced with `None` there, but a list is allowed to contain `nil`s
+        }
+
+      }
+
     }
 
   }
