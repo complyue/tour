@@ -968,9 +968,9 @@ Taking a container of values as a categorical range, this also forms "element-of
           None in ( true, false, Nothing, )
 
           # %% # Reminds that
-          ( None == Nothing ) is true
+          ; ( None == Nothing ) is true
           # %% # While
-          ( None is Nothing ) is false
+          ; ( None is Nothing ) is false
 
           # %% # Then you should understand why this is false
           None is in ( true, false, Nothing, )
@@ -4117,6 +4117,42 @@ Conceptually we say they all are of a special type of procedures - definition pr
     export edh'defi'procs = bookmark()
   }
 
+
+  {## Decorator
+   # - Python decorator goes more general in Đ
+
+Python decorator is a syntactic sugar for application of higher order functions as part of the declaration of a new function.
+
+Inspired by Haskell, Đ introduces the procedure call ($) operator (called function application operator in Haskell), it works in places where Python decorators would, though with a little different syntax. Also it works even more generally in Đ.
+
+In addition to ($), there is also the pipe (|) operator with just the oparands flipped, so utility procedure usages like `show( xx )` `repr( xx )` etc. can be written with sugar syntax like `show$ xx`, `repr$ xx`, and `xx |show` `xx |repr`.
+
+   #} {;
+    {## Decorator #}
+    export edh'decorator = bookmark()
+
+    # %% # A decorator is usually written in the host language, but as well, it can be written in Đ the surface language, in form of an interpreter procedure
+
+    interpreter decor( callerScope, fe ) case callerScope.eval( fe ) of { f } -> {
+      callerScope.eval( expr method @(f.name) ( ***apk ) {
+          console.info<| 'Calling procedure `' ++ {$ f.name $} ++ '` with: ' ++ apk
+          {$ f $} ( ***apk )
+      } )
+    }
+
+    # %% # And used like this
+
+    decor$
+    method g ( a, b, c ) {
+      console.info<| 'This is g(), we have: ' ++ ( a=a, b=b, c=c, )
+    }
+
+    # %% # The decorated procedure can be used straight forward
+    g( 1, 2, 3 )
+
+    # %#
+  }
+
 }
 
 
@@ -5827,6 +5863,49 @@ In an integrated system, there are times you need to compose effects from indepe
 
       un'peacekeepers.auth'attack'by( private'force )
     @}
+
+    # %#
+  }
+
+
+  {## Effect Decorator
+   # - Making good use of intepreter procedures
+
+Beyond procedure decorators as you've seen earlier in this chapter, the combination of ($) operator and interpreter procedures can, making decorators on blocks (or any other expression) to have alternate execution semantics, including to have specially armed effectful artifacts.
+
+   #} {;
+    {## Effect Decorator #}
+    export edh'eff'decor = bookmark()
+
+    # %%
+    interpreter withAuth( callerScope, priviledgedBlock, ) {
+      # Do some authentication
+      case console.readSource('Who are you? ').strip of {
+        'Mr. Right' -> {pass}
+        throw EvalError("No, you can't do it!")
+      }
+
+      effect method doIt() {
+        console.print$ "It's done, as you wish!"
+      }
+
+      # Note that the `return` is crucial here:
+      #  * Without it, `return`, `break`, `continue` and etc. within the `priviledgedBlock` won't carry their special semantics anymore,
+      #  * While we explicitly `return` the eval'ed result here, such semantics will be reserved and honored.
+      return callerScope.eval$ priviledgedBlock
+    }
+
+    # %%
+    method doSth() {
+      withAuth$ {
+        perform doIt()
+        return 'Well done!'
+      }
+      return 'Hah! You failed successfully.'
+    }
+
+    # %%
+    doSth()
 
     # %#
   }

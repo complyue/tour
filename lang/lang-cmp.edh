@@ -1465,11 +1465,11 @@ We are not currying Đ procedures, but we have `partial()` resembling the utilit
   {## Decorator
    # - Python decorator goes more general in Đ
 
-Python decorator syntax makes application of higher order functions more ergonmic.
+Python decorator is a syntactic sugar for application of higher order functions as part of the declaration of a new function.
 
-Inspired by Haskell, Đ introduces the procedure call ($) operator (called function application operator in Haskell), it works in places where Python decorators would, though with a little different syntax.
+Inspired by Haskell, Đ introduces the procedure call ($) operator (called function application operator in Haskell), it works in places where Python decorators would, though with a little different syntax. Also it works even more generally in Đ.
 
-And it works even more generally here. In addition to ($), there is also the pipe (|) operator with just the oparands flipped, so utility procedure usages like `show( xx )` `repr( xx )` etc. can be written with sugar syntax like `show$ xx`, `repr$ xx`, and `xx |show` `xx |repr`.
+In addition to ($), there is also the pipe (|) operator with just the oparands flipped, so utility procedure usages like `show( xx )` `repr( xx )` etc. can be written with sugar syntax like `show$ xx`, `repr$ xx`, and `xx |show` `xx |repr`.
 
    #} {;
     {## Decorator #}
