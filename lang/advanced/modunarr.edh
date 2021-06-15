@@ -4,75 +4,139 @@
 export edh'iteration'details = bookmark()
 
 
-{## Synchronous Narration with Generator and For-Loop
+{## Synchronous Narration
  # - Decouple synchronous iterations
+ #} {;
+  {## Synchronous Narration #}
+  export edh'sync'narration = bookmark()
+
+  {## Generator and For-Loop
+   # - Not typical for-loop
 
 The do-block of a for-loop is essentially a synchronous callback, when the loop is calling a generator procedure. The `yield` expression in the generator can be intuited as calling back the loop body, with the loop arguments passed back.
 
 A slight difference with a closure as a real callback is, the loop arguments live within the for-loop's current scope, no extra scope is created as for calling a real callback procedure.
 
- #} {;
-  {## Synchronous Narration with Generator and For-Loop #}
-  export edh'sync'narration = bookmark()
+   #} {;
+    {## Generator and For-Loop #}
+    export edh'loop'iter = bookmark()
 
-  # %% # Technical showcase
-  generator g() {
-    # a `yield` expression in a generator procedure evals to:
-    #   *) `return {break}` on `break` from do block of the loop
-    #   *) `return {return val}` on `return val` from do block of the loop
-    #   *) exception from do block of the loop re-thrown from its position
-    {
-      case yield 'something' of {
-        { break } -> { # Note it should actually match `return { break }`
-          # but if the pattern is written as so, that technically matches
-          # `return nil` instead, so we just use the `{ break }` pattern
-          console.info<| 'the do block broke the for loop'
-          return { break } # cooperate nicely,
-          # `return { break }` effectively evaluates to `return nil`,
-          # not exactly the same as not casing the result from yield,
-          # but the calling for-loop will stop and evaluates to `nil`,
-          # that ultimately is the same semantics as not casing the result
-          # from yield
-        }
-        { return rtn } -> {
-          case rtn of { # It should always be double wrapped return,
-            # not plain return should ever be the result of yield expression
-            { return _ } -> { pass }
-            error$ 'bug: plain return should never be result from yield'
+
+    # %% # Technical showcase
+    generator g() {
+      # a `yield` expression in a generator procedure evals to:
+      #   *) `return {break}` on `break` from do block of the loop
+      #   *) `return {return val}` on `return val` from do block of the loop
+      #   *) exception from do block of the loop re-thrown from its position
+      {
+        case yield 'something' of {
+          { return { break } } -> {
+            console.info<| 'the do block broke the for loop'
+            return { break } # cooperate nicely
           }
-          console.info<| 'early returning from do block: ' ++ show(rtn)
-          return rtn # cooperate nicely,
-          # verbatimly the same as not casing the result from yield
+          { return rtn } -> {
+            case rtn of { # It should always be double wrapped return,
+              # no plain return should ever be the result of yield expression
+              { return _ } -> { pass }
+              error$ 'bug: plain return should never be result from yield'
+            }
+            console.info<| 'early returning from do block: ' ++ show(rtn)
+            return rtn # cooperate nicely
+          }
+          { xchg'val } -> {
+            console.info<| 'the do block evaluated to '
+            ++ show(xchg'val) ++ " for result of generator's yield expr"
+          }
+          console.info<| "the do block eval'ed to nil"
         }
-        { xchg'val } -> {
-          console.info<| 'the do block evaluated to '
-          ++ show(xchg'val) ++ " for result of generator's yield expr"
-        }
-        console.info<| "the do block eval'ed to nil"
+      } $=> { exc } -> {
+        console.warn<| 'the do block throwed an exceptin: ' ++ show( exc )
+
+        # if we do rethrow, the exception will be propagated to outer of
+        # the calling for loop
+        # rethrow
       }
-    } $=> { exc } -> {
-      console.warn<| 'the do block throwed an exceptin: ' ++ show( exc )
-
-      # if we do rethrow, the exception will be propagated to outer of
-      # the calling for loop
-      # rethrow
     }
-  }
-  # %#
+    # %#
 
-  # %%
-  'Loop result: ' ++ show( for _ from g() do pass )
-  # %%
-  'Loop result: ' ++ show( for _ from g() do continue )
-  # %%
-  'Loop result: ' ++ show( for _ from g() do break )
-  # %%
-  'Loop result: ' ++ show( for _ from g() do return 'otherthing' )
-  # %%
-  'Loop result: ' ++ show( for _ from g() do return nil )
-  # %%
-  'Loop result: ' ++ show( for _ from g() do throw 'stop it!' )
-  # %# #
+    # %%
+    'Loop result: ' ++ show( for _ from g() do pass )
+    # %%
+    'Loop result: ' ++ show( for _ from g() do continue )
+    # %%
+    'Loop result: ' ++ show( for _ from g() do break )
+    # %%
+    'Loop result: ' ++ show( for _ from g() do return 'otherthing' )
+    # %%
+    'Loop result: ' ++ show( for _ from g() do return nil )
+    # %%
+    'Loop result: ' ++ show( for _ from g() do throw 'stop it!' )
+    # %# #
+  }
+
+
+  {## Interpreter of Single Expression
+   # - A.k.a. block decorator
+   #} {;
+    {## Interpreter of Single Expression #}
+    export edh'block'decor = bookmark()
+
+
+    # %% # Technical showcase
+    interpreter d( callerScope, blockExpr, ) {
+      # within a contextual scope, an expression evals to:
+      #   *) `{continue}` on `continue` from the expression
+      #   *) `{break}` on `break` from the expression
+      #   *) `{return val}` on `return val` from the expression
+      #   *) exception from the expression re-thrown from its position
+      {
+        case callerScope.eval$ blockExpr of {
+          { continue } -> {
+            console.info<| 'the block continued outer loop'
+            return { continue } # cooperate nicely
+          }
+          { break } -> {
+            console.info<| 'the block broke outer loop'
+            return { break } # cooperate nicely
+          }
+          { return nil } -> {
+            console.info<| 'early returning nil from the block'
+            return { return nil } # cooperate nicely
+          }
+          { return rtn } -> {
+            console.info<| 'early returning from the block: ' ++ show(rtn)
+            return { return rtn } # cooperate nicely
+          }
+          { xchg'val } -> {
+            console.info<| 'the block evaluated to '
+            ++ show(xchg'val) ++ " for `eval()` result"
+          }
+          console.info<| "the block eval'ed to nil"
+        }
+      } $=> { exc } -> {
+        console.warn<| 'the block throwed an exceptin: ' ++ show( exc )
+
+        # if we do rethrow, the exception will be propagated to outer of
+        # the decorated block
+        # rethrow
+      }
+    }
+    # %#
+
+    # %%
+    'Block result: ' ++ show( d$ { pass } )
+    # %%
+    'Block result: ' ++ show( d$ { continue } )
+    # %%
+    'Block result: ' ++ show( d$ { break } )
+    # %%
+    'Block result: ' ++ show( d$ { return 'otherthing' } )
+    # %%
+    'Block result: ' ++ show( d$ { return nil } )
+    # %%
+    'Block result: ' ++ show( d$ { throw 'stop it!' } )
+    # %# #
+  }
 
 }
 
