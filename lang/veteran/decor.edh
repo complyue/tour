@@ -1,0 +1,47 @@
+{## Decorators #}
+
+{## Đ Decorators
+ # - Syntactic Sugars for some higher order procedures
+ #} {;
+  {## Đ Decorators #}
+  export edh'decorators = bookmark()
+
+  {## Procedure Decorator
+   # - Python like decorator
+   #} {;
+    {## Procedure Decorator #}
+    export edh'py'decorator = bookmark()
+
+
+  }
+
+
+  {## Block Decorator
+   # - Effect Injection into usual control flow constructs
+   #} {;
+    {## Block Decorator #}
+    export edh'block'decorator = bookmark()
+
+
+  }
+
+
+  {## Quasi Decorator
+   # - Passing arrow procedures (closures over lexical scope)
+   #} {;
+    {## Quasi Decorator #}
+    export edh'quasi'decorator = bookmark()
+
+    # %%
+    console.print$ (3,2,a=9) $ (5,) $ (b=7,)
+
+    # %%
+    console.print$@ (3,2,a=9) $@ 5 $@ (b=7,)
+
+    # %%
+    console.print(3,2,a=9) $@ 5 $@ (b=7,)
+
+    # %#
+  }
+
+}
