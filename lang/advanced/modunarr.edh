@@ -37,7 +37,7 @@ A slight difference with a closure as a real callback is, the loop arguments liv
           { return rtn } -> {
             case rtn of { # It should always be double wrapped return,
               # no plain return should ever be the result of yield expression
-              { return _ } -> { pass }
+              { return _ } -> pass
               error$ 'bug: plain return should never be result from yield'
             }
             console.info<| 'early returning from do block: ' ++ show(rtn)

@@ -3660,7 +3660,7 @@ The `yield` expression can be intuited as calling the for-loop's do block (the l
         # Otherwise the loop body has evaluated to a usual value and passed back here,
         # we simply captured it with attribute name `n` to update our local scope,
         # the new value will be used in next iteration as in the `n*n` expression above.
-        { n } -> { pass }
+        { n } -> pass
 
       }
     }
