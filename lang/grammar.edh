@@ -491,7 +491,7 @@ It is used to negate a decimal value, and will err out for other type of values 
         # %%
         ; -3.5
         # %%
-        ; - ( 5 / -11 )
+        ; -( 5 / -11 )
         # %%
         ; -inf
         # %#
