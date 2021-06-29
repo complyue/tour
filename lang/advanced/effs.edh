@@ -176,4 +176,37 @@ In an integrated system, there are times you need to compose effects from indepe
     # %#
   }
 
+  {## Effects with Defaulting
+   # - Defaulting of effects
+   #} {;
+    {## Effects with Defaulting #}
+    export edh'effs'defaulting = bookmark()
+
+    # %%
+
+    effect method fx() {
+      console.info<| "before default fx"
+
+      fallback fx()
+
+      console.info<| "after default fx"
+    }
+
+    {@
+
+      effect default {
+
+        method fx() {
+          console.info<| 'performing default fx'
+        }
+
+      }
+
+      perform fx()
+
+    @}
+
+    # %#
+  }
+
 }
