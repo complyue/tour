@@ -429,9 +429,6 @@ The module loading semantics is similar to Python, every statements at top level
         # %% # File modules should contain `__file__` for absolute file path of the source file as well, similar to Python
         __file__
 
-        # %% # Also `__path__` to be used as basis for relative import from within the very module, this is beyond Python
-        __path__
-
         # %#
       }
 

@@ -5205,8 +5205,6 @@ Note that technically, a distinct module object can be created by calling the `m
 
     # %% # File modules should contain `__file__` for absolute file path of the source file as well
     __file__
-    # %% # Also `__path__` to be used as basis for relative import from within the very module
-    __path__
 
     # %#
   }
