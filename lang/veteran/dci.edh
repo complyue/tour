@@ -8,11 +8,14 @@
   export edh'dci = bookmark()
 
   # %% #
+  data Point( x, y, ) pass
+
+  # %% #
 
   {##
    # Root class of role classes
 
-All role classes should suport instance construction from a keyword argument named `delegate`
+All role classes should suport instance construction from a symbolic keyword argument `@(Role.ddo)`
 
    #}
   class Role {
@@ -20,7 +23,9 @@ All role classes should suport instance construction from a keyword argument nam
     {## Symbolic name for Domain Data Object #}
     symbol @ddo
 
-    method __init__( *, @ddo as this.@ddo, *** ) extends this.@ddo
+    method __init__( *, @ddo as this.@ddo, *** ) scope(that).eval(
+      expr extends {$ this.@ddo $}
+    )
 
     method __repr__() {
       repr(this.@ddo) ++ ' ~assuming~ ' ++ repr(constructor(that))
@@ -30,7 +35,13 @@ All role classes should suport instance construction from a keyword argument nam
 
   # %% #
 
-  class SomeData { extends Role
+  class OriginPoint { extends Role
+
+    method translate( p ) case p of { Point( x, y, ) } -> {
+      case super.@(Role.ddo) of { Point( x= ox, y= oy, ) } -> {
+        Point( x - ox, y - oy, )
+      }
+    }
 
   }
 
@@ -39,7 +50,7 @@ All role classes should suport instance construction from a keyword argument nam
   {##
    # Let an object assuming a role class
 
-A role class should construct instances with a symbolic keyword argument from the symbol `Role.@ddo`, additionally, it can override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
+A role class should construct instances with a symbolic keyword argument from the symbol `@(Role.ddo)`. Alternatively, it can override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
 
    #}
   operator 10 (~assuming~) (lhv, rhv) {
@@ -48,12 +59,17 @@ A role class should construct instances with a symbolic keyword argument from th
 
 
   # %% #
-  data D() pass
+  pt = Point( 3, 5, )
+  ; o = pt ~assuming~ OriginPoint
 
-  # %% #
-  o = D()
-  ; o ~assuming~ SomeData
+  # %%
+  o.translate( Point( 2, 7, ) )
+
+  # %%
+  o.x
+
+  # %%
+  o.y
 
   # %#
-
 }
