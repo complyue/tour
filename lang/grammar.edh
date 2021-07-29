@@ -3206,7 +3206,7 @@ You can postpone the arguments preparation to execution time, by putting the who
             'tic' -> cycle = 'tac'
             'tac' -> cycle = 'toe'
             'toe' -> cycle = 'fin'
-            'fin' -> { break }
+            'fin' -> break
           }
         }
       }
@@ -3649,8 +3649,8 @@ The `yield` expression can be intuited as calling the for-loop's do block (the l
       case yield n*n of {
 
         # The generator shoud honor special flow control values as the result of `yield`, and cooperate accordingly, like this:
-        { break } -> { return nil } # loop body issued { break }
-        { return rtn } -> { return rtn } # loop body issued { return xxx }
+        { break } -> return nil # loop body issued { break }
+        { return rtn } -> return rtn # loop body issued { return xxx }
 
         nil -> { # loop body issued { continue }
           # but we can't continue without a number passed back,
@@ -4546,7 +4546,7 @@ The super object can also change dynamically, which means all descendant objects
     center'of'everything = Point(0,0)
 
     class Origin {
-      method __init__(***) extends center'of'everything
+      method __init__ _ extends center'of'everything
     }
 
     data Circle(radius, center= Origin(),) pass
