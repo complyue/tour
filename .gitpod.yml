@@ -36,7 +36,6 @@ tasks:
       # update executables from Edh packages
       stack update
       stack install
-      gp open '/workspace/tour/welcome.edh'
 
 vscode:
   extensions:
