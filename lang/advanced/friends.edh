@@ -1,0 +1,85 @@
+
+# %% # data classes etc. forming the domain model
+namespace domain'model () {
+
+  symbol @salary
+
+  export class Worker {
+
+    method __init__( name as this.name, @salary as this.@salary = 0, *** ) pass
+
+  }
+
+  export class Manager { extends Worker
+
+    method __init__( *, team as this.team = [], *** ) pass
+
+    method teamCost() {
+      # `@salary` symbol available from lexical outer scope
+      total = super.@salary
+      for member from this.team do total += member.@salary
+      return total
+    }
+
+  }
+
+}
+
+
+# %% # re-export sensitive attribute identifiers for eligible parties to import
+namespace accounting'friendly () export {
+
+  salary = domain'model.salary
+
+}
+
+
+# %% # demo a party with no internal access
+namespace public'relationship () {
+
+  method teamHeadCount( manager ) {
+    return 1 + len( manager.team )
+  }
+
+}
+
+
+# %% # demo a party with internal access
+namespace labor'union () {
+
+  # obtain the `@salary` symbol among other things
+  from accounting'friendly import *
+
+  method minimalPay( manager ) {
+    mpay = manager.@salary
+    for member from manager.team do if member.@salary < mpay
+    then mpay = member.@salary
+    return mpay
+  }
+
+}
+
+
+# %{ # demo a simple application
+namespace app() {
+
+  # %% # import core domain model
+  from domain'model import *
+
+  # %% # populate with some domain objects
+  let
+  , w1 = Worker( 'John', 3_500, )
+  , w2 = Worker( 'Tom', 2_500, )
+  , m1 = Manager( 'Bill', 5_500, team= [w1,w2], )
+
+  # %% # call some domain method procedure
+  m1.teamCost()
+
+  # %% # call some 3rd party component
+  public'relationship.teamHeadCount(m1)
+
+  # %% # call another 3rd party component
+  labor'union.minimalPay(m1)
+
+  # %}
+}
