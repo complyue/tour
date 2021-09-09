@@ -3243,11 +3243,10 @@ A single thread can handle multiple event streams at the same time, it can achie
         defer console.info<| "No fight anymore, I'm done."
 
         perceive fight'to'pick {
-          nil -> {
-            break # Terminate the thread when no more fights
-          }
+          nil -> break # Terminate the thread when no more fights
           { rival } -> console.warn<| 'I fight ' ++ rival ++ ' now.'
         }
+
         for _ from console.everySeconds( 10, wait1st= false, )
         do console.info<| "I'm still living, need works to do!"
 
@@ -3258,24 +3257,29 @@ A single thread can handle multiple event streams at the same time, it can achie
       #  Run the follow cells in arbitrary order, and repeatedly
 
       # %% # Send a book to read
+      void
       book'to'read <- 'An Actor Prepares (Рабо́та актёра над собо́й)'
 
       # %% # Send a paper to review
+      void
       paper'to'review
       <- 'Monad Transformers and Modular Algebraic Effects:'
       ++ ' What Binds Them Together'
 
       # %% # Send a rival to fight
+      void
       fight'to'pick <- 'the aliens'
       # %# Note This can fail after it's marked eos
 
       # %% # Send another rival to fight
+      void
       fight'to'pick <- 'the zombies'
       # %# Note This can fail after it's marked eos
 
       # Run the following cell to terminate the thread spawned above
 
       # %% # This cell will mark the eos of `fight'to'pick`
+      void
       fight'to'pick <- nil
       # %# Try send more books or papers after run this cell, to verify the thread is really dead.
 
