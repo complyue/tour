@@ -1,0 +1,39 @@
+{## Custom Event Sinks
+ # - Customize your event sinks & perceivers
+
+ Any object vending a `__perceive__` magic method can work like an event sink, but the semantics can be rather different than an Đ event sink (e.g. thread terminating on `break` result), imagination is the only limitation for what you can do about his mechanism.
+
+ #} {;
+  {## Custom Event Sinks #}
+  export custom'event'sinks = bookmark()
+
+  # %%
+
+  {## A Demo Perceivable Sink #}
+  class MySink {
+
+    {## Evaluate the perceiver body expression just inplace, and log it
+
+This isn't actually working anything out, just to show technically, how such a magic method gonna to be invoked.
+
+We make it an interpreter procedure so the caller's scope is available to us, then the perceiver body expression is evaluated as in there. It never has to be this way, a sophisticated event sink can even JIT compile the body expression and install the high-performance machine code somewhere.
+     #}
+    interpreter __perceive__( callerScope, perceiverBodyExpr ) {
+
+      let perceiverValue = callerScope.eval$ perceiverBodyExpr
+
+      console.info<|'Start perceiving by: `' ++ show(perceiverValue) ++ '`'
+
+    }
+
+  }
+
+  # %%
+  cevs = MySink()
+
+  # %%
+  perceive cevs console.print
+
+  # %#
+
+}
