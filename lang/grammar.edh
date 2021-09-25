@@ -2693,22 +2693,27 @@ Except the very special "wild match" pattern, all existing pattern expressions a
         # %% # It is idiomatic to work with such a computation like this:
         case evil'amp(n) of { result }
         -> 'Amplified result is: ' ++ result
-        # %% # Instead of this safe but less optimal algorithm:
+        # %% # A nil result leads to nop as in above, in case you want to handle nil cases yourself:
+        case evil'amp(n) of {
+          nil -> 'No result from amplification'
+          { result } -> 'Amplified result is: ' ++ result
+        }
+        # %% # Also note of this safe but less optimal algorithm:
         if evil'amp(n) is not nil
         then 'Amplified result is: ' ++ evil'amp(n)
         # %# The major problem with above cell is the computation will be performed twice when not nil, besides a bit more imperative (contrasting to declarative) feeling.
 
-        # %% # And this is a plain wrong solution:
+        # %% # And this is a plainly wrong solution:
         result = evil'amp(n)
         'Amplified result is: ' ++ result
         # %# Can you figure out why? Set `n = 3` and try it, you'll see.
 
-        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there will definitely be expressions to have nil mixed into normal non-nil results (e.g. `.mrv` of an event sink), so the wild capture pattern is your best friend at all times.
+        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there will definitely be expressions to have nil mixed into normal non-nil results (e.g. `.mrv` of an event sink), so the wild capture pattern is your best friend of all time.
 
-        # %% # Here is an alternative, correct solution, but less elegant:
-        result = evil'amp(n) or nan
+        # %% # Here is an alternative, somehow working solution, but less elegant:
+        result = evil'amp(n) or 0
         'Amplified result is: ' ++ result
-        # %# Also you'll need larger change (as well with tendency of probably unexpected double-evaluation without enough care taken), when later the nil case needs to be handled
+        # %# Though you'd make sure nil can be safely treated as zero per your business logic
       }
 
 
