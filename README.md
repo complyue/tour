@@ -2,7 +2,7 @@
 
 Greetings! TL;DR - Just click:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour/blob/master/welcome.edh)
 
 - [What's Đ (Edh)](#whats-đ-edh)
   - [Đ Slogan](#đ-slogan)
@@ -95,7 +95,7 @@ Thanks to [Gitpod](https://gitpod.io), you can get a fully working dev
 environment in your browser with just one-click, the
 [Free Plan](https://www.gitpod.io/pricing) would work perfectly well,
 after [sign up](https://gitpod.io/subscription), you can just click
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour/blob/master/welcome.edh)
 to begin the tour.
 
 > TODO ... screenshots to showcase the steps
