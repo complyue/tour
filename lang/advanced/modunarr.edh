@@ -83,7 +83,7 @@ A slight difference with a closure as a real callback is, the loop arguments liv
 
 
     # %% # Technical showcase
-    interpreter d( callerScope, blockExpr, ) {
+    interpreter d( callerScope: scope, blockExpr, ) {
       # within a contextual scope, an expression evals to:
       #   *) `{continue}` on `continue` from the expression
       #   *) `{break}` on `break` from the expression

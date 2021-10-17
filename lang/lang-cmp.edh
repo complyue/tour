@@ -1528,7 +1528,7 @@ Written equivalently in Đ like the following:
 
     # %% # A decorator is usually written in the host language, but as well, it can be written in Đ the surface language, in form of an interpreter procedure
 
-    interpreter decor( callerScope, fe ) case callerScope.eval( fe ) of { f } -> {
+    interpreter decor( callerScope: scope, fe ) case callerScope.eval( fe ) of { f } -> {
       callerScope.eval( expr method @(f.name) ( ***apk ) {
           console.info<| 'Calling procedure `' ++ {$ f.name $} ++ '` with: ' ++ apk
           {$ f $} ( ***apk )

@@ -18,7 +18,7 @@ This isn't actually working anything out, just to show technically, how such a m
 
 We make it an interpreter procedure so the caller's scope is available to us, then the perceiver body expression is evaluated as in there. It never has to be this way, a sophisticated event sink can even JIT compile the body expression and install the high-performance machine code somewhere.
      #}
-    interpreter __perceive__( callerScope, perceiverBodyExpr ) {
+    interpreter __perceive__( callerScope: scope, perceiverBodyExpr ) {
 
       let perceiverValue = callerScope.eval$ perceiverBodyExpr
 

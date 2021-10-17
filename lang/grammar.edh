@@ -3572,7 +3572,7 @@ Note that many other procedures share mostly the same syntax with the vanilla pr
 
 The general syntax to define an intetpreter procedure is:
 
-  interpreter <procedure-name> ( callerScope, ***<rest-arg-spec> ) <procedure-body>
+  interpreter <procedure-name> ( callerScope: scope, ***<rest-arg-spec> ) <procedure-body>
 
 The definition is an expression evaluates to a value of `Interpreter` type, this value will be bound to current scope, with <procedure-name> being the attribute key, unless it is evaluated in a pure context.
 
@@ -3587,7 +3587,7 @@ The first positional `callerScope` argument will be a scope wrapper object wrapp
 
     # %% #
     {## Create a lazy evaluator of the specified expression #}
-    interpreter compute( callerScope, x, name= None, ) {
+    interpreter compute( callerScope: scope, x, name= None, ) {
       # note the following method definition won't bind the result procedure value into local scope as an attribute named after `@name`, because it is evaluated in the pure context created by the `return` statement, this is important for the attributes `callerScope` and `x` not to be overwritten due to the `name` argument happens to be given a value of their respective name.
       {##
        # A lazy evaluator
@@ -3964,7 +3964,7 @@ The definition is an expression evaluates to a value of `Operator` type, this va
 
 The general syntax to define a 3-arg operator procedure is:
 
-  operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( callerScope, <lhs-expr>, <rhs-expr> ) <procedure-body>
+  operator|infix|infixl|infixr [ <op-precedence> ] (<op-symbol>) ( callerScope: scope, <lhs-expr>, <rhs-expr> ) <procedure-body>
 
 The definition is an expression evaluates to a value of `Operator` type, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
@@ -3982,7 +3982,7 @@ The definition is an expression evaluates to a value of `Operator` type, this va
        # For lazily evaluated substituation
 This operator is strict on its lhs argument, but won't evaluate its rhs argument unless the result from the lhs argument is falsy.
        #}
-      operator 0 (||>) ( callerScope, lhx, rhx ) {
+      operator 0 (||>) ( callerScope: scope, lhx, rhx ) {
         case callerScope.eval(lhx) of {
 
           # Evaluate to result of the lhs expression so long as it is truthful
@@ -4094,7 +4094,7 @@ Contributions needed here to explain it well.
       }
       infixl 3 (>+<) () concat1
 
-      interpreter concat2( callerScope, lhe, rhe ) {
+      interpreter concat2( callerScope: scope, lhe, rhe ) {
         callerScope.eval( lhe ) ++ ' and ' ++ callerScope.eval( rhe )
       }
       infixl 3 (>&<) () concat2
@@ -4142,7 +4142,7 @@ In addition to ($), there is also the pipe (|) operator with just the oparands f
 
     # %% # A decorator is usually written in the host language, but as well, it can be written in Đ the surface language, in form of an interpreter procedure
 
-    interpreter decor( callerScope, fe ) case callerScope.eval( fe ) of { f } -> {
+    interpreter decor( callerScope: scope, fe ) case callerScope.eval( fe: 'Expr' ) of { f } -> {
       callerScope.eval( expr method @(f.name) ( ***apk ) {
           console.info<| 'Calling procedure `' ++ {$ f.name $} ++ '` with: ' ++ apk
           {$ f $} ( ***apk )
@@ -5885,7 +5885,7 @@ Beyond procedure decorators as you've seen earlier in this chapter, the combinat
     export edh'eff'decor = bookmark()
 
     # %%
-    interpreter withAuth( callerScope, priviledgedBlock, ) {
+    interpreter withAuth( callerScope: scope, priviledgedBlock, ) {
       # Do some authentication
       case console.readSource('Who are you? ').strip of {
         'Mr. Right' -> {pass}
