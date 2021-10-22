@@ -35,12 +35,16 @@ All role classes should suport instance construction from a symbolic keyword arg
 
   # %% #
 
-  class OriginPoint { extends Role
+  class OriginPoint : Point { extends Role
 
-    method translate( p ) case p of { Point( x, y, ) } -> {
-      case super.@(Role.ddo) of { Point( x= ox, y= oy, ) } -> {
-        Point( x - ox, y - oy, )
+    method translate( p: Point ) case p of {
+      { Point( x, y, ) } -> {
+        case super.@(Role.ddo) of { Point( x= ox, y= oy, ) } -> {
+          return Point( x - ox, y - oy, )
+        }
+        error('bug: ddo not a point: ' ++ desc(super.@(Role.ddo)))
       }
+      error('Not a point: ' ++ desc(p) )
     }
 
   }
@@ -50,7 +54,7 @@ All role classes should suport instance construction from a symbolic keyword arg
   {##
    # Let an object assuming a role class
 
-A role class should construct instances with a symbolic keyword argument from the symbol `@(Role.ddo)`. Alternatively, it can override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
+A role class should construct instances with a symbolic keyword argument by the symbol `@(Role.ddo)`. Alternatively, it can override this operation by providing a rhs magic `method ( ~assuming~ . ) { ... }` to return the assumed role instance.
 
    #}
   operator 10 (~assuming~) (lhv, rhv) {
@@ -59,8 +63,12 @@ A role class should construct instances with a symbolic keyword argument from th
 
 
   # %% #
-  pt = Point( 3, 5, )
-  ; o = pt ~assuming~ OriginPoint
+  let
+  , pt = Point( 3, 5, )
+  , o: OriginPoint = pt ~assuming~ OriginPoint
+
+  # %%
+  repr$ o
 
   # %%
   o.translate( Point( 2, 7, ) )
@@ -70,6 +78,10 @@ A role class should construct instances with a symbolic keyword argument from th
 
   # %%
   o.y
+
+  # %%
+  case o of {{ Point: raw'origin'point }}
+  -> raw'origin'point is pt
 
   # %#
 }
