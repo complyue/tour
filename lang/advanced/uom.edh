@@ -1,0 +1,221 @@
+{## Unit of Measure
+ # - Native dimension support with 1st class UoM and quantity
+ #}
+
+{## Unit of Measure #}
+export edh'uom = bookmark()
+
+# You usually import one or more submodules under `uom/` per needs case by case
+# But nothing prevents you from importing all of them at once
+# Navigate by the following import to see what's there:
+import * 'uom'
+
+{## Theories
+ # - About dimensional analysis
+
+Đ supports customizable UoM (Unit of Measure), UoMs and Quantities are first class values, as well as pure numbers.
+
+See: https://en.wikipedia.org/wiki/Dimensional_analysis
+
+ #} {;
+  {## Dimensional Analysis #}
+  export edh'dimensional'analysis = bookmark()
+
+  {## Newton's laws of motion
+   # - Calculate velocity after some force applied a while
+
+In classical physics, you can know exactly how fast an objects moves, at some time point with its intial speed, its mass, and how large some external force is applied to its moving direction.
+
+   #} {;
+    # %% # All UoMs needed can be imported like this:
+    import * 'uom/newton'
+
+    # %% # basic facts at t0
+    force = 5N
+    mass = 2.3kg
+    v0 = 1.3m/s
+
+    # %% # for some time later, at t1
+    time'elapsed = 0.5s
+
+    # %% # we can calculate the acceleration and the object's new speed
+    accel = force/mass
+    v1 = v0 + accel*time'elapsed
+
+    # %% # That result may read ridiculous, though nevertheless correct,
+    # but lets keep fixed number of decimal digits to ease our eyes:
+    v1.toFixed(2)
+    # %# We have sacrificed rational precision by approximating with an easier reading number.
+    # Remember you don't have to do this until showing the number to human, intermediate results are better kept lossless of precision, during calculations.
+
+    # %#
+  }
+
+}
+
+{## Data Rates
+ # - How fast data are transfered
+
+Your network has limited connection speed (more accurately - bandwidth)
+
+ #} {;
+  {## Data Rates #}
+  export edh'uom'data'rate = bookmark()
+
+  # %% # All UoMs needed can be imported like this:
+  import * 'uom/information'
+
+  # %% # You want a blueray movie (which is large) to download:
+  payloadSize = 23GB
+  # %% # And your data link is described to be this fast:
+  bandwidth = 1000Mbps
+
+  # %% # Calculate how much time the download will take:
+  time'estimated = payloadSize / bandwidth
+
+  # %% # Too many digits, let's see an easy number:
+  time'estimated.toFixed(2)
+
+  # %% # That's still not so friendly to read, how about a reduced number?
+  time'estimated.reduced.toFixed(1)
+
+  # %#
+}
+
+{## Percentage
+ # - About dimensionless units
+
+Some units are "dimensionless", i.e. they can ultimately speak for pure numbers.
+
+ #} {;
+  {## Percentage #}
+  export edh'dimless'units = bookmark()
+
+  # %% # The `%` unit comes with the default battery, so you don't need to import anything to use it
+  pcnt = 21.5%
+
+  # %% # Arithmetics with pure numbers simply works
+  1 + pcnt
+
+  # %% # Convert some calculated ratio to percentage?
+  # The way is just how the textbook had told you:
+  pcnt = (3+2)/8 * 100%
+
+  # %% # To convert a percentage quantity to some pure number:
+  (50 * pcnt).unified
+
+
+  # %% # You can define your own (dimensionless) unit `dozen` like this:
+  uom 1dozen = 12
+
+  # %% # And put it into real use:
+  piecewise'weight = 3.5kg
+  total'weight = 6dozen * piecewise'weight
+
+  # %#
+}
+
+{## Reduction for easier reading
+ # - Many units exist just to have the number reads better
+
+ #} {;
+  {## Reduction for easier reading #}
+  export edh'uom'reduction = bookmark()
+
+  # %% # This section uses length units and data size units for demonstration, import them like this:
+  import * 'uom/distance'
+  import * 'uom/information'
+
+  # To reduce a quantity, the goal is to have the (absolute) number part neither too larg nor too small
+
+  # %%
+  325mm.reduced
+
+  # %%
+  0.00052km.reduced
+
+  # %%
+  972.8MB.reduced
+
+  # %%
+  0.025GB.reduced
+
+  # %#
+}
+
+{## Frequency
+ # - Counting occurrences wrt time periods
+
+ #} {;
+  {## Frequency #}
+  export edh'uom'freq = bookmark()
+
+  # %% # All UoMs needed can be imported like this:
+  import * 'uom/duration'
+  import * 'uom/frequency'
+
+  # %%
+  freq = 3Hz
+  duration = 1.5min
+
+  n'occurrence = duration * freq
+
+  # %%
+  n'occurrence = 125
+  duration = 5min
+
+  freq = n'occurrence / duration
+
+  # %% # That's unnatural to read, then convert it to Hz can be better:
+  freq = freq.asIn(Hz)
+
+  # %% # That's still somewhat weird, let's approximate it to ease our eyes
+  freq.toFixed(2)
+
+  # %#
+}
+
+{## Temperature
+ # - Measures without common zero point
+
+ #} {;
+  {## Temperature #}
+  export edh'uom'temperature = bookmark()
+
+  # %% # All UoMs needed can be imported like this:
+  import * 'uom/temperature'
+
+  # %%
+  25°C.unified
+
+  # %% # `°` can not be used in a valid attribute identifer, so we need at-notation to reference it as a quaint name
+  25°C.asIn( @'°F' )
+
+  # %% # Also to disambiguate the `@` to be quaint name instead of infix at-notation, a semicolon is used in this case:
+  ; @'°F'.unify(25°C)
+
+  # %#
+}
+
+{## Geometric
+ # - Calculate area, volume and etc.
+
+ #} {;
+  {## Geometric #}
+  export edh'uom'geo = bookmark()
+
+  # %% # All UoMs needed can be imported like this:
+  import * 'uom/distance'
+  import * 'uom/volume'
+
+  # %% # Paint 3 litre of paint onto a 5 square meter area, how thick it'll be?
+  paintVolume = 3l
+  surfaceArea = 5m*m
+
+  thickness = paintVolume / surfaceArea
+
+  # %% # To see easy-reading numbers:
+  thickness.reduced
+
+  # %#
+}
