@@ -6,6 +6,7 @@ Greetings! TL;DR - Just click:
 
 - [What's Đ (Edh)](#whats-đ-edh)
   - [Đ Slogan](#đ-slogan)
+  - [Tours are Đ Documentation](#tours-are-đ-documentation)
 - [About this Tour](#about-this-tour)
 - [Taking the Tour](#taking-the-tour)
   - [Fast and Easy Way - Gitpod workspace](#fast-and-easy-way---gitpod-workspace)
@@ -63,6 +64,14 @@ Free of side-effects is not strictly enforced, but you can start effect tracking
   > This is much closer to a GUI, yet with more flexible variance & context. The greatest advantage of this tactic is, a user can make slight changes to the code in a template cell, then execute it to achieve tasks in need of a complex phrasing of scription. Traditional TUI requires the user to type out a complete sentence for the job, which needs greatly internalized knowledge about what/how he/she is doing, as well as mental effort nevertheless; while traditional GUI might be just inable to provide the flexibility needed due to level of complexity of the task.
 
   > So with Đ and its tooling, we can obtain more advantages at the same time, from both worlds: expressiveness from textual languages as well as intuition from visual languages. And Đ is even more _dynamic_ and _interactive_ than Python, also it facilitates effectful functionality composition in a novel way (i.e. _Dynamic Scoped Effects_). From REPLs atop stdio, to WebREPLs, to the extensive IDE features, it's fine-tuned for frictionless developer experience, where anyone could be the developer, and i.e. _Citizen Developer_.
+
+### Tours are Đ Documentation
+
+Instead of traditional medium forms of documentation (paperback books/manuals, digital twins of them like PDFs and other eBook formats, or online HTML pages, etc.), Đ software tends to be documented by interactive snippets, usually hierarchical blocks of them, all well commented, but essentially in Đ the language itself. Such materials are organized into `Tour`s so we call them, they can only be properly browsed by a developer IDE such as VSCode, with IntelliSense enabled. And community fixups by any reader are highly encouraged, by submitting pull requests to the maintained repositories.
+
+That said but it's not the same thing someone would call "Code as Documentation", implementation details with elaborate comments about design choices, guidance/caveat to further develop them, are of course the code of conduct in authoring Đ packages, but `Tour`s should be user/consumer facing Đ snippets demonstrating the usage of the implemented functionalities, aimmed to helping beginners to internalize sensible skills with hands-on experience of the package, as quick as possible.
+
+It's ill-minded for a package author to expect his/her users to go over his/her struggle and even pains in making the final piece possible. They who find your piece useful to them should be thankful and admiring you in return, but any hardness in finding that fact themselves, may prevent such result from happening at all, by frightening them off earlier. So get your mind straight, write enlightening `Tour`s even that means more/harder effort than making the core implementation of your packages, helping your potentional users is helping yourself.
 
 ## About this Tour
 
