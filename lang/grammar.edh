@@ -5632,11 +5632,11 @@ For an interpreter procedure or an infix operator procedure with 3 positional ar
     {## Expression Arguments to Procedures #}
     export edh'expr'args = bookmark()
 
-    # %%
-    x' = makeExpr( a + b * c )
+    # %% # It's repr is the original source
+    x' = expr a + b * c
 
-    repr$ x'
-    # %# See its textual representation is in AST form, with rather verbose source location information, no original source text is reserved for expressions created this way
+    # %% # See its AST etc. by desc it
+    desc$ x'
 
     # %% # While it can be reflectively evaluated as well
     s.eval( x' )
