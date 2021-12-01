@@ -1,0 +1,76 @@
+{## Delimited Continuation
+ # - A rough emulation, some diffs due to lack of TCO
+
+See: https://cs.ru.nl/~dfrumin/notes/delim.html
+
+ #} {;
+  {## Delimited Continuation #}
+  export edh'delim'cont = bookmark()
+
+  {## Basic Prompt/Control
+   # - Simplest case
+This is roughly equivalent to `(prompt (+ 1 (control k (k 3))))` in Racket.
+
+While in Đ in the approach here, continuations are always named, so multiple continuations with different names can be prompted to the inner expression at the same time.
+
+Also note the inner expression is lifted to be parallel with the delimited continuation(s), which is syntatically different but semantically the same as the Racket version.
+
+It's roughly the same for the inner expression to arbitrarily choose whether any continuation is used or not.
+   #} {;
+    # %%
+    interpreter demo'ctrl (callerScope: scope, body) {
+      effect method k(x) x + 1
+
+      callerScope.eval(body)
+    }
+
+    # %%
+    demo'ctrl $ perform k $ 3
+
+    # %#
+  }
+
+
+  {## Emulate the `while` Loop
+   # - Summary
+   #} {;
+    # %%
+    interpreter while' ( callerScope: scope, cond, body ) {
+      # A genuine `break` value can trigger real break semantics in Đ, and so that we even need to `void` its effect here
+      effect void break' = {break}
+
+      # We don't have TCO in Đ, but we have a genuine `while` loop
+      while callerScope.eval(cond) {
+        callerScope.eval(body)
+      }
+    }
+
+    # %%
+    method multl( *vs ) {
+      lst = [] =< vs
+      i = 0
+      fin = len(lst)
+      res = 1
+      while' $@ i < fin $@ {
+        val = lst.pop()
+        console.print$ 'The value of lst[' ++i++ '] is ' ++val
+        res *= val
+        if val is 0 then {
+          res = 0
+          perform break'
+        }
+        i += 1
+      }
+      return res
+    }
+
+    # %%
+    multl(1 2 3)
+
+    # %%
+    multl(1 2 0 3 4 5)
+
+    # %#
+  }
+
+}
