@@ -2775,10 +2775,10 @@ Except the very special "wild match" pattern, all existing pattern expressions a
 
         # %% #
         case shape of {
-          { Circle( r, c = center, ) }
+          { Circle( r, c as center, ) }
           -> "Circle at " ++ center ++ " w/ radius " ++ r
 
-          { Rectangle( w= width, h= height, ) = rect }
+          { Rectangle( w as width, h as height, ) as rect }
           -> "Rectangle covering area " ++ width*height ++ " - " ++ rect
         }
         # %#
@@ -3365,7 +3365,7 @@ The rhs handler expression can explicitly issue a `rethrow` statement to continu
 
       method f2(n, v) {
         console.print$ "You got " ++ n ++ ' to be ' ++ f1(v)
-      } $=> { UsageError() = exc } -> {
+      } $=> { UsageError() as exc } -> {
         console.error<| "You got it wrong: " ++ desc(exc)
       }
 
@@ -3386,9 +3386,9 @@ The rhs handler expression can explicitly issue a `rethrow` statement to continu
       # %% # Due to the operator's left-associativity, multiple exception handlers can be chained like this:
       method f2'(n, v) {
         console.print$ "You got " ++ n ++ ' to be ' ++ f1(v)
-      } $=> { UsageError() = exc } -> {
+      } $=> { UsageError() as exc } -> {
         console.error<| "You got it wrong: " ++ desc(exc)
-      } $=> { IOError() = ioe } -> {
+      } $=> { IOError() as ioe } -> {
         console.fatal<| "The os failed: " ++ show(ioe)
       }
 
@@ -3396,10 +3396,10 @@ The rhs handler expression can explicitly issue a `rethrow` statement to continu
       method f2'(n, v) {
         console.print$ "You got " ++ n ++ ' to be ' ++ f1(v)
       } $=> {
-        { UsageError() = exc } -> {
+        { UsageError() as exc } -> {
           console.error<| "You got it wrong: " ++ desc(exc)
         }
-        { IOError() = ioe } -> {
+        { IOError() as ioe } -> {
           console.fatal<| "The os failed: " ++ show(ioe)
         }
       }
