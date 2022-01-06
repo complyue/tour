@@ -1,0 +1,39 @@
+{## Custom Message Channels
+ # - Customize your message channels & perceivers
+
+ Any object vending a `__perceive__` magic method can work like a message channel, but the semantics can be rather different than an Đ message channel (e.g. thread terminating on `break` result), imagination is the only limitation for what you can do about his mechanism.
+
+ #} {;
+  {## Custom Message Channels #}
+  export custom'msg'chans = bookmark()
+
+  # %%
+
+  {## A Demo Perceivable Chan #}
+  class MyChan {
+
+    {## Evaluate the perceiver body expression just inplace, and log it
+
+This isn't actually working anything out, just to show technically, how such a magic method gonna to be invoked.
+
+We make it an interpreter procedure so the caller's scope is available to us, then the perceiver body expression is evaluated as in there. It never has to be this way, a sophisticated message channel can even JIT compile the body expression and install the high-performance machine code somewhere.
+     #}
+    interpreter __perceive__( callerScope: scope, perceiverBodyExpr ) {
+
+      let perceiverValue = callerScope.eval$ perceiverBodyExpr
+
+      console.info<|'Start perceiving by: `' ++ show(perceiverValue) ++ '`'
+
+    }
+
+  }
+
+  # %%
+  cevs = MyChan()
+
+  # %%
+  perceive cevs console.print
+
+  # %#
+
+}

@@ -2361,67 +2361,65 @@ Pair values are constructed with the infix (:) operator.
       }
 
 
-      {## Event Sink
-       # - Rendezvous point of events
+      {## Message Channel
+       # - Unbuffered, load-balanced, message stream
        #} {;
-        {## Event Sink #}
-        export edh'event'sink'values = bookmark()
+        {## Message Channel #}
+        export edh'msg'chan'values = bookmark()
 
-        # %% # An event sink is a broadcasting channel, a new one will be created each time the `sink` literal is evaluated
-        assassinate'signal = sink
+        # %% # A new message channel value is constructed each time the `chan` keyword / literal is evaluated
+        assassinate'signal = chan
         show$ assassinate'signal
 
-        # %% # Arbitrary values (each as an event) can be sent into an event sink, i.e. to publish one event at a time, using the (<-) operator:
-        assassinate'signal <- 'stab'
+        # %% # Arbitrary values (each as a message) can be written into a message channel, using the infix (<-) operator
+        go assassinate'signal <- 'stab'
+        # Note atm it has to happen on a separate thread other than the REPL, synchronous/blocking write to a channel, which has no (process wide) reader (threads) will be, detected by GHC RTS (STM) as a deadlock situation, thus to have your Đ session crash.
 
-        # %% # But the events will be just discarded (having no effect) by default, though anyone can iterate events published into it at anytime, we spawn a new thread to do the iteration:
+        # %% # Use the prefix (<-) operator to read from a channel
+        msg = <-assassinate'signal
+
+        # %% # Let's spawn a new thread to iterate all messages through that channel
         go for act from assassinate'signal do console.warn<| "I'm going to " ++ act ++ " you!"
-        # %# See the warning from background? An event sink is by default lingering, meaning the last event into it will be saved and kept being observed until the next event replaces it.
 
-        # %% # Let's publish another event there:
+        # %% # The thread started by the above cell does act as a reader of the channel, so now it's safe to write to the channel synchronously. Let's write another messsage into it
         assassinate'signal <- 'shoot'
-        # %# Remind that the publishing can be repeated, try run the "stab" cell again.
 
-        # Events can be *perceive*d by any thread, the perceiver body is executed with the published event as matching target
+        # Messages can be *perceive*d by any thread, the perceiver body is executed with the received messsage as matching target
         # %% #
         perceive assassinate'signal { act } -> {
           console.info<| "I'm assassinated via " ++ act
         }
-        # %# Then run the publishing cells above again, to see more messages logged.
-        # Branches with pattern/value matching are described later in this chapter
+        # %# Branches with pattern/value matching are described later in this chapter
         ; () => edh'branching # <- follow this bookmark to that section
 
-        # If the perceiver evaluates to value of a `break` statement, that thread will be terminated.
+        # %% # Remind that the writes can be repeated, try this cell and that 2 cells above for more times
+        assassinate'signal <- 'stab'
 
-        # %{ # Upon termination of a thread, some actions can be *defer*ed to execute:
+        # %# Note that by now, the current (REPL) thread and the `go for act from assassinate'signal do ...` thread we started earlier are racing to read messages out of the same channel, who wins is not deterministic, and it's even not fair due to how GHC/STM is designed to behave.
+
+
+        # %% # Upon termination of a thread, some actions can be *defer*ed to execute:
         defer {
-          # %%
           console.print$ "Here's my last words ..."
           secRemains = 10
           for _ from console.everySeconds(1) do {
             case secRemains -= 1 of {
-              7 -> console.print( "\rPlease let me die a good death." )
-              5 -> console.print( "\rThat's all I want." )
-              4 -> console.print( "\rFarewell!" )
-              0 -> {
-                console.print( "\27[A")
-                break
-              }
-              _ -> console.print( '\r...' ++ secRemains, eol= '\r', )
+              7 -> console.print( "Please let me die a good death." )
+              5 -> console.print( "That's all I want." )
+              4 -> console.print( "Farewell!" )
+              0 -> break
+              _ -> console.print( '... ' ++ secRemains )
             }
           }
-          # %#
         }
-        # %}
 
-        # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
-        # %% # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
-        perceive assassinate'signal.subseq 'shoot' -> {
+        # %% # Be prepared to loss your Đ terminal session, for the main thread will be terminated, thus the program will halt.
+        # The perceiver performs pattern/value matching, here we implement it so only shooting can make the kill, you know what to do next.
+        perceive assassinate'signal 'shoot' -> {
           console.fatal<| "I'm hit!"
           break # this being the final result, would terminate the thread installed this perceiver
         }
-        # %# Notice the `.subseq` used above, it obtains a non-lingering version of the event sink, so the perceiver against it will only respond to subsequent events, and so you have to run one of the publishing cells above to trigger the assassination. Good luck!
-
+        # %#
       }
 
     }
@@ -2708,7 +2706,7 @@ Except the very special "wild match" pattern, all existing pattern expressions a
         'Amplified result is: ' ++ result
         # %# Can you figure out why? Set `n = 3` and try it, you'll see.
 
-        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there will definitely be expressions to have nil mixed into normal non-nil results (e.g. `.mrv` of an event sink), so the wild capture pattern is your best friend of all time.
+        # Godforbid it for any procedure implemented like the `evil'amp()` above, but there will definitely be expressions to have nil mixed into normal non-nil results (e.g. reads from a message channel), so the wild capture pattern is your best friend of all time.
 
         # %% # Here is an alternative, somehow working solution, but less elegant:
         result = evil'amp(n) or 0
@@ -2995,48 +2993,48 @@ The loop-source is a generator procedure call in this case
     }
 
 
-    {## Observing an Event Stream
-     # - Iterate over the event stream through an event sink
+    {## Observing a Message Stream
+     # - Iterate over the message stream through an Đ channel
 
-The loop-source evaluates to a event sink value in this case
+The loop-source evaluates to a message channel value in this case
 
      #} {;
-      {## Observing an Event Stream #}
-      export edh'iter'events = bookmark()
+      {## Observing a Message Stream #}
+      export edh'iter'msgs = bookmark()
 
-      # The event sink value is described earlier in this chapter
-      edh'event'sink'values # <- follow this bookmark to that section
+      # The message channel value is described earlier in this chapter
+      edh'msg'chan'values # <- follow this bookmark to that section
 
       # Here is a simple example, you're supposed to observe:
-      #  * The (<-) operator is used to publish arbitrary event values into an event sink
-      #  * Loop arguments go as attributes of the current scope of the loop expression, and get overwritten on every event arrival. Note that they are updated with arguments receiving semantics, which is described at:
+      #  * The infix (<-) operator is used to write arbitrary values into a message channel
+      #  * Loop arguments go as attributes of the current scope of the loop expression, and get overwritten on every message arrival. Note that they are updated with arguments receiving semantics, which is described at:
       ; () => edh'args'receiving # <- follow this bookmark to that section
       #  * The do-block of the loop, a.k.a. the loop body, can reference the loop arguments. Note that they are simply read as lexical attributes in scope. Lexical scoping rules are described at:
       ; () => edh'lexi'scoping # <- follow this bookmark to that section
 
 
-      # %% # Construct an event sink value
-      es = sink
-      # %% # Work with the event sink on a separate thread
+      # %% # Construct a message channel value
+      es = chan
+      # %% # Work with the message channel on a separate thread
       go {
-        for (***evt) from es do console.info<| 'Got event= ' ++ evt
-        console.info <| 'Reached end of event stream.'
+        for (***mpk) from es do console.info<| 'Got message pack: ' ++ mpk
+        console.info <| 'Reached end of message stream.'
       }
       # %% # Publish a single value
       es <- 3
       # %% # Publish an apk
       es <- ( 3, 2, c= 5, a= 2, )
-      # %% # Mark end-of-stream for the event stream
+      # %% # Mark end-of-stream for the message stream
       es <- nil
       # %#
 
       # Also note that:
-      #  * `continue` can be used in the do-block (loop body) to skip subsequent statements in the block, thus jump to wait for next event
-      #  * `break` can be used in the do-block (loop body) to early stop the for-loop, making it evaluates to `nil`, subsequent events will not be observed after then
+      #  * `continue` can be used in the do-block (loop body) to skip subsequent statements in the block, thus jump to wait for next message
+      #  * `break` can be used in the do-block (loop body) to early stop the for-loop, making it evaluates to `nil`, subsequent messages will not be observed after then
       #  * `return xxx` can be used in the do-block (loop body) to early stop the for-loop, and further early return from the outer procedure. That's done technically by having the result value of the for-loop expression evaluates to `return xxx`, manifesting early return from the outer procedure body
 
 
-      # The event sink value can come from evaluation of a producer procedure call
+      # The message channel value can come from evaluation of a producer procedure call
       # Producer procedure is described later in this chapter
       ; () => edh'producer'procs # <- follow this bookmark to that section
 
@@ -3220,19 +3218,22 @@ You can postpone the arguments preparation to execution time, by putting the who
       # `defer` is designed to do resource cleanup with structured concurrency in mind, though in many cases the cleanup action can also be performed by catching the `ThreadTermination` exception, it can be unpleasant at times to organize exception handlers with manual type checks as well as complex nestings.
     }
 
-    {## perceive Events
-     # - Preemptive event handling
+    {## Perceive Messages
+     # - Preemptive message handling
 
-A single thread can handle multiple event streams at the same time, it can achieve so by installing an event perceivers per each event sink. It can keep the thread running by sleeping (i.e. looping against `console.everySeconds()` or friends), or choose to loop against one of the event sinks instead of perceiving it.
+A single thread can handle multiple message streams at the same time, it can achieve so by installing one message perceiver per each message channel. It can keep the thread running by looping over blocking actions, such as:
+  *) sleeping (i.e. looping against `console.everySeconds()` or friends)
+  *) looping against one of the message channels instead of perceiving it
+  *) reading (with the prefix (<-) operator) any of the channels in a `while` loop
 
      #} {;
-      {## perceive Events #}
-      export edh'perceive'events = bookmark()
+      {## Perceive Messages #}
+      export edh'perceive'msgs = bookmark()
 
-      # %% # Create some event sinks to convey the streams
-      book'to'read = sink
-      paper'to'review = sink
-      fight'to'pick = sink
+      # %% # Create some message channels to convey the streams
+      book'to'read = chan
+      paper'to'review = chan
+      fight'to'pick = chan
 
       # %% # Handle them
       go {
@@ -3262,42 +3263,27 @@ A single thread can handle multiple event streams at the same time, it can achie
       #  Run the follow cells in arbitrary order, and repeatedly
 
       # %% # Send a book to read
-      void
       book'to'read <- 'An Actor Prepares (Рабо́та актёра над собо́й)'
 
       # %% # Send a paper to review
-      void
       paper'to'review
       <- 'Monad Transformers and Modular Algebraic Effects:'
       ++ ' What Binds Them Together'
 
       # %% # Send a rival to fight
-      void
       fight'to'pick <- 'the aliens'
       # %# Note This can fail after it's marked eos
 
       # %% # Send another rival to fight
-      void
       fight'to'pick <- 'the zombies'
       # %# Note This can fail after it's marked eos
 
       # Run the following cell to terminate the thread spawned above
 
       # %% # This cell will mark the eos of `fight'to'pick`
-      void
       fight'to'pick <- nil
       # %# Try send more books or papers after run this cell, to verify the thread is really dead.
 
-    }
-
-
-    {## Structured Concurrency
-     # - Taming the concurrent "goto"
-     #} {; () => {
-        # There is an advanced topic describing why & how to implement structured concurrency with the mechanisms described above
-        import * './advanced/concur'
-        edh'structured'concurrency # <- follow this bookmark to the section there
-      }
     }
 
   }
@@ -3713,9 +3699,9 @@ The `yield` expression can be intuited as calling the for-loop's do block (the l
 
 
   {## Producer Procedures
-   # - To avoid race condition between asynchronous event producer and consumer
+   # - Advanced syntactic sugar for asynchronous collaboration through messaging
 
-Event streams through event sinks are asynchronous in nature, as event sinks will drop events when not subscribed, there will be race condition in starting a new thread to run an event producing computation, while subscribing the event sink to consume the produced event stream at the same time. Producer procedures can be used to eliminate such race conditions.
+A producer procedure is a standalone procedure that once called, starts a separate thread to run its body, and returns the `outlet` argument passed to it to the direct caller.
 
 The general syntax to define a producer procedure is:
 
@@ -3727,89 +3713,37 @@ The definition is an expression evaluates to a value of `Producer` type, this va
     {## Producer Procedures #}
     export edh'producer'procs = bookmark()
 
-    {## Racing Problem in Lieu of Producer Procedures
-     # - Producer procedures solve race conditions
-
-Let's see a racy solution first.
-
-     #} {;
-      {## Racing Problem in Lieu of Producer Procedures #}
-      export edh'producing'problem = bookmark()
-
-      # %% # The artificial delay in milliseconds between the start of producing and start of consuming. Setting it to zero can by NO means eliminate the delay, due to how the multi-threaded runtime is scheduled. A zero delay just minimizes the chance the unwanted consequences happen to be observed.
-      lag'ms = 0
-
-      # %% # Set some possitive delay, you'll see the result being randomly unpredictable, i.e. perfect race condition demonstrated
-      lag'ms = 5
-
-      # %% # Run this cell to start the race with whatever `lag'ms` set, repeat it to see different results
-
-      evs = sink
-      go {@ # Use a scoped block to not share the `i` attribute of outer scope
-        i = 0; for _ from console.everyMillis(1) do {
-          evs <- i+=1
-          if i>=5 then { break }
-        }
-        evs <- nil # mark eos
-      @}
-
-      for _ from console.everyMillis(lag'ms) do break
-
-      for i from evs do console.print$ "Got " ++ i
-
-      # %# Maybe you'll need to tune the value of `lag'ms` in your runtime to make the racy result more obvious
+    # %% # The nicer syntax
+    producer p( upBound= 5, outlet= chan ) {
+      defer outlet <- nil # mark EoS anyway on termination
+      for i from 1..upBound do outlet <- i
     }
 
-
-    {## Using Producer Procedures
-     # - The race-free solution
-     #} {;
-      {## Using Producer Procedures #}
-      export edh'race'free'producing = bookmark()
-
-      # %% # Here is the race-free solution
-
-      producer p(outlet= sink) {
-        i = 0; for _ from console.everyMillis(1) do {
-          outlet <- i+=1
-          if i>=5 then { break }
-        }
-        outlet <- nil # mark eos
+    # %% # Equivalent semantics but less nice syntax
+    method p( upBound= 5, outlet= chan ) {
+      go {
+        defer outlet <- nil # mark EoS anyway on termination
+        for i from 1..upBound do outlet <- i
       }
-
-      for i from p() do console.print$ "Got " ++ i
-
-      # %# See there is even no place to insert an artificial delay, and under the hood, even race conditions due to thread scheduling are eliminated by the Đ runtime, so long as you stick to looping against a producer procedure call.
+      return outlet
     }
 
+    # %% # Used the same way
+    for@ i from p() do console.print$ "Got " ++ i
 
-    {## Internal Working of Producer Procedure Call
-     # - How a producer procedure works with for-loop
-
-A new thread will be implicitly started to run the producer procedure body, but the actual execution will be held until the agreed event sink has been subscribed by some consumer, which will be the for-loop in the pattern demonstrated above.
-
-The agreed event sink will be value passed as an argument named `outlet` in the producer procedure call, or such an argument can be omitted as you've see in the solution above, in which case a fresh new event sink value is created and used as the agreed sink.
-
-A producer procedure usually declares an input argument named `outlet`, to receive the agreed event sink value. It can be renamed or omitted at all, but that's quite advanced usage, will require sophisticated concurrency reasoning to get it right.
-
-Finally the agreed event sink - there will always be one, even neither explicitly passed nor received - will be the synchronous result value as for the call of the producer procedure, the for-loop then get this event sink as its iteration source value, thus subscribes to the event sink and loops agsinst the event stream through it.
-
-     #} {;
-      {## Internal Working of Producer Procedure Call #}
-      export edh'producer'works = bookmark()
-    }
-
-
-    # Asynchronous Narration is an advanced topic described at:
-    ; () => {; import * './advanced/modunarr'
-      edh'async'narration # <- follow this bookmark to that section
-    }
-
+    # %#
   }
 
+  # Asynchronous Narration is an advanced topic described at:
+  ; () => {; import * './advanced/modunarr'
+    edh'async'narration # <- follow this bookmark to that section
+  }
 
-  {## Arrow Procedures
-   # - Lambda procedures bound to contextual objects
+}
+
+
+{## Arrow Procedures
+ # - Lambda procedures bound to contextual objects
 
 Lambdas is essential to functional programming paradigm, where higher order functions (procedures will be used in Đ) can take other functions as arguments and operate on them with more abstract semantics.
 
@@ -3829,71 +3763,71 @@ With the (=>) operator, the expression evaluates to a value of `Generator` type 
 
 With the (=>*) operator, the expression evaluates to a value of `Producer` type (which is a bound producer arrow). The semantics when the result procedure is called, is identical to a producer procedure.
 
-   #} {;
-    {## Arrow Procedures #}
-    export edh'arrow'procs = bookmark()
+ #} {;
+  {## Arrow Procedures #}
+  export edh'arrow'procs = bookmark()
 
-    # %% # A simple vanilla arrow
-    type$ x => x+1
+  # %% # A simple vanilla arrow
+  type$ x => x+1
 
-    # %% # A simple generator arrow
-    type$ x => {
-      yield x+1
-      yield x+2
-      return x+3
-    }
+  # %% # A simple generator arrow
+  type$ x => {
+    yield x+1
+    yield x+2
+    return x+3
+  }
 
-    # %% # A simple producer arrow
-    type$ (x, outlet= sink,) =>* {
-      defer outlet <- nil
-      outlet <- x+1
-      outlet <- x+2
-      outlet <- x+3
-    }
-    # %#
-
-
-    # %% #A sophisticated ad-hoc generator arrow, demonstrating a freeform list builder
-
-    # With some contextual state
-    let ( foo, bar ) = ( 77, 88 )
-    let lll = [ 3, 2, 5 ]
-
-    # Comprehend items into a list, those generated with arbitrary control flows
-    ; [] =< for i from (() => {
-        yield "a"
-        yield ( if foo < bar
-          then "b"
-          else "c" )
-        yield "d"
-        for item from lll do {
-          yield item
-          yield item * 2
-        }
-    }) () do i
-
-    # %# Loop based comprehension is described in another section
-    ; () => edh'loop'comprehension # <- follow this bookmark to there
+  # %% # A simple producer arrow
+  type$ (x, outlet= chan,) =>* {
+    defer outlet <- nil
+    outlet <- x+1
+    outlet <- x+2
+    outlet <- x+3
+  }
+  # %#
 
 
-    # Note that anonymous procedures can be defined with keyword based syntax as well, as described in previous sections. The trick is to specify the procedure name to be `_`.
+  # %% #A sophisticated ad-hoc generator arrow, demonstrating a freeform list builder
 
-    # %% # e.g. the following implementation has identical semantics as the last cell:
-    ; [] =< for i from ( generator _() {
-        yield "a"
-        yield ( if foo < bar
-          then "b"
-          else "c" )
-        yield "d"
-        for item from lll do {
-          yield item
-          yield item * 2
-        }
-    }) () do i
-    # %# So long as neither `this` nor `that` object is referred in the procedure bodies
+  # With some contextual state
+  let ( foo, bar ) = ( 77, 88 )
+  let lll = [ 3, 2, 5 ]
+
+  # Comprehend items into a list, those generated with arbitrary control flows
+  ; [] =< for i from (() => {
+      yield "a"
+      yield ( if foo < bar
+        then "b"
+        else "c" )
+      yield "d"
+      for item from lll do {
+        yield item
+        yield item * 2
+      }
+  }) () do i
+
+  # %# Loop based comprehension is described in another section
+  ; () => edh'loop'comprehension # <- follow this bookmark to there
 
 
-    {#
+  # Note that anonymous procedures can be defined with keyword based syntax as well, as described in previous sections. The trick is to specify the procedure name to be `_`.
+
+  # %% # e.g. the following implementation has identical semantics as the last cell:
+  ; [] =< for i from ( generator _() {
+      yield "a"
+      yield ( if foo < bar
+        then "b"
+        else "c" )
+      yield "d"
+      for item from lll do {
+        yield item
+        yield item * 2
+      }
+  }) () do i
+  # %# So long as neither `this` nor `that` object is referred in the procedure bodies
+
+
+  {#
 
 There will be semantical differences when `this` and/or `that` references appear in the procedure body:
 
@@ -3901,22 +3835,22 @@ There will be semantical differences when `this` and/or `that` references appear
 
   * What `this` and `that` will refer to, will need more reasoning (to see where and when they'll be bound), for procedures defined with the keywords (method/interpreter/generator/producer), regardless of them being anonymous or named.
 
-     #}
+   #}
 
-    # `this` and `that` references w.r.t. how methods are bound, is described later in this chapter
-    ; () => edh'mth'binding # <- follow this bookmark to that section
+  # `this` and `that` references w.r.t. how methods are bound, is described later in this chapter
+  ; () => edh'mth'binding # <- follow this bookmark to that section
 
-  }
+}
 
 
-  {## Operator Procedures
-   # - The implementation of infix operators
-   #} {;
-    {## Operator Procedures #}
-    export edh'op'procs = bookmark()
+{## Operator Procedures
+ # - The implementation of infix operators
+ #} {;
+  {## Operator Procedures #}
+  export edh'op'procs = bookmark()
 
-    {## Strict (2-arg) Operator Procedures
-     # - Operator procedures with strict evaluation
+  {## Strict (2-arg) Operator Procedures
+   # - Operator procedures with strict evaluation
 
 The general syntax to define a 2-arg operator procedure is:
 
@@ -3924,43 +3858,43 @@ The general syntax to define a 2-arg operator procedure is:
 
 The definition is an expression evaluates to a value of `Operator` type, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
-     #} {;
-      {## Strict (2-arg) Operator Procedures #}
-      export edh'2'arg'op'procs = bookmark()
+   #} {;
+    {## Strict (2-arg) Operator Procedures #}
+    export edh'2'arg'op'procs = bookmark()
 
-      # %% # For a simple example, we define the "function" composition operator using the mid-dot symbol
-      # See: https://middot.net for how to input a mid-dot
+    # %% # For a simple example, we define the "function" composition operator using the mid-dot symbol
+    # See: https://middot.net for how to input a mid-dot
 
-      {## The function composition operator #}
-      infixr 9 ( · ) ( f, g ) {
-        method @( f.name ++ ' · ' ++ g.name ) (x) {
-          f ( g ( x ) )
-        }
+    {## The function composition operator #}
+    infixr 9 ( · ) ( f, g ) {
+      method @( f.name ++ ' · ' ++ g.name ) (x) {
+        f ( g ( x ) )
       }
-
-      show$ ( · )
-
-      # %% # Given 2 "function"s:
-      method plus5 x x+5
-      method mult3 x x*3
-
-      # %% # They can be composed into a new "function"
-      p = plus5 · mult3
-
-      p|desc
-
-      # %% # Then the composite "function" can be used like any other procedures
-      2 |p
-      # %%
-      p$ 2
-      # %%
-      p( 2 )
-      # %#
     }
 
+    show$ ( · )
 
-    {## Non-Strict (3-arg) Operator Procedures
-     # - For controlled evaluation
+    # %% # Given 2 "function"s:
+    method plus5 x x+5
+    method mult3 x x*3
+
+    # %% # They can be composed into a new "function"
+    p = plus5 · mult3
+
+    p|desc
+
+    # %% # Then the composite "function" can be used like any other procedures
+    2 |p
+    # %%
+    p$ 2
+    # %%
+    p( 2 )
+    # %#
+  }
+
+
+  {## Non-Strict (3-arg) Operator Procedures
+   # - For controlled evaluation
 
 The general syntax to define a 3-arg operator procedure is:
 
@@ -3968,150 +3902,150 @@ The general syntax to define a 3-arg operator procedure is:
 
 The definition is an expression evaluates to a value of `Operator` type, this value will be bound to current scope, with <op-symbol> being the attribute key, unless it is evaluated in a pure context.
 
-     #} {;
-      {## Non-Strict (3-arg) Operator Procedures #}
-      export edh'3'arg'op'procs = bookmark()
+   #} {;
+    {## Non-Strict (3-arg) Operator Procedures #}
+    export edh'3'arg'op'procs = bookmark()
 
-      # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this operator is applied, and the rest 2 arguments will be expression values instead of evaluated result values, for the lhs and rhs operands of the operator application.
+    # The first positional `callerScope` argument will be a scope wrapper object wrapping the scope from where this operator is applied, and the rest 2 arguments will be expression values instead of evaluated result values, for the lhs and rhs operands of the operator application.
 
-      # Expression Values and Scope Wrapprs are further described later in this chapter.
-      ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
+    # Expression Values and Scope Wrapprs are further described later in this chapter.
+    ; () => edh'exprs'in'scopes # <- follow this bookmark to that section
 
-      # %% #
-      {##
-       # For lazily evaluated substituation
+    # %% #
+    {##
+     # For lazily evaluated substituation
 This operator is strict on its lhs argument, but won't evaluate its rhs argument unless the result from the lhs argument is falsy.
-       #}
-      operator 0 (||>) ( callerScope: scope, lhx, rhx ) {
-        case callerScope.eval(lhx) of {
+     #}
+    operator 0 (||>) ( callerScope: scope, lhx, rhx ) {
+      case callerScope.eval(lhx) of {
 
-          # Evaluate to result of the lhs expression so long as it is truthful
-          { lhv } | not null(lhv) -> lhv
+        # Evaluate to result of the lhs expression so long as it is truthful
+        { lhv } | not null(lhv) -> lhv
 
-          # Or evaluate to whatever the result is from the rhs expression
-          _ -> callerScope.eval(rhx)
+        # Or evaluate to whatever the result is from the rhs expression
+        _ -> callerScope.eval(rhx)
 
-        }
       }
-
-      # %% # See type of the procedure value
-      type$ (||>)
-
-      # %% # With some contextual attribute set
-      n = 21
-      # %% # Or set to another value
-      n = 38
-
-      # %% # Call the operator procedure:
-      n-3*7 ||> {
-        console.warn<| 'zero there is'
-        999
-      }
-      # %# Try switch the value of `n`, and run above cell again to see a different result
-
-      # %% # Technically, we have just re-implemented the intrinsic (or) operator
-      n-3*7 or {
-        console.warn<| 'zero there is'
-        999
-      }
-      # %# See they have exactly the same semantics
     }
 
+    # %% # See type of the procedure value
+    type$ (||>)
 
-    {## Operator Precedence & Fixity/Associativity
-     # - How expressions work
+    # %% # With some contextual attribute set
+    n = 21
+    # %% # Or set to another value
+    n = 38
 
-Contributions needed here to explain it well.
-
-     #} {;
-      {## Operator Precedence & Fixity/Associativity #}
-      export edh'op'precedence'fixity = bookmark()
-
-      # TODO contributions needed here
-
-      # %%
-      infixr 5 ( 📢 ) ( lhv, rhv ) {
-        console.print$ rhv ++ ' is telling ' ++ lhv
-        return rhv
-      }
-
-      show$( 📢 )
-
-      # %%
-      'a lie' 📢 'a tale' 📢 'the goat'
-
-      # %%
-      operator 1 ( 🆚 ) ( lhv, rhv ) {
-        console.info <| "🌀 What's the difference?\n     "
-        ++ lhv ++ '\n  🆚\n     ' ++ rhv
-      }
-
-      show$ ( 🆚 )
-
-      # %%
-      let ( a, b ) = ( 'Orange', 'Apple', )
-      a 🆚 b
-
-      # %# Destined to fail as no fixity
-      #   a 🆚 b 🆚 c
-      # Note above line is commented out or the whole file won't parse
-      # You can copy & paste the text into REPL and see how it fails at runtime
-
-
-      # %% # Overide the (++) operator within a dedicated namespace, avoid polluting the module global scope
-      case {@
-        before = 'You' ++ ' and ' ++ 'me'
-
-        # for an operator already declared beforehand, the fixity follows existing
-        # declaration when you use `operator` or `infix` as the keyword to override it
-        operator (++) ( lhv, rhv ) {
-          # inside the overriding operator definition, the overridden,
-          # original operator is available as was before the overide
-          lhv ++ ' ⭕ ' ++ rhv
-        }
-
-        after = 'You' ++ ' and ' ++ 'me'
-
-        scope() # Save a scope wrapper object, so we can still eval expressions in this scope later
-      @} of { dynamic'workspace } -> {
-
-        # Note the assign (=) operation can not be used, or it'll create a pure context where operator procedure definition will not bind the result procedure value to its current scope.
-        pass
-      }
-
-      dir$ dynamic'workspace
-      # %#
-
-      # %% # Check the result there
-      dynamic'workspace.eval( expr
-        before 🆚 after
-      )
-
-      # %% # A vanilla method or interpreter procedure can be re-declared as some operator, if it takes exactly 2 positional arguments (not counting the `callerScope` argument)
-
-      method concat1( lhv, rhv ) {
-        lhv ++ ' plus ' ++ rhv
-      }
-      infixl 3 (>+<) () concat1
-
-      interpreter concat2( callerScope: scope, lhe, rhe ) {
-        callerScope.eval( lhe ) ++ ' and ' ++ callerScope.eval( rhe )
-      }
-      infixl 3 (>&<) () concat2
-
-      # %% # All operators can combine together, according to their respective fixity and precedence
-      3*7 >+< 9*9
-      🆚
-      3*7 >&< 9*9
-
-      # %#
+    # %% # Call the operator procedure:
+    n-3*7 ||> {
+      console.warn<| 'zero there is'
+      999
     }
+    # %# Try switch the value of `n`, and run above cell again to see a different result
 
+    # %% # Technically, we have just re-implemented the intrinsic (or) operator
+    n-3*7 or {
+      console.warn<| 'zero there is'
+      999
+    }
+    # %# See they have exactly the same semantics
   }
 
 
-  {## Definition Procedures
-   # - To initialize a module, a namespace, or a class
+  {## Operator Precedence & Fixity/Associativity
+   # - How expressions work
+
+Contributions needed here to explain it well.
+
+   #} {;
+    {## Operator Precedence & Fixity/Associativity #}
+    export edh'op'precedence'fixity = bookmark()
+
+    # TODO contributions needed here
+
+    # %%
+    infixr 5 ( 📢 ) ( lhv, rhv ) {
+      console.print$ rhv ++ ' is telling ' ++ lhv
+      return rhv
+    }
+
+    show$( 📢 )
+
+    # %%
+    'a lie' 📢 'a tale' 📢 'the goat'
+
+    # %%
+    operator 1 ( 🆚 ) ( lhv, rhv ) {
+      console.info <| "🌀 What's the difference?\n     "
+      ++ lhv ++ '\n  🆚\n     ' ++ rhv
+    }
+
+    show$ ( 🆚 )
+
+    # %%
+    let ( a, b ) = ( 'Orange', 'Apple', )
+    a 🆚 b
+
+    # %# Destined to fail as no fixity
+    #   a 🆚 b 🆚 c
+    # Note above line is commented out or the whole file won't parse
+    # You can copy & paste the text into REPL and see how it fails at runtime
+
+
+    # %% # Overide the (++) operator within a dedicated namespace, avoid polluting the module global scope
+    case {@
+      before = 'You' ++ ' and ' ++ 'me'
+
+      # for an operator already declared beforehand, the fixity follows existing
+      # declaration when you use `operator` or `infix` as the keyword to override it
+      operator (++) ( lhv, rhv ) {
+        # inside the overriding operator definition, the overridden,
+        # original operator is available as was before the overide
+        lhv ++ ' ⭕ ' ++ rhv
+      }
+
+      after = 'You' ++ ' and ' ++ 'me'
+
+      scope() # Save a scope wrapper object, so we can still eval expressions in this scope later
+    @} of { dynamic'workspace } -> {
+
+      # Note the assign (=) operation can not be used, or it'll create a pure context where operator procedure definition will not bind the result procedure value to its current scope.
+      pass
+    }
+
+    dir$ dynamic'workspace
+    # %#
+
+    # %% # Check the result there
+    dynamic'workspace.eval( expr
+      before 🆚 after
+    )
+
+    # %% # A vanilla method or interpreter procedure can be re-declared as some operator, if it takes exactly 2 positional arguments (not counting the `callerScope` argument)
+
+    method concat1( lhv, rhv ) {
+      lhv ++ ' plus ' ++ rhv
+    }
+    infixl 3 (>+<) () concat1
+
+    interpreter concat2( callerScope: scope, lhe, rhe ) {
+      callerScope.eval( lhe ) ++ ' and ' ++ callerScope.eval( rhe )
+    }
+    infixl 3 (>&<) () concat2
+
+    # %% # All operators can combine together, according to their respective fixity and precedence
+    3*7 >+< 9*9
+    🆚
+    3*7 >&< 9*9
+
+    # %#
+  }
+
+}
+
+
+{## Definition Procedures
+ # - To initialize a module, a namespace, or a class
 
 Whole content of a `.edh` file as source of an Đ module is executed in the module scope.
 
@@ -4121,14 +4055,14 @@ The body of a class (either usual class or data class) definition is executed in
 
 Conceptually we say they all are of a special type of procedures - definition procedures.
 
-   #} {;
-    {## Definition Procedures #}
-    export edh'defi'procs = bookmark()
-  }
+ #} {;
+  {## Definition Procedures #}
+  export edh'defi'procs = bookmark()
+}
 
 
-  {## Decorator
-   # - Python decorator goes more general in Đ
+{## Decorator
+ # - Python decorator goes more general in Đ
 
 Python decorator is a syntactic sugar for application of higher order functions as part of the declaration of a new function.
 
@@ -4136,31 +4070,31 @@ Inspired by Haskell, Đ introduces the procedure call ($) operator (called funct
 
 In addition to ($), there is also the pipe (|) operator with just the oparands flipped, so utility procedure usages like `show( xx )` `repr( xx )` etc. can be written with sugar syntax like `show$ xx`, `repr$ xx`, and `xx |show` `xx |repr`.
 
-   #} {;
-    {## Decorator #}
-    export edh'decorator = bookmark()
+ #} {;
+  {## Decorator #}
+  export edh'decorator = bookmark()
 
-    # %% # A decorator is usually written in the host language, but as well, it can be written in Đ the surface language, in form of an interpreter procedure
+  # %% # A decorator is usually written in the host language, but as well, it can be written in Đ the surface language, in form of an interpreter procedure
 
-    interpreter decor( callerScope: scope, fe ) case callerScope.eval( fe: 'Expr' ) of { f } -> {
-      callerScope.eval( expr method @(f.name) ( ***apk ) {
-          console.info<| 'Calling procedure `' ++ {$ f.name $} ++ '` with: ' ++ apk
-          {$ f $} ( ***apk )
-      } )
-    }
-
-    # %% # And used like this
-
-    decor$
-    method g ( a, b, c ) {
-      console.info<| 'This is g(), we have: ' ++ ( a=a, b=b, c=c, )
-    }
-
-    # %% # The decorated procedure can be used straight forward
-    g( 1, 2, 3 )
-
-    # %#
+  interpreter decor( callerScope: scope, fe ) case callerScope.eval( fe: 'Expr' ) of { f } -> {
+    callerScope.eval( expr method @(f.name) ( ***apk ) {
+        console.info<| 'Calling procedure `' ++ {$ f.name $} ++ '` with: ' ++ apk
+        {$ f $} ( ***apk )
+    } )
   }
+
+  # %% # And used like this
+
+  decor$
+  method g ( a, b, c ) {
+    console.info<| 'This is g(), we have: ' ++ ( a=a, b=b, c=c, )
+  }
+
+  # %% # The decorated procedure can be used straight forward
+  g( 1, 2, 3 )
+
+  # %#
+}
 
 }
 
@@ -5414,7 +5348,7 @@ Effectful artifacts live in a separate namespace side by side with each scope.
 
 Current Đ interpreter implements it by putting an attribute named `__effects__` of dict value into each scope when the first effectful artifact is defined into it, that `__effects__` dict will receive subsequent effectful artifacts since then on, and serving the source for effect resolution against its owning scope. It is so made easy to observe what effects present in a scope from REPL and other interactive mechanisms, but such technical implementation details may change in the future.
 
-Effectful artifacts can be procedure values, or immutable numerical values, string values etc. as for configuration purpose, actually they can be arbitrary values, e.g. it is not uncommon for event sinks to be effectful artifacts.
+Effectful artifacts can be procedure values, or immutable numerical values, string values etc. as for configuration purpose, actually they can be arbitrary values, e.g. it is not uncommon for message channels to be effectful artifacts.
 
      #} {;
       {## Dynamic Effect Naming & Resolving #}
@@ -5440,7 +5374,7 @@ The <attr-defining-expr> can be any expression, including block expression, such
 
       effect method f(n) n+1
 
-      # %# Note this can not succeed
+      # %# Note this can not succeed, of course
       effect import * 'some/exported/effects'
 
       # %% # See the `__effects__` dict now in current scope

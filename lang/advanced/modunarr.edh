@@ -161,7 +161,7 @@ A slight difference with a closure as a real callback is, the loop arguments liv
   }
 
   {## Asynchronous Reacting with Perceiver
-   # - Preemptively react to each event from a sink
+   # - Preemptively react to each message from a channel
 
 
    #} {;
@@ -172,7 +172,7 @@ A slight difference with a closure as a real callback is, the loop arguments liv
   }
 
   {## Synchronous Reacting with Event Loop
-   # - Iterate against the event stream from a sink
+   # - Iterate against the message stream from a channel
 
 
    #} {;

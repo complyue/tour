@@ -1128,27 +1128,56 @@ Unlike slice in Python, the colon (:) operator can construct new pairs in anywhe
     }
 
 
-    {## Event Sink
-     # - Like broadcast TChan as in Haskell
+    {## Message Channel
+     # - Like the unbuffered `chan` in Go
 
-Đ event sink is more like a dynamic version of the broadcast `TChan` as in Haskell, it is less like channel as in Go, wrt the broadcasting nature.
+Đ message channel is like unbuffered channel as in Go, with synchronous message passing semantics, though works asynchronously.
 
-An Đ sink can have multiple producers and multiple consumers at the same time, each event value published into the sink are received by all consumers, i.e. the broadcast semantics. While a usual Haskell TChan or Go chan can also have multiple producers and multiple consumers, each particular message is only received by one consumer at most, i.e. the (possibly load-balanced) unicast semantics.
+An Đ channel can have multiple producers and multiple consumers at the same time, but each particular message is only received by one consumer at most, i.e. the (possibly load-balanced) unicast semantics.
 
-The event publish (<-) operator in Đ resembles that in Go, and the event stream through an event sink can be further iterated with (possibly concurrent) for-loops, as well as each event value to be individually perceived in a preemptive fashion, by many Đ threads.
+The (<-) operator in Đ resembles that in Go, it does channel write when used as infix op, and does channel read when used as prefix op. The message stream through a message channel can be further iterated with (possibly concurrent) for-loops, as well as each message value to be individually perceived in a preemptive fashion, by many Đ threads.
 
      #} {;
-      {## Event Sink #}
-      export edh'evs'data'struct = bookmark()
+      {## Message Channel #}
+      export edh'msg'chan'data'struct = bookmark()
 
-      # An event sink is the rendezvous point of events
-      edh'event'sink'values # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+      # %% # Use the `chan` keyword to construct a new channel value
+      ch = chan
 
-      # For event stream iteration
-      edh'iter'events # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+      # %% # Use the infix (<-) operator to write to a channel
+      # Note it has to happen on a separate thread other than the REPL, synchronous/blocking write to a channel, which has no (process wide) reader (threads) will be, detected by GHC RTS (STM) as a deadlock situation, thus to have your Đ session crash.
+      go { # Note channel writes are synchronous / blocking
+        ch <- 'Hello there!'
+        console.info<| 'Hello said.'
+        ch <- 'You look great!'
+        console.info<| 'Flattery said.'
 
-      # For preemptive event handling
-      edh'perceive'events # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+        ch <-nil # Mark it end-of-stream, by writting a nil into the channel
+        # Note this does NOT blocking, contrary to normal message writes.
+        console.info<| 'Channel closed.'
+      }
+
+      # %% # Use the `.eos` virtual attribute to check if a channel has reached end-of-stream
+      ch.eos
+
+      # %% # Use the prefix (<-) operator to read from a channel
+      # Execute this cell for more times to see all those messages and effects
+      msg = <-ch
+
+      # %% # See once the channel reaches EoS, you always read a `nil` out of it immediately
+      ; <-ch is nil # semicolon used to disambiguate (<-) as a prefix op instead of infix one
+
+      # %# Note: in case a channel is not at EoS, and there remain only (blocking) readers, GHC RTS (STM) will detect a deadlock situation, thus crash your Đ session. This can happen if the above cell didn't issue `ch <-nil` at last.
+
+
+      # A message channel defines an unbuffered, load-balanced, message stream
+      edh'msg'chan'values # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+
+      # For message stream iteration
+      edh'iter'msgs # <- follow this bookmark for the detailed syntax and description in the grammar chapter
+
+      # For preemptive message handling
+      edh'perceive'msgs # <- follow this bookmark for the detailed syntax and description in the grammar chapter
     }
 
   }
@@ -1216,7 +1245,7 @@ But the syntax involves the `from` keyword and an extra `do` keyword, it becomes
 
 Deeper in the semantics, `from` is chosen to carry the implication that the source of iteration is remote to current looping context, and is processed in a streaming fashion. The source is possibly infinite (e.g. the event stream of Bitcoin/USD quotes) or very large (e.g. all historic bid records of a stock) to be loaded at its entirety, The `do` keyword then emphasis that the loop body is executed locally in contrast.
 
-Such intuition is very true when looping against an event sink (either from a producer procedure or not), and also quite true when looping against some effectful generator procedure resolved dynamically, i.e. unknown to the looping site.
+Such intuition is very true when looping against an message channel (either from a producer procedure or not), and also quite true when looping against some effectful generator procedure resolved dynamically, i.e. unknown to the looping site.
 
      #} {;
 
@@ -1242,17 +1271,17 @@ Such intuition is very true when looping against an event sink (either from a pr
       for i from 10:7 do console.print(i)
 
       # %% # Moreover, it can loop against unpredictable streams
-      msgSink = sink
+      msgCh = chan
       # Spawn a separate thread to do the loop so REPL still usable along with the loop
-      go for msg from msgSink do console.info<| 'Got msg: ' ++ msg
+      go for msg from msgCh do console.info<| 'Got msg: ' ++ msg
       # Note the message through `console.print()` will be blocked during REPL's prompting for input, so here the log (<|) operation is preferably used instead
 
       # %% # Messages can be posted from anywhere
-      void msgSink <- "You're great!"
-      # Note the publish (<-) operator (which is quite the same as in Go for publishing data into a channel), evaluates to its rhs operand, we use `void` here to supress output to stdout
+      msgCh <- "You're great!"
+      # Note the channel read/write (<-) operator (which is quite the same as in Go)
 
       # %% # And any sort of messages is possible, such as a fractional number
-      void msgSink <- 7/11
+      msgCh <- 7/11
 
 
       # %% # Generators yield the values to be looped
@@ -1266,7 +1295,7 @@ Such intuition is very true when looping against an event sink (either from a pr
 
 
       # %% # The `do` loop body can appear first
-      do console.print(i) for i in 3..5
+      do console.print(i) for i from 3..5
 
       # %% # Which reads nicer in comprehensions
       [] =< do i*3 for i from 3..5
@@ -1331,7 +1360,7 @@ Such intuition is very true when looping against an event sink (either from a pr
     {## go Routines
      # - Like goroutines in Go
 
-Đ implements go routines with 1:1 mapping to Haskell/GHC RTS lightweight threads, in addition to usual coroutine features, Đ threads can preemptively perceive event sinks, as well as `defer` clenup actions, i.e. schedule those actions to run on thread termination.
+Đ implements go routines with 1:1 mapping to Haskell/GHC RTS lightweight threads, in addition to usual coroutine features, Đ threads can preemptively perceive message channels, as well as `defer` clenup actions, i.e. schedule those actions to run on thread termination.
 
      #} {;
       edh'go'routines # <- follow this bookmark to detailed syntax and description in the grammar chapter
