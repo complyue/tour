@@ -12,7 +12,47 @@
     {## Procedure Decorator #}
     export edh'py'decorator = bookmark()
 
+    # %%
 
+    method timer(message='')
+    interpreter timer'wrapper( callerScope: scope, fe ) case callerScope.eval(fe) of {
+      { f } | type(f) is 'Method' -> {
+        callerScope.eval( expr method @(f.name) ( ***apk ) {
+            import * 'uom/duration'
+            start_time = console.now()
+            res = {$ f $}( ***apk )
+            time_cost = (console.now()-start_time)*1ns
+            console.print$ 'time used: ' ++ time_cost.reduced.toFixed(2)
+            if {$message$} then console.print({$message$})
+            return res
+        } )
+      }
+      _ -> error('timer can only wrap method definitions')
+    }
+
+    interpreter logger( callerScope: scope, fe ) case callerScope.eval(fe) of {
+      { f } | type(f) is 'Method' -> {
+        callerScope.eval( expr method @(f.name) ( ***apk ) {
+            console.print$ 'Calling ' ++ {$f.name$} ++ repr(apk)
+            return {$ f $}( ***apk )
+        } )
+      }
+      _ -> error('logger can only wrap method definitions')
+    }
+
+    logger$
+    timer('Done')$
+    method somefunc(n=100, m=1) {
+      l = 0
+      for i in 0..n
+      for j in 0..n
+      l += (i+j) * m
+      return l
+    }
+
+    somefunc(100, 1.5)
+
+    # %#
   }
 
 
