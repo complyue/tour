@@ -21,9 +21,6 @@ tasks:
        -B http://github.com/complyue \
         nedh els sedh eas hasdim haskit
       cd /workspace/edh-universe
-      # do HLS a favor
-      stack install implicit-hie
-      epm x gen-hie > hie.yaml
       # build & install executables from Edh packages
       stack update
       stack install
