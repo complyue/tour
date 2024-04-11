@@ -8,11 +8,9 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
-      # prepare ws/bin, install epm there, for later upgrade without docker image rebuilt
-      mkdir -p /workspace/bin
-      # /workspace/bin/epm should have been symbolinked to /usr/local/bin/epm
-      curl -o /workspace/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
-      chmod a+x /workspace/bin/epm
+      # /workspace/toolhome/bin should have been created per Dockerfile, and added to $PATH
+      curl -o /workspace/toolhome/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
+      chmod a+x /workspace/toolhome/bin/epm
       # prepare /workspace as an epm home
       cd /workspace
       epm init \
