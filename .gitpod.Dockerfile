@@ -10,10 +10,13 @@ RUN git config --global pull.ff only
 ENV STACK_ROOT=/workspace/.stack
 ENV GHCUP_INSTALL_BASE_PREFIX=/workspace
 
+# Add ghcup to path
+ENV PATH=/workspace/.ghcup/bin:${PATH}
+
 # install ghcup, then stack and hls via it
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | env BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
-RUN /workspace/.ghcup/bin/ghcup install stack
-RUN /workspace/.ghcup/bin/ghcup install hls
+RUN ghcup install stack
+RUN ghcup install hls
 
 USER root
 
