@@ -8,9 +8,9 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
-      # /workspace/toolhome/bin should have been created per Dockerfile, and added to $PATH
-      curl -o /workspace/toolhome/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
-      chmod a+x /workspace/toolhome/bin/epm
+      # /workspace/bin should have been created per Dockerfile, and added to $PATH
+      curl -o /workspace/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
+      chmod a+x /workspace/bin/epm
       # prepare /workspace as an epm home
       cd /workspace
       epm init \
