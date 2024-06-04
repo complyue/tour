@@ -9,14 +9,25 @@ ports:
 
 tasks:
   - name: Build Đ Tooling
+    init: |
+      # prepare /workspace as an epm home
+      cd /workspace
+      epm init \
+       -B https://github.com/e-wrks \
+        edh \
+       -B http://github.com/complyue \
+        nedh els sedh eas hasdim haskit
+      cd /workspace/edh-universe
+      # build & install executables from Edh packages,
+      # this takes minutes & GBs
+      stack update
+      stack install
     command: |
       # update packages in root epm home
-      cd $HOME/edh/edh-universe
+      cd /workspace/edh-universe
       epm up
       epm i
-      epm x gen-hie > hie.yaml
       # update executables from Edh packages
-      stack update
       stack install
 
 vscode:
