@@ -10,6 +10,8 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
+      # update epm to latest version
+      curl -o $HOME/.local/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
       # prepare /workspace as an epm home
       cd /workspace
       epm init \
