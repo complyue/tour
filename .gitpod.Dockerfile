@@ -12,7 +12,9 @@ RUN git config --global pull.ff only
 
 # install ghcup, then stack and hls via it
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | env BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
-RUN ghcup install stack && ghcup install hls
+RUN ghcup update && \
+    ghcup install stack && \
+    ghcup install hls
 # populate stack's cache, this takes minutes & GBs
 RUN stack update
 
