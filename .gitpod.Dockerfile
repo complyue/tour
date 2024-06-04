@@ -10,16 +10,15 @@ RUN echo 'create-overlay $HOME' > "$HOME/.runonce/1-home_persist"
 # or git will keep prompting
 RUN git config --global pull.ff only
 
+# add /workspace/bin and ghcup to PATH
+ENV PATH="/workspace/bin:$HOME/.ghcup/bin:$PATH"
+
 # install ghcup, then stack and hls via it
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | env BOOTSTRAP_HASKELL_NONINTERACTIVE=1 sh
-RUN ghcup update && \
-    ghcup install stack && \
+RUN ghcup install stack && \
     ghcup install hls
 # populate stack's cache, this takes minutes & GBs
 RUN stack update
-
-# add /workspace/bin and ghcup to PATH
-ENV PATH="/workspace/bin:$HOME/.ghcup/bin:$PATH"
 
 # install latest epm
 RUN mkdir -p $HOME/.local/bin; \
