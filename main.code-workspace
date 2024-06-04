@@ -6,7 +6,7 @@
 			"path": "." // Main repo that you will open in Gitpod (e.g. frontend)
 		},
 		{
-			"path": "/home/gitpod/edh" // Additional repo
+			"path": "/workspace/edh-universe" // Additional repo
 		}
 	]
 }
