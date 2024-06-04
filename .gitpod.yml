@@ -1,6 +1,8 @@
 image:
   file: .gitpod.Dockerfile
 
+workspaceLocation: tour/main.code-workspace # Relative to /workspace dir
+
 ports:
   - port: 1024-6000
     onOpen: ignore
@@ -8,9 +10,8 @@ ports:
 tasks:
   - name: Build Đ Tooling
     init: |
-      # /workspace/bin should have been created per Dockerfile, and added to $PATH
-      curl -o /workspace/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
-      chmod a+x /workspace/bin/epm
+      # update epm to latest version
+      curl -o $HOME/.local/bin/epm -L https://github.com/e-wrks/epm/raw/latest/epm
       # prepare /workspace as an epm home
       cd /workspace
       epm init \
@@ -19,7 +20,8 @@ tasks:
        -B http://github.com/complyue \
         nedh els sedh eas hasdim haskit
       cd /workspace/edh-universe
-      # build & install executables from Edh packages
+      # build & install executables from Edh packages,
+      # this takes minutes & GBs
       stack update
       stack install
     command: |
@@ -27,9 +29,7 @@ tasks:
       cd /workspace/edh-universe
       epm up
       epm i
-      epm x gen-hie > hie.yaml
       # update executables from Edh packages
-      stack update
       stack install
 
 vscode:
