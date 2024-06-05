@@ -107,12 +107,6 @@ after [sign up](https://gitpod.io/subscription), you can just click
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/complyue/tour/blob/master/welcome.edh)
 to begin the tour.
 
-> TODO ... screenshots to showcase the steps
-
-Note:
-
-> Being soly [Eclipse Theia](https://theia-ide.org) based, [Gitpod](https://gitpod.io) workspace is currently less featureful / UX-rich compared to [VSCode](https://code.visualstudio.com) / [VSCodium](https://vscodium.com), while the good news are upcoming [Github Codespaces](https://github.com/features/codespaces) and [Gitpod's push of VSCode support](https://www.gitpod.io/blog/root-docker-and-vscode) in response, esp. [Gitpod's big vision](https://www.gitpod.io/blog/moving-software-development-to-the-cloud).
-
 ### Seasoned and UX Rich Way - local IDE
 
 The Đ tooling struggles for ergonomics in software development, it achieves so on the shoulders of modern IDEs, with optimized workflows to build, test, demonstrate, and run relevant software components.
