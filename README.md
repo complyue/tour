@@ -258,7 +258,7 @@ Check it installed correctly
 
 ```console
 $ epm --help
-epm 0.2.7 >> Edh Package Manager <<
+epm 0.3.9 >> Edh Package Manager <<
 
 USAGE:
     epm [FLAGS] <SUBCOMMAND>
@@ -273,10 +273,9 @@ FLAGS:
 
 SUBCOMMANDS:
     init               Initialize current working directory as an EPM home
-    install     | i    Install new, or change branches of existing packages
+    install     | i    Install new, or change branches of existing packages 
     list        | l    List homes and packages
     update | up | u    Pull upstream changes of packages from tracked branches
-    with        | w    Run command within the directory of a package
     run | exec  | x    Run command with all effective EPM home's bin on $PATH
     rm                 Remove specified package(s) from nearest EPM home
 ```
@@ -291,9 +290,9 @@ cd ~/workspace
 
 epm init \
   -B https://github.com/e-wrks \
-  edh nedh els hasdim haskit \
+  edh \
   -B http://github.com/complyue \
-  sedh
+  nedh els hasdim haskit sedh
 
 cd ~/workspace/edh-universe
 
@@ -301,11 +300,6 @@ cd ~/workspace/edh-universe
 # essential *Edh Language Server* (els) for IntelliSense
 stack update
 stack install
-
-# do HLS a favor
-stack install implicit-hie
-epm x gen-hie > hie.yaml
-
 ```
 
 #### Clone and Open the Tour Repository
@@ -325,7 +319,7 @@ code tour
 cd ~/workspace
 
 # or perform the open from IDE's GUI
-code tour edh-universe/e-wrks/* edh-universe/complyue/*
+code tour edh-universe
 
 ```
 
